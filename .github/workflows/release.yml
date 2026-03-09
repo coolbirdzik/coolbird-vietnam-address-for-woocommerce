@@ -14,6 +14,8 @@ on:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
@@ -23,8 +25,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
-          cache-dependency-path: frontend/package.json
 
       - name: Get version from tag or input
         id: get_version
@@ -40,100 +40,51 @@ jobs:
       - name: Update plugin version
         run: |
           VERSION="${{ steps.get_version.outputs.VERSION }}"
-          # Update version in main plugin file
-          sed -i "s/\* Version:.*/\* Version: $VERSION/" woo-vietnam-checkout.php
-          # Update version in readme.txt
+          sed -i "s/\* Version:.*/\* Version: $VERSION/" vietnam-address-woocommerce.php
           sed -i "s/Stable tag:.*/Stable tag: $VERSION/" readme.txt
 
-      - name: Install frontend dependencies
-        working-directory: ./frontend
-        run: npm ci
+      - name: Build plugin
+        run: |
+          chmod +x build.sh
+          ./build.sh
 
-      - name: Build frontend
-        working-directory: ./frontend
-        run: npm run build
-
-      - name: Prepare plugin directory
+      - name: Generate release notes
+        id: release-notes
         run: |
           VERSION="${{ steps.get_version.outputs.VERSION }}"
-          BUILD_DIR="woo-vietnam-checkout"
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
 
-          # Create build directory
-          mkdir -p dist/$BUILD_DIR
-
-          # Copy main plugin files
-          cp woo-vietnam-checkout.php dist/$BUILD_DIR/
-          cp get-address.php dist/$BUILD_DIR/
-          cp readme.txt dist/$BUILD_DIR/
-          cp license.txt dist/$BUILD_DIR/
-
-          # Copy directories
-          cp -r includes dist/$BUILD_DIR/
-          cp -r cities dist/$BUILD_DIR/
-          cp -r i18n dist/$BUILD_DIR/
-          cp -r languages dist/$BUILD_DIR/
-
-          # Copy assets
-          mkdir -p dist/$BUILD_DIR/assets
-          cp -r assets/css dist/$BUILD_DIR/assets/
-
-          # Copy compiled frontend dist
-          if [ -d "assets/dist" ]; then
-            cp -r assets/dist dist/$BUILD_DIR/assets/
+          if [ -n "$PREV_TAG" ]; then
+            COMMITS=$(git log --pretty=format:"- %s (%h)" $PREV_TAG..HEAD --no-merges)
+          else
+            COMMITS=$(git log --pretty=format:"- %s (%h)" --no-merges | head -20)
           fi
 
-          # Clean up unnecessary files
-          find dist/$BUILD_DIR -name ".DS_Store" -delete
-          find dist/$BUILD_DIR -name "*.log" -delete
-          find dist/$BUILD_DIR -name ".git*" -delete
-          find dist/$BUILD_DIR -name "node_modules" -type d -exec rm -rf {} + 2>/dev/null || true
-
-      - name: Create ZIP archive
-        run: |
-          VERSION="${{ steps.get_version.outputs.VERSION }}"
-          cd dist
-          zip -r "../woo-vietnam-checkout-${VERSION}.zip" woo-vietnam-checkout
-          cd ..
-
-      - name: Generate changelog
-        id: changelog
-        run: |
-          VERSION="${{ steps.get_version.outputs.VERSION }}"
-          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
-          echo "## What's Changed in v${VERSION}" >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          echo "### Features & Improvements" >> $GITHUB_OUTPUT
-          echo "- Modern React-based address selector" >> $GITHUB_OUTPUT
-          echo "- Improved checkout experience for Vietnamese customers" >> $GITHUB_OUTPUT
-          echo "- Province/District/Ward selection integrated with WooCommerce" >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          echo "### Installation" >> $GITHUB_OUTPUT
-          echo "1. Download the \`woo-vietnam-checkout-${VERSION}.zip\` file" >> $GITHUB_OUTPUT
-          echo "2. Go to WordPress Admin → Plugins → Add New → Upload Plugin" >> $GITHUB_OUTPUT
-          echo "3. Upload the ZIP file and activate the plugin" >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          echo "### Requirements" >> $GITHUB_OUTPUT
-          echo "- WordPress: 5.0 or higher" >> $GITHUB_OUTPUT
-          echo "- WooCommerce: 8.0 or higher" >> $GITHUB_OUTPUT
-          echo "- PHP: 7.4 or higher" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          {
+            echo "## Changes in v${VERSION}"
+            echo ""
+            echo "### Commits"
+            echo "$COMMITS"
+            echo ""
+            echo "### Installation"
+            echo "1. Download the zip file"
+            echo "2. Go to WordPress Admin → Plugins → Add New → Upload Plugin"
+            echo "3. Upload and activate"
+            echo ""
+            echo "### Requirements"
+            echo "- WordPress: 5.0+"
+            echo "- WooCommerce: 8.0+"
+            echo "- PHP: 7.4+"
+          } > release_notes.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', github.event.inputs.version) || github.ref_name }}
-          name: Release ${{ steps.get_version.outputs.VERSION }}
-          body: ${{ steps.changelog.outputs.CHANGELOG }}
-          files: |
-            woo-vietnam-checkout-${{ steps.get_version.outputs.VERSION }}.zip
+          name: Vietnam Address WooCommerce v${{ steps.get_version.outputs.VERSION }}
+          body_path: release_notes.md
           draft: false
           prerelease: false
+          files: dist/vietnam-address-woocommerce-*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: woo-vietnam-checkout-${{ steps.get_version.outputs.VERSION }}
-          path: woo-vietnam-checkout-${{ steps.get_version.outputs.VERSION }}.zip
-          retention-days: 90
