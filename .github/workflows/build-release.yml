@@ -64,39 +64,27 @@ jobs:
             COMMITS=$(git log --pretty=format:"- %s (%h)" --no-merges | head -20)
           fi
 
-          # Get plugin description from readme
-          DESCRIPTION=$(sed -n '/^== Description ==/,/^== /p' readme.txt | sed '1d;$d' | head -20)
-
-          # Build release notes
-          RELEASE_NOTES="# Changes in v${{ steps.version.outputs.VERSION }}"
-
+          # Write to temp file
+          echo "# Changes in v${{ steps.version.outputs.VERSION }}" > release_notes.md
+          echo "" >> release_notes.md
           if [ -n "$COMMITS" ]; then
-            RELEASE_NOTES="${RELEASE_NOTES}
-
-## Commits
-${COMMITS}"
+            echo "## Commits" >> release_notes.md
+            echo "$COMMITS" >> release_notes.md
           fi
+          echo "" >> release_notes.md
+          echo "## What's New" >> release_notes.md
+          sed -n '/^== Description ==/,/^== /p' readme.txt | sed '1d;$d' | head -20 >> release_notes.md
 
-          if [ -n "$DESCRIPTION" ]; then
-            RELEASE_NOTES="${RELEASE_NOTES}
-
-## What's New
-${DESCRIPTION}"
-          fi
-
-          echo "release_notes<<EOF" >> $GITHUB_OUTPUT
-          echo "$RELEASE_NOTES" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          cat release_notes.md
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }}
           name: Vietnam Address WooCommerce v${{ steps.version.outputs.VERSION }}
-          body: ${{ steps.release-notes.outputs.release_notes }}
+          body_path: release_notes.md
           draft: false
           prerelease: false
-          generate_release_notes: false
           files: vietnam-address-woocommerce-*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
