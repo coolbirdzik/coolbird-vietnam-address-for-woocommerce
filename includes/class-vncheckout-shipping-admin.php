@@ -12,6 +12,42 @@ if (!defined('ABSPATH')) {
 
 class VNCheckout_Shipping_Admin
 {
+    /**
+     * Get shipping rates table name.
+     *
+     * @return string
+     */
+    private function get_shipping_rates_table_name()
+    {
+        global $wpdb;
+
+        return $wpdb->prefix . 'vncheckout_shipping_rates';
+    }
+
+    /**
+     * Get escaped shipping rates table name for raw SQL statements.
+     *
+     * @return string
+     */
+    private function get_shipping_rates_table_sql()
+    {
+        return '`' . esc_sql($this->get_shipping_rates_table_name()) . '`';
+    }
+
+    /**
+     * Read and sanitize a string value from POST.
+     *
+     * @param string $key Request key.
+     * @return string
+     */
+    private function get_post_string($key)
+    {
+        if (!isset($_POST[$key])) {
+            return '';
+        }
+
+        return sanitize_text_field(wp_unslash($_POST[$key]));
+    }
 
     /**
      * Constructor
@@ -127,17 +163,18 @@ class VNCheckout_Shipping_Admin
         }
 
         global $wpdb;
-        $table_name = $wpdb->prefix . 'vncheckout_shipping_rates';
+        $table_name = $this->get_shipping_rates_table_name();
+        $table_sql = $this->get_shipping_rates_table_sql();
 
-        $location_type = isset($_POST['location_type']) ? sanitize_text_field($_POST['location_type']) : '';
-        $location_code = isset($_POST['location_code']) ? sanitize_text_field($_POST['location_code']) : '';
+        $location_type = $this->get_post_string('location_type');
+        $location_code = $this->get_post_string('location_code');
 
         if (!$location_type || !$location_code) {
             wp_send_json_error(array('message' => 'Missing parameters'));
         }
 
         $rates = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM {$table_name} WHERE location_type = %s AND location_code = %s ORDER BY priority DESC",
+            "SELECT * FROM {$table_sql} WHERE location_type = %s AND location_code = %s ORDER BY priority DESC",
             $location_type,
             $location_code
         ), ARRAY_A);
@@ -171,7 +208,8 @@ class VNCheckout_Shipping_Admin
         }
 
         global $wpdb;
-        $table_name = $wpdb->prefix . 'vncheckout_shipping_rates';
+        $table_name = $this->get_shipping_rates_table_name();
+        $table_sql = $this->get_shipping_rates_table_sql();
 
         $data = array(
             'location_type' => sanitize_text_field($rate_data['location_type']),
@@ -193,7 +231,7 @@ class VNCheckout_Shipping_Admin
             $rate_id = $wpdb->insert_id;
         }
 
-        $rate = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table_name} WHERE id = %d", $rate_id), ARRAY_A);
+        $rate = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table_sql} WHERE id = %d", $rate_id), ARRAY_A);
         $rate['weight_tiers'] = json_decode($rate['weight_tiers'], true);
         $rate['order_total_rules'] = json_decode($rate['order_total_rules'], true);
         $rate['location_name'] = $this->get_location_name($rate['location_type'], $rate['location_code']);
@@ -219,7 +257,7 @@ class VNCheckout_Shipping_Admin
         }
 
         global $wpdb;
-        $table_name = $wpdb->prefix . 'vncheckout_shipping_rates';
+        $table_name = $this->get_shipping_rates_table_name();
 
         $wpdb->delete($table_name, array('id' => $id));
 
@@ -249,7 +287,7 @@ class VNCheckout_Shipping_Admin
         }
 
         global $wpdb;
-        $table_name = $wpdb->prefix . 'vncheckout_shipping_rates';
+        $table_name = $this->get_shipping_rates_table_name();
 
         $success = 0;
         $failed = 0;
@@ -305,9 +343,10 @@ class VNCheckout_Shipping_Admin
         }
 
         global $wpdb;
-        $table_name = $wpdb->prefix . 'vncheckout_shipping_rates';
+        $table_name = $this->get_shipping_rates_table_name();
+        $table_sql = $this->get_shipping_rates_table_sql();
 
-        $rates = $wpdb->get_results("SELECT * FROM {$table_name} ORDER BY location_type, location_code", ARRAY_A);
+        $rates = $wpdb->get_results("SELECT * FROM {$table_sql} ORDER BY location_type, location_code", ARRAY_A);
 
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename=shipping-rates-' . date('Y-m-d') . '.csv');
