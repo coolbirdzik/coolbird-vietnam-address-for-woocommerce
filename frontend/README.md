@@ -1,6 +1,6 @@
-# WooCommerce Vietnam Checkout - Frontend
+# Vietnam Address Woo - Frontend
 
-React + TypeScript frontend for the WooCommerce Vietnam Checkout plugin.
+React + TypeScript frontend for the Vietnam Address Woo plugin.
 
 ## Prerequisites
 

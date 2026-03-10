@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Flexible settings panel in WordPress admin
 - Multi-language support (Vietnamese, English)
 - Mobile responsive design
-- Compatible with WooCommerce 8.0+
+- Compatible with Woo 8.0+
 - Compatible with WordPress 5.0+
 - PHP 7.4+ support
 
@@ -79,7 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 1.0.0
 
-First version of the plugin. Install now to optimize checkout experience for your Vietnamese WooCommerce store!
+First version of the plugin. Install now to optimize checkout experience for your Vietnamese Woo store!
 
 ---
 
@@ -92,11 +92,11 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to this 
 If you encounter any issues or have questions:
 
 - Check the [FAQ section](README.md#-faq)
-- Search [existing issues](https://github.com/coolbirdzik/vietnam-address-woocommerce/issues)
-- Create a [new issue](https://github.com/coolbirdzik/vietnam-address-woocommerce/issues/new) if needed
+- Search [existing issues](https://github.com/coolbirdzik/vietnam-address-woo/issues)
+- Create a [new issue](https://github.com/coolbirdzik/vietnam-address-woo/issues/new) if needed
 
 ## Links
 
-- [GitHub Repository](https://github.com/coolbirdzik/vietnam-address-woocommerce)
+- [GitHub Repository](https://github.com/coolbirdzik/vietnam-address-woo)
 - [WordPress.org Plugin Page](https://wordpress.org/plugins/vietnam-checkout-for-woocommerce/)
 - [Documentation](README.md)

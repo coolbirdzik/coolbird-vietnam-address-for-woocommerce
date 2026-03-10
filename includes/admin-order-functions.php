@@ -2,7 +2,7 @@
 /**
  * Admin Order Functions - Order Filtering
  *
- * Adds order filtering by date range and province/city to WooCommerce Orders list.
+ * Adds order filtering by date range and province/city to Woo Orders list.
  * Supports both Classic Editor and HPOS (High-Performance Order Storage).
  */
 
@@ -23,7 +23,7 @@ if (!class_exists('CoolBirdZik_Order_Filter')) {
             }
 
             if (coolbirdzik_vietnam_shipping()->hpos_enabled()) {
-                // HPOS: Use WooCommerce 7.3+ filters
+                // HPOS: Use Woo 7.3+ filters
                 add_action('woocommerce_order_list_table_restrict_manage_orders', array($this, 'render_hpos_filters'), 10, 2);
                 add_filter('woocommerce_shop_order_list_table_prepare_items_query_args', array($this, 'filter_hpos_query'));
             } else {
@@ -103,7 +103,7 @@ if (!class_exists('CoolBirdZik_Order_Filter')) {
                 <input type="date"
                        name="coolbirdzik_date_from"
                        value="<?php echo esc_attr($from); ?>"
-                       placeholder="<?php esc_attr_e('From Date', 'vietnam-address-woocommerce'); ?>"
+                       placeholder="<?php esc_attr_e('From Date', 'vietnam-address-woo'); ?>"
                        class="date-picker"
                        style="width: 130px;">
             </div>
@@ -112,7 +112,7 @@ if (!class_exists('CoolBirdZik_Order_Filter')) {
                 <input type="date"
                        name="coolbirdzik_date_to"
                        value="<?php echo esc_attr($to); ?>"
-                       placeholder="<?php esc_attr_e('To Date', 'vietnam-address-woocommerce'); ?>"
+                       placeholder="<?php esc_attr_e('To Date', 'vietnam-address-woo'); ?>"
                        class="date-picker"
                        style="width: 130px;">
             </div>
@@ -124,7 +124,7 @@ if (!class_exists('CoolBirdZik_Order_Filter')) {
             ?>
             <div class="coolbirdzik-filter-row">
                 <select name="coolbirdzik_billing_state" id="coolbirdzik_billing_state" style="width: 160px;">
-                    <option value=""><?php esc_html_e('All Provinces', 'vietnam-address-woocommerce'); ?></option>
+                    <option value=""><?php esc_html_e('All Provinces', 'vietnam-address-woo'); ?></option>
                     <?php foreach ($vn_states as $code => $name) : ?>
                         <option value="<?php echo esc_attr($code); ?>" <?php selected($code, $billing_state); ?>><?php echo esc_html($name); ?></option>
                     <?php endforeach; ?>

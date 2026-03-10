@@ -1,4 +1,4 @@
-# Vietnam Address Woocommerce
+# Vietnam Address Woo
 
 <div align="right">
   <a href="README.vi.md">🇻🇳 Tiếng Việt</a>
@@ -9,7 +9,7 @@
 [![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-777BB4)](https://www.php.net)
 [![License](https://img.shields.io/badge/License-GPLv3-green.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-WooCommerce plugin optimized for the Vietnamese market with Province/City, District, and Ward/Commune selection system.
+Woo plugin optimized for the Vietnamese market with Province/City, District, and Ward/Commune selection system.
 
 <div align="center">
   <img src="screenshot1.png" alt="Checkout" width="600">
@@ -28,16 +28,16 @@ WooCommerce plugin optimized for the Vietnamese market with Province/City, Distr
 - ✅ Add recipient phone field
 - ✅ Convert ₫ → VND, PayPal support
 - ✅ Shipping rates by zone, weight, order total
-- ✅ WooCommerce Blocks Checkout & HPOS compatible
+- ✅ Woo Blocks Checkout & HPOS compatible
 
 ---
 
 ## Installation
 
 1. WordPress Admin → Plugins → Add New
-2. Search "Vietnam Address Woocommerce"
+2. Search "Vietnam Address Woo"
 3. Install → Activate
-4. Go to **WooCommerce → Settings → Vietnam Address** to configure
+4. Go to **Woo → Settings → Vietnam Address** to configure
 
 ---
 

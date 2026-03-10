@@ -1,12 +1,12 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the Vietnam Address Woocommerce package.
+# This file is distributed under the same license as the Vietnam Address Woo package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Vietnam Address Woocommerce\n"
+"Project-Id-Version: Vietnam Address Woo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-03-02 11:13+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -22,9 +22,9 @@ msgstr ""
 msgid "A region with that code already exists."
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1264 vietnam-address-woocommerce.php:1328
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1264
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1328
+#: vietnam-address-woo.php:1264 vietnam-address-woo.php:1328
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1264
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1328
 msgid "Address line 1"
 msgstr ""
 
@@ -50,9 +50,9 @@ msgstr ""
 msgid "Cho phép chuyển sang VNĐ"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1349 vietnam-address-woocommerce.php:1403
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1349
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1403
+#: vietnam-address-woo.php:1349 vietnam-address-woo.php:1403
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1349
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1403
 msgid "Choose an option"
 msgstr ""
 
@@ -67,18 +67,18 @@ msgstr ""
 msgid "Chuyển ₫ sang VNĐ"
 msgstr ""
 
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1254
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1325
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1254
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1325
 msgid "Chọn Phường/Xã&hellip;"
 msgstr ""
 
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1261
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1261
 msgid "Chọn xã/phường/thị trấn&hellip;"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1234 vietnam-address-woocommerce.php:1305
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1234
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1305
+#: vietnam-address-woo.php:1234 vietnam-address-woo.php:1305
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1234
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1305
 msgid "Company"
 msgstr ""
 
@@ -120,9 +120,9 @@ msgstr ""
 msgid "Convert ₫ to VNĐ"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1238 vietnam-address-woocommerce.php:1309
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1238
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1309
+#: vietnam-address-woo.php:1238 vietnam-address-woo.php:1309
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1238
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1309
 msgid "Country"
 msgstr ""
 
@@ -136,23 +136,23 @@ msgstr ""
 msgid "Default Shipping Rate"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:999
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:999
+#: vietnam-address-woo.php:999
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:999
 msgid "Delete the selected boxes?"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:438 vietnam-address-woocommerce.php:515
-#: vietnam-address-woocommerce.php:1122 vietnam-address-woocommerce.php:1179
-#: vietnam-address-woocommerce.php:1250 vietnam-address-woocommerce.php:1321
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:438
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:515
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1122
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1179
+#: vietnam-address-woo.php:438 vietnam-address-woo.php:515
+#: vietnam-address-woo.php:1122 vietnam-address-woo.php:1179
+#: vietnam-address-woo.php:1250 vietnam-address-woo.php:1321
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:438
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:515
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1122
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1179
 msgid "District"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1268
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1268
+#: vietnam-address-woo.php:1268
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1268
 msgid "Email address"
 msgstr ""
 
@@ -182,9 +182,9 @@ msgstr ""
 msgid "Enable/Disable"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:448 vietnam-address-woocommerce.php:525
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:448
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:525
+#: vietnam-address-woo.php:448 vietnam-address-woo.php:525
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:448
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:525
 msgctxt "placeholder"
 msgid "Ex: No. 20, 90 Alley"
 msgstr ""
@@ -218,9 +218,9 @@ msgid ""
 "checkout helpers behave in your store."
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1226 vietnam-address-woocommerce.php:1297
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1226
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1297
+#: vietnam-address-woo.php:1226 vietnam-address-woo.php:1297
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1226
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1297
 msgid "First name"
 msgstr ""
 
@@ -228,9 +228,9 @@ msgstr ""
 msgid "From Date"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:412 vietnam-address-woocommerce.php:1168
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:412
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1168
+#: vietnam-address-woo.php:412 vietnam-address-woo.php:1168
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:412
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1168
 msgid "Full name"
 msgstr ""
 
@@ -283,14 +283,14 @@ msgstr ""
 msgid "Kích hoạt chuyển đổi VNĐ sang USD để có thể sử dụng paypal"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1230 vietnam-address-woocommerce.php:1301
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1230
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1301
+#: vietnam-address-woo.php:1230 vietnam-address-woo.php:1301
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1230
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1301
 msgid "Last name"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:639
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:639
+#: vietnam-address-woo.php:639
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:639
 msgid "Loading..."
 msgstr ""
 
@@ -316,12 +316,12 @@ msgstr ""
 msgid "New format: Province/City → Ward/Commune (District hidden)"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:637 vietnam-address-woocommerce.php:979
-#: vietnam-address-woocommerce.php:991 vietnam-address-woocommerce.php:1006
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:637
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:979
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:991
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1006
+#: vietnam-address-woo.php:637 vietnam-address-woo.php:979
+#: vietnam-address-woo.php:991 vietnam-address-woo.php:1006
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:637
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:979
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:991
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1006
 msgid "No value"
 msgstr ""
 
@@ -334,28 +334,28 @@ msgstr ""
 msgid "Order management"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1271
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1271
+#: vietnam-address-woo.php:1271
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1271
 msgid "Phone"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:640
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:640
+#: vietnam-address-woo.php:640
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:640
 msgid "Phone number does not exist"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:638
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:638
+#: vietnam-address-woo.php:638
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:638
 msgid "Phone number is incorrect"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:923
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:923
+#: vietnam-address-woo.php:923
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:923
 msgid "Phone number of the recipient"
 msgstr ""
 
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1250
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1321
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1250
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1321
 msgid "Phường/Xã"
 msgstr ""
 
@@ -369,33 +369,33 @@ msgstr ""
 msgid "Predefined regions cannot be modified."
 msgstr ""
 
-#: vietnam-address-woocommerce.php:429 vietnam-address-woocommerce.php:506
-#: vietnam-address-woocommerce.php:1116 vietnam-address-woocommerce.php:1245
-#: vietnam-address-woocommerce.php:1316
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:429
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:506
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1116
+#: vietnam-address-woo.php:429 vietnam-address-woo.php:506
+#: vietnam-address-woo.php:1116 vietnam-address-woo.php:1245
+#: vietnam-address-woo.php:1316
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:429
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:506
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1116
 msgid "Province/City"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:486
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:486
+#: vietnam-address-woo.php:486
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:486
 msgid "Recipient full name"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:487
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:487
+#: vietnam-address-woo.php:487
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:487
 msgctxt "placeholder"
 msgid "Recipient full name"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:495
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:495
+#: vietnam-address-woo.php:495
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:495
 msgid "Recipient phone"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:496
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:496
+#: vietnam-address-woo.php:496
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:496
 msgctxt "placeholder"
 msgid "Recipient phone"
 msgstr ""
@@ -422,58 +422,58 @@ msgstr ""
 msgid "Required for Alepay payment."
 msgstr ""
 
-#: vietnam-address-woocommerce.php:442 vietnam-address-woocommerce.php:519
-#: vietnam-address-woocommerce.php:1184
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:442
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:519
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1184
+#: vietnam-address-woo.php:442 vietnam-address-woo.php:519
+#: vietnam-address-woo.php:1184
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:442
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:519
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1184
 msgctxt "placeholder"
 msgid "Select District"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1254 vietnam-address-woocommerce.php:1325
+#: vietnam-address-woo.php:1254 vietnam-address-woo.php:1325
 msgid "Select District&hellip;"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:434 vietnam-address-woocommerce.php:511
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:434
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:511
+#: vietnam-address-woo.php:434 vietnam-address-woo.php:511
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:434
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:511
 msgid "Select Province/City"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:433 vietnam-address-woocommerce.php:510
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:433
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:510
+#: vietnam-address-woo.php:433 vietnam-address-woo.php:510
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:433
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:510
 msgctxt "placeholder"
 msgid "Select Province/City"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:474 vietnam-address-woocommerce.php:543
-#: vietnam-address-woocommerce.php:1197
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:474
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:543
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1197
+#: vietnam-address-woo.php:474 vietnam-address-woo.php:543
+#: vietnam-address-woo.php:1197
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:474
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:543
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1197
 msgctxt "placeholder"
 msgid "Select Ward/Commune"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1261
+#: vietnam-address-woo.php:1261
 msgid "Select Ward/Commune&hellip;"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1242 vietnam-address-woocommerce.php:1313
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1242
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1313
+#: vietnam-address-woo.php:1242 vietnam-address-woo.php:1313
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1242
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1313
 msgid "Select a country&hellip;"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1093
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1093
+#: vietnam-address-woo.php:1093
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1093
 msgid "Settings"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:933
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:933
+#: vietnam-address-woo.php:933
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:933
 msgid "Shipping Phone:"
 msgstr ""
 
@@ -529,25 +529,25 @@ msgstr ""
 msgid "To Date"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:413 vietnam-address-woocommerce.php:1169
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:413
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1169
+#: vietnam-address-woo.php:413 vietnam-address-woo.php:1169
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:413
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1169
 msgctxt "placeholder"
 msgid "Type Full name"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:426
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:426
+#: vietnam-address-woo.php:426
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:426
 msgid "Type your email"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:422
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:422
+#: vietnam-address-woo.php:422
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:422
 msgid "Type your phone"
 msgstr ""
 
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1245
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1316
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1245
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1316
 msgid "Tỉnh/thành phố"
 msgstr ""
 
@@ -567,10 +567,10 @@ msgstr ""
 msgid "Vietnam Address Format"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:367 vietnam-address-woocommerce.php:368
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:367
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:368
-msgid "Vietnam Address Woocommerce"
+#: vietnam-address-woo.php:367 vietnam-address-woo.php:368
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:367
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:368
+msgid "Vietnam Address Woo"
 msgstr ""
 
 #: dist/woo-vietnam-checkout/includes/class-vncheckout-shipping-method.php:70
@@ -602,13 +602,13 @@ msgstr ""
 msgid "Vietnam address layout"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:470 vietnam-address-woocommerce.php:539
-#: vietnam-address-woocommerce.php:1136 vietnam-address-woocommerce.php:1192
-#: vietnam-address-woocommerce.php:1257
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:470
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:539
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1136
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1192
+#: vietnam-address-woo.php:470 vietnam-address-woo.php:539
+#: vietnam-address-woo.php:1136 vietnam-address-woo.php:1192
+#: vietnam-address-woo.php:1257
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:470
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:539
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1136
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1192
 msgid "Ward/Commune"
 msgstr ""
 
@@ -620,12 +620,12 @@ msgstr ""
 msgid "When Ward/Commune field is shown, it is optional."
 msgstr ""
 
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1257
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1257
 msgid "Xã/phường/thị trấn"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1355
-#: dist/woo-vietnam-checkout/vietnam-address-woocommerce.php:1355
+#: vietnam-address-woo.php:1355
+#: dist/woo-vietnam-checkout/vietnam-address-woo.php:1355
 msgid "required"
 msgstr ""
 

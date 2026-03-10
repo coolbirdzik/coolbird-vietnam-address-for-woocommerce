@@ -36,8 +36,8 @@ class VNCheckout_Shipping_Admin
     {
         add_submenu_page(
             'woocommerce',
-            __('Vietnam Shipping Rates', 'vietnam-address-woocommerce'),
-            __('Shipping Rates', 'vietnam-address-woocommerce'),
+            __('Vietnam Shipping Rates', 'vietnam-address-woo'),
+            __('Shipping Rates', 'vietnam-address-woo'),
             'manage_woocommerce',
             'vncheckout-shipping-rates',
             array($this, 'render_admin_page')

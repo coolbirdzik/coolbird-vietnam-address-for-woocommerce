@@ -1,18 +1,18 @@
 <?php
 /*
- * Plugin Name: Vietnam Address Woocommerce
- * Plugin URI: https://github.com/coolbirdzik/vietnam-address-woocommerce
+ * Plugin Name: Vietnam Address Woo
+ * Plugin URI: https://github.com/coolbirdzik/vietnam-address-woo
  * Version: 1.0.0
  * Description: Add province/city, district, commune/ward/town to checkout form and simplify checkout form
  * Author: CoolBirdZik
  * Author URI: https://github.com/coolbirdzik
- * Text Domain: vietnam-address-woocommerce
+ * Text Domain: vietnam-address-woo
  * Domain Path: /languages
  * WC requires at least: 8.0.0
  * WC tested up to: 10.1.2
  * License: GPLv3
  * License URI: http://www.gnu.org/licenses/gpl-3.0
-Vietnam Address Woocommerce
+Vietnam Address Woo
 
 Copyright (C) 2026 Nguyen Tan Hung - https://github.com/coolbirdzik
 
@@ -178,7 +178,7 @@ if (
                     }
                 });
 
-                // WooCommerce Blocks (block-based checkout) integration
+                // Woo Blocks (block-based checkout) integration
                 add_action('woocommerce_blocks_loaded', array($this, 'coolbirdzik_register_store_api_extension'));
                 add_action('woocommerce_store_api_checkout_update_order_from_request', array($this, 'coolbirdzik_save_ward_from_blocks'), 10, 2);
 
@@ -213,11 +213,11 @@ if (
                         $locale = $pll_locale;
                     }
                 }
-                $locale = apply_filters('plugin_locale', $locale, 'vietnam-address-woocommerce');
+                $locale = apply_filters('plugin_locale', $locale, 'vietnam-address-woo');
 
-                unload_textdomain('vietnam-address-woocommerce');
-                load_textdomain('vietnam-address-woocommerce', WP_LANG_DIR . '/plugins/vietnam-address-woocommerce-' . $locale . '.mo');
-                load_plugin_textdomain('vietnam-address-woocommerce', false, dirname(plugin_basename(__FILE__)) . '/languages/');
+                unload_textdomain('vietnam-address-woo');
+                load_textdomain('vietnam-address-woo', WP_LANG_DIR . '/plugins/vietnam-address-woo-' . $locale . '.mo');
+                load_plugin_textdomain('vietnam-address-woo', false, dirname(plugin_basename(__FILE__)) . '/languages/');
             }
 
             public static function on_activation()
@@ -385,8 +385,8 @@ if (
             {
                 add_submenu_page(
                     'woocommerce',
-                    __('Vietnam Address Woocommerce', 'vietnam-address-woocommerce'),
-                    __('Vietnam Address Woocommerce', 'vietnam-address-woocommerce'),
+                    __('Vietnam Address Woo', 'vietnam-address-woo'),
+                    __('Vietnam Address Woo', 'vietnam-address-woo'),
                     'manage_woocommerce',
                     'coolbirdzik-district-address',
                     array(
@@ -446,8 +446,8 @@ if (
                 if (!$this->get_options('enable_firstname')) {
                     //Billing
                     $fields['billing']['billing_last_name'] = array(
-                        'label' => __('Full name', 'vietnam-address-woocommerce'),
-                        'placeholder' => _x('Type Full name', 'placeholder', 'vietnam-address-woocommerce'),
+                        'label' => __('Full name', 'vietnam-address-woo'),
+                        'placeholder' => _x('Type Full name', 'placeholder', 'vietnam-address-woo'),
                         'required' => true,
                         'class' => array('form-row-wide'),
                         'clear' => true,
@@ -456,34 +456,34 @@ if (
                 }
                 if (isset($fields['billing']['billing_phone'])) {
                     $fields['billing']['billing_phone']['class'] = array('form-row-first');
-                    $fields['billing']['billing_phone']['placeholder'] = __('Type your phone', 'vietnam-address-woocommerce');
+                    $fields['billing']['billing_phone']['placeholder'] = __('Type your phone', 'vietnam-address-woo');
                 }
                 if (isset($fields['billing']['billing_email'])) {
                     $fields['billing']['billing_email']['class'] = array('form-row-last');
-                    $fields['billing']['billing_email']['placeholder'] = __('Type your email', 'vietnam-address-woocommerce');
+                    $fields['billing']['billing_email']['placeholder'] = __('Type your email', 'vietnam-address-woo');
                 }
                 if ($billing_is_vn) {
                     $fields['billing']['billing_state'] = array(
-                        'label' => __('Province/City', 'vietnam-address-woocommerce'),
+                        'label' => __('Province/City', 'vietnam-address-woo'),
                         'required' => true,
                         'type' => 'select',
                         'class' => array('form-row-first', 'address-field', 'update_totals_on_change'),
-                        'placeholder' => _x('Select Province/City', 'placeholder', 'vietnam-address-woocommerce'),
-                        'options' => array('' => __('Select Province/City', 'vietnam-address-woocommerce')) + apply_filters('coolbirdzik_states_vn', $tinh_thanhpho),
+                        'placeholder' => _x('Select Province/City', 'placeholder', 'vietnam-address-woo'),
+                        'options' => array('' => __('Select Province/City', 'vietnam-address-woo')) + apply_filters('coolbirdzik_states_vn', $tinh_thanhpho),
                         'priority' => 30
                     );
                     $fields['billing']['billing_city'] = array(
-                        'label' => __('District', 'vietnam-address-woocommerce'),
+                        'label' => __('District', 'vietnam-address-woo'),
                         'required' => true,
                         'type' => 'select',
                         'class' => array('form-row-last'),
-                        'placeholder' => _x('Select District', 'placeholder', 'vietnam-address-woocommerce'),
+                        'placeholder' => _x('Select District', 'placeholder', 'vietnam-address-woo'),
                         'options' => array(
                             '' => ''
                         ),
                         'priority' => 40
                     );
-                    $fields['billing']['billing_address_1']['placeholder'] = _x('Ex: No. 20, 90 Alley', 'placeholder', 'vietnam-address-woocommerce');
+                    $fields['billing']['billing_address_1']['placeholder'] = _x('Ex: No. 20, 90 Alley', 'placeholder', 'vietnam-address-woo');
                     $fields['billing']['billing_address_1']['class'] = array('form-row-wide');
                 }
 
@@ -506,11 +506,11 @@ if (
                     if (!$this->get_options('active_village')) {
                         $ward_required = !$this->get_options('required_village');
                         $fields['billing']['billing_address_2'] = array(
-                            'label' => __('Ward/Commune', 'vietnam-address-woocommerce'),
+                            'label' => __('Ward/Commune', 'vietnam-address-woo'),
                             'required' => $ward_required,
                             'type' => 'select',
                             'class' => array('form-row-wide'),
-                            'placeholder' => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woocommerce'),
+                            'placeholder' => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woo'),
                             'options' => array('' => ''),
                             'priority' => 50
                         );
@@ -523,8 +523,8 @@ if (
                 //Shipping
                 if (!$this->get_options('enable_firstname')) {
                     $fields['shipping']['shipping_last_name'] = array(
-                        'label' => __('Recipient full name', 'vietnam-address-woocommerce'),
-                        'placeholder' => _x('Recipient full name', 'placeholder', 'vietnam-address-woocommerce'),
+                        'label' => __('Recipient full name', 'vietnam-address-woo'),
+                        'placeholder' => _x('Recipient full name', 'placeholder', 'vietnam-address-woo'),
                         'required' => true,
                         'class' => array('form-row-first'),
                         'clear' => true,
@@ -532,8 +532,8 @@ if (
                     );
                 }
                 $fields['shipping']['shipping_phone'] = array(
-                    'label' => __('Recipient phone', 'vietnam-address-woocommerce'),
-                    'placeholder' => _x('Recipient phone', 'placeholder', 'vietnam-address-woocommerce'),
+                    'label' => __('Recipient phone', 'vietnam-address-woo'),
+                    'placeholder' => _x('Recipient phone', 'placeholder', 'vietnam-address-woo'),
                     'required' => false,
                     'class' => array('form-row-last'),
                     'clear' => true,
@@ -544,26 +544,26 @@ if (
                 }
                 if ($shipping_is_vn) {
                     $fields['shipping']['shipping_state'] = array(
-                        'label' => __('Province/City', 'vietnam-address-woocommerce'),
+                        'label' => __('Province/City', 'vietnam-address-woo'),
                         'required' => true,
                         'type' => 'select',
                         'class' => array('form-row-first', 'address-field', 'update_totals_on_change'),
-                        'placeholder' => _x('Select Province/City', 'placeholder', 'vietnam-address-woocommerce'),
-                        'options' => array('' => __('Select Province/City', 'vietnam-address-woocommerce')) + apply_filters('coolbirdzik_states_vn', $tinh_thanhpho),
+                        'placeholder' => _x('Select Province/City', 'placeholder', 'vietnam-address-woo'),
+                        'options' => array('' => __('Select Province/City', 'vietnam-address-woo')) + apply_filters('coolbirdzik_states_vn', $tinh_thanhpho),
                         'priority' => 30
                     );
                     $fields['shipping']['shipping_city'] = array(
-                        'label' => __('District', 'vietnam-address-woocommerce'),
+                        'label' => __('District', 'vietnam-address-woo'),
                         'required' => true,
                         'type' => 'select',
                         'class' => array('form-row-last'),
-                        'placeholder' => _x('Select District', 'placeholder', 'vietnam-address-woocommerce'),
+                        'placeholder' => _x('Select District', 'placeholder', 'vietnam-address-woo'),
                         'options' => array(
                             '' => '',
                         ),
                         'priority' => 40
                     );
-                    $fields['shipping']['shipping_address_1']['placeholder'] = _x('Ex: No. 20, 90 Alley', 'placeholder', 'vietnam-address-woocommerce');
+                    $fields['shipping']['shipping_address_1']['placeholder'] = _x('Ex: No. 20, 90 Alley', 'placeholder', 'vietnam-address-woo');
                     $fields['shipping']['shipping_address_1']['class'] = array('form-row-wide');
                 }
                 $fields['shipping']['shipping_address_1']['priority'] = 60;
@@ -579,11 +579,11 @@ if (
                     if (!$this->get_options('active_village')) {
                         $ward_required = !$this->get_options('required_village');
                         $fields['shipping']['shipping_address_2'] = array(
-                            'label' => __('Ward/Commune', 'vietnam-address-woocommerce'),
+                            'label' => __('Ward/Commune', 'vietnam-address-woo'),
                             'required' => $ward_required,
                             'type' => 'select',
                             'class' => array('form-row-wide'),
-                            'placeholder' => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woocommerce'),
+                            'placeholder' => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woo'),
                             'options' => array('' => ''),
                             'priority' => 50
                         );
@@ -664,10 +664,9 @@ if (
             {
                 // Support both classic and block-based checkout pages (including translated checkouts)
                 if (is_checkout() || is_cart() || is_account_page() || apply_filters('vn_checkout_allow_script_all_page', false)) {
-                    wp_enqueue_style('dwas_styles', plugins_url('/assets/css/coolbirdzik_dwas_style.css', __FILE__), array(), $this->_version, 'all');
-
-                    // Always load the jQuery-based address cascade (province → district → ward)
-                    wp_enqueue_script('coolbirdzik_tinhthanhpho', plugins_url('assets/js/coolbirdzik_tinhthanh.js', __FILE__), array('jquery', 'select2'), $this->_version, true);
+                    // Load React and ReactDOM for checkout page components
+                    wp_enqueue_script('react', 'https://unpkg.com/react@18/umd/react.production.min.js', array(), '18', true);
+                    wp_enqueue_script('react-dom', 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js', array('react'), '18', true);
 
                     $get_address = COOLBIRDZIK_DWAS_URL . 'get-address.php';
                     if ($this->check_file_open_status($get_address) != 200) {
@@ -708,22 +707,23 @@ if (
                     $saved['shipping']['city']  = $get_value('shipping_city', 'shipping_city');
                     $saved['shipping']['ward']  = $get_value('shipping_address_2', 'shipping_address_2');
 
-                    wp_localize_script('coolbirdzik_tinhthanhpho', 'vncheckout_array', array(
+                    // Localize config for both jQuery and React scripts
+                    $localize_data = array(
                         'admin_ajax'        => admin_url('admin-ajax.php'),
                         'get_address'       => $get_address,
                         'home_url'          => home_url(),
-                        'formatNoMatches'   => __('No value', 'vietnam-address-woocommerce'),
-                        'phone_error'       => __('Phone number is incorrect', 'vietnam-address-woocommerce'),
-                        'loading_text'      => __('Loading...', 'vietnam-address-woocommerce'),
-                        'loadaddress_error' => __('Phone number does not exist', 'vietnam-address-woocommerce'),
-                        'select_district'   => _x('Select District', 'placeholder', 'vietnam-address-woocommerce'),
-                        'select_ward'       => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woocommerce'),
-                        'recaptcha_required' => __('Please complete verification.', 'vietnam-address-woocommerce'),
+                        'formatNoMatches'   => __('No value', 'vietnam-address-woo'),
+                        'phone_error'       => __('Phone number is incorrect', 'vietnam-address-woo'),
+                        'loading_text'      => __('Loading...', 'vietnam-address-woo'),
+                        'loadaddress_error' => __('Phone number does not exist', 'vietnam-address-woo'),
+                        'select_district'   => _x('Select District', 'placeholder', 'vietnam-address-woo'),
+                        'select_ward'       => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woo'),
+                        'recaptcha_required' => __('Please complete verification.', 'vietnam-address-woo'),
                         // Address schema + fallback label when a ward does not exist (new schema)
                         'address_schema'    => $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new',
-                        'no_ward_label'     => __('No ward / N/A', 'vietnam-address-woocommerce'),
+                        'no_ward_label'     => __('No ward / N/A', 'vietnam-address-woo'),
                         'saved'             => $saved,
-                    ));
+                    );
 
                     // Pre-resolve names for saved addresses to display in address card
                     $preloaded_names = array();
@@ -745,25 +745,42 @@ if (
                         }
                     }
 
-                    // WooCommerce Blocks checkout — inject district/ward dropdowns
+                    // Add ajax_url to localize data for React AddressSelector
+                    $localize_data['ajax_url'] = admin_url('admin-ajax.php');
+
+                    // Woo Blocks checkout — inject district/ward dropdowns
+                    // Must depend on react and react-dom for React components to work
                     wp_enqueue_script(
                         'coolbirdzik_blocks_checkout',
-                        plugins_url('assets/js/coolbirdzik-blocks-checkout.js', __FILE__),
-                        array('jquery'),
+                        plugins_url('assets/dist/checkout.js', __FILE__),
+                        array('react', 'react-dom'),
                         $this->_version,
                         true
                     );
+
+                    // Add type="module" for ES module support
+                    add_filter('script_loader_tag', function($tag, $handle) {
+                        if ($handle === 'coolbirdzik_blocks_checkout') {
+                            $tag = str_replace(' src=', ' type="module" src=', $tag);
+                        }
+                        return $tag;
+                    }, 10, 2);
+
+                    // Localize config for React AddressSelector
+                    wp_localize_script('coolbirdzik_blocks_checkout', 'vncheckout_array', $localize_data);
+
+                    // Also localize for jQuery legacy code (if any)
                     wp_localize_script('coolbirdzik_blocks_checkout', 'coolbirdzik_vn', array(
                         'ajax_url'        => admin_url('admin-ajax.php'),
                         'address_schema'  => $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new',
                         'preloaded_names' => $preloaded_names,
                         'i18n' => array(
-                            'district_label'   => __('District', 'vietnam-address-woocommerce'),
-                            'ward_label'       => __('Ward/Commune', 'vietnam-address-woocommerce'),
-                            'select_district'  => _x('Select District', 'placeholder', 'vietnam-address-woocommerce'),
-                            'select_ward'      => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woocommerce'),
-                            'loading'          => __('Loading...', 'vietnam-address-woocommerce'),
-                            'load_error'       => __('Failed to load data', 'vietnam-address-woocommerce'),
+                            'district_label'   => __('District', 'vietnam-address-woo'),
+                            'ward_label'       => __('Ward/Commune', 'vietnam-address-woo'),
+                            'select_district'  => _x('Select District', 'placeholder', 'vietnam-address-woo'),
+                            'select_ward'      => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woo'),
+                            'loading'          => __('Loading...', 'vietnam-address-woo'),
+                            'load_error'       => __('Failed to load data', 'vietnam-address-woo'),
                         ),
                     ));
                 }
@@ -1179,7 +1196,7 @@ if (
 
             function coolbirdzik_after_shipping_address($order)
             {
-                echo '<p><label for="_shipping_phone">' . __('Phone number of the recipient', 'vietnam-address-woocommerce') . ':</label> <br>
+                echo '<p><label for="_shipping_phone">' . __('Phone number of the recipient', 'vietnam-address-woo') . ':</label> <br>
                 <input type="text" class="short" style="" name="_shipping_phone" id="_shipping_phone" value="' . esc_attr($order->get_shipping_phone()) . '" placeholder=""></p>';
             }
 
@@ -1189,7 +1206,7 @@ if (
                 $sdtnguoinhan = $order->get_shipping_phone();
                 if ($sdtnguoinhan) : ?>
 <tr>
-    <th><?php _e('Shipping Phone:', 'vietnam-address-woocommerce'); ?></th>
+    <th><?php _e('Shipping Phone:', 'vietnam-address-woo'); ?></th>
     <td><?php echo esc_html($sdtnguoinhan); ?></td>
 </tr>
 <?php endif;
@@ -1223,7 +1240,7 @@ if (
                     $is_order_edit_page = true;
                     $order_id = $post->ID;
                 }
-                // HPOS: WooCommerce Orders page (admin.php?page=wc-orders&action=edit&order_id=xxx)
+                // HPOS: Woo Orders page (admin.php?page=wc-orders&action=edit&order_id=xxx)
                 elseif ($current_screen && $current_screen->id === 'woocommerce_page_wc-orders') {
                     $order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
                     if ($order_id > 0) {
@@ -1269,16 +1286,16 @@ if (
 
                         wp_localize_script('coolbirdzik_admin_order_react', 'woocommerce_district_admin', array(
                             'ajaxurl' => admin_url('admin-ajax.php'),
-                            'formatNoMatches' => __('No value', 'vietnam-address-woocommerce'),
+                            'formatNoMatches' => __('No value', 'vietnam-address-woo'),
                             'provinces' => $provinces,
                             'billing_state' => $billing_state,
                             'billing_city' => $billing_city,
                             'shipping_state' => $shipping_state,
                             'shipping_city' => $shipping_city,
                             'i18n' => array(
-                                'loading' => __('Loading...', 'vietnam-address-woocommerce'),
-                                'select_district' => _x('Select District', 'placeholder', 'vietnam-address-woocommerce'),
-                                'select_ward' => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woocommerce'),
+                                'loading' => __('Loading...', 'vietnam-address-woo'),
+                                'select_district' => _x('Select District', 'placeholder', 'vietnam-address-woo'),
+                                'select_ward' => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woo'),
                             ),
                         ));
                     }
@@ -1367,7 +1384,7 @@ if (
             public static function plugin_action_links($links)
             {
                 $action_links = array(
-                    'settings' => '<a href="' . admin_url('admin.php?page=coolbirdzik-district-address') . '" title="' . esc_attr(__('Settings', 'vietnam-address-woocommerce')) . '">' . __('Settings', 'vietnam-address-woocommerce') . '</a>',
+                    'settings' => '<a href="' . admin_url('admin.php?page=coolbirdzik-district-address') . '" title="' . esc_attr(__('Settings', 'vietnam-address-woo')) . '">' . __('Settings', 'vietnam-address-woo') . '</a>',
                 );
 
                 return array_merge($action_links, $links);
@@ -1419,7 +1436,7 @@ if (
                 $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
                 $field_s = array(
                     'state' => array(
-                        'label' => __('Province/City', 'vietnam-address-woocommerce'),
+                        'label' => __('Province/City', 'vietnam-address-woo'),
                         'priority' => 41,
                         'required' => true,
                         'hidden' => false,
@@ -1427,13 +1444,9 @@ if (
                     'city' => array(
                         // In "old" schema: this is District (Quận/Huyện)
                         // In "new" schema: this contains Ward/Commune (Phường/Xã)
-                        'label' => ($schema === 'new') ? __('Ward/Commune', 'vietnam-address-woocommerce') : __('District', 'vietnam-address-woocommerce'),
+                        'label' => ($schema === 'new') ? __('Ward/Commune', 'vietnam-address-woo') : __('District', 'vietnam-address-woo'),
                         'priority' => 42,
                         'required' => true,
-                        'hidden' => false,
-                    ),
-                    'address_1' => array(
-                        'priority' => 44,
                         'hidden' => false,
                     ),
                 );
@@ -1441,12 +1454,16 @@ if (
                 $hide_ward = (bool) $this->get_options('active_village');
                 $ward_required = !$this->get_options('required_village');
                 $field_s['address_2'] = array(
-                    'label' => __('Ward/Commune', 'vietnam-address-woocommerce'),
+                    'label' => __('Ward/Commune', 'vietnam-address-woo'),
                     'priority' => 43,
                     // In the new schema, we don't expose a separate ward field at all.
                     // Keep it for legacy data but hide it on the frontend.
                     'required' => ($schema === 'new') ? false : (!$hide_ward && $ward_required),
                     'hidden'   => ($schema === 'new') ? true : $hide_ward,
+                );
+                $field_s['address_1'] = array(
+                    'priority' => 44,
+                    'hidden' => false,
                 );
                 $args['VN'] = $field_s;
                 return $args;
@@ -1482,8 +1499,8 @@ if (
                 if (!$this->get_options('enable_firstname')) {
                     unset($address_fields['first_name']);
                     $address_fields['last_name'] = array(
-                        'label' => __('Full name', 'vietnam-address-woocommerce'),
-                        'placeholder' => _x('Type Full name', 'placeholder', 'vietnam-address-woocommerce'),
+                        'label' => __('Full name', 'vietnam-address-woo'),
+                        'placeholder' => _x('Type Full name', 'placeholder', 'vietnam-address-woo'),
                         'required' => true,
                         'class' => array('form-row-wide'),
                         'clear' => true
@@ -1496,13 +1513,14 @@ if (
                     return $address_fields;
                 }
                 $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
+                $address_1_field = isset($address_fields['address_1']) ? $address_fields['address_1'] : array();
                 $address_fields['city'] = array(
-                    'label' => ($schema === 'new') ? __('Ward/Commune', 'vietnam-address-woocommerce') : __('District', 'vietnam-address-woocommerce'),
+                    'label' => ($schema === 'new') ? __('Ward/Commune', 'vietnam-address-woo') : __('District', 'vietnam-address-woo'),
                     'type' => 'select',
                     'required' => true,
                     'class' => array('form-row-wide'),
                     'priority' => 20,
-                    'placeholder' => ($schema === 'new') ? _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woocommerce') : _x('Select District', 'placeholder', 'vietnam-address-woocommerce'),
+                    'placeholder' => ($schema === 'new') ? _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woo') : _x('Select District', 'placeholder', 'vietnam-address-woo'),
                     'options' => array(
                         '' => ''
                     ),
@@ -1510,19 +1528,39 @@ if (
                 if (!$this->get_options('active_village')) {
                     $ward_required = !$this->get_options('required_village');
                     $address_fields['address_2'] = array(
-                        'label' => __('Ward/Commune', 'vietnam-address-woocommerce'),
+                        'label' => __('Ward/Commune', 'vietnam-address-woo'),
                         'type' => 'select',
                         'required' => $ward_required,
                         'class' => array('form-row-wide'),
                         'priority' => 25,
-                        'placeholder' => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woocommerce'),
+                        'placeholder' => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woo'),
                         'options' => array('' => ''),
                     );
-                } else {
-                    unset($address_fields['address_2']);
-                }
+                    } else {
+                        unset($address_fields['address_2']);
+                    }
                 $address_fields['address_1']['class'] = array('form-row-wide');
-                return $address_fields;
+                if (!empty($address_1_field)) {
+                    $address_fields['address_1'] = array_merge($address_1_field, $address_fields['address_1']);
+                    $address_fields['address_1']['class'] = array('form-row-wide');
+                }
+
+                // Reinsert address_1 after address_2 so consumers that preserve array order
+                // render Province/City -> District -> Ward/Commune -> Address.
+                $reordered_fields = array();
+                foreach ($address_fields as $key => $field) {
+                    if ('address_1' === $key) {
+                        continue;
+                    }
+                    $reordered_fields[$key] = $field;
+                    if ('address_2' === $key && isset($address_fields['address_1'])) {
+                        $reordered_fields['address_1'] = $address_fields['address_1'];
+                    }
+                }
+                if (!isset($reordered_fields['address_1']) && isset($address_fields['address_1'])) {
+                    $reordered_fields['address_1'] = $address_fields['address_1'];
+                }
+                return $reordered_fields;
             }
 
             function coolbirdzik_woocommerce_admin_billing_fields($billing_fields)
@@ -1563,23 +1601,23 @@ if (
                         'options' => array('' => __('Select a country&hellip;', 'woocommerce')) + WC()->countries->get_allowed_countries(),
                     ),
                     'state' => array(
-                        'label' => __('Province/City', 'vietnam-address-woocommerce'),
+                        'label' => __('Province/City', 'vietnam-address-woo'),
                         'class' => 'js_field-state select short',
                         'show' => false,
                     ),
                     'city' => array(
-                        'label' => __('District', 'vietnam-address-woocommerce'),
+                        'label' => __('District', 'vietnam-address-woo'),
                         'class' => 'js_field-city select short',
                         'type' => 'select',
                         'show' => false,
-                        'options' => array('' => __('Select District&hellip;', 'vietnam-address-woocommerce')) + $this->get_list_district_select($city),
+                        'options' => array('' => __('Select District&hellip;', 'vietnam-address-woo')) + $this->get_list_district_select($city),
                     ),
                     'address_2' => array(
-                        'label' => __('Ward/Commune', 'vietnam-address-woocommerce'),
+                        'label' => __('Ward/Commune', 'vietnam-address-woo'),
                         'show' => false,
                         'class' => 'js_field-address_2 select short',
                         'type' => 'select',
-                        'options' => array('' => __('Select Ward/Commune&hellip;', 'vietnam-address-woocommerce')) + $this->get_list_village_select($district),
+                        'options' => array('' => __('Select Ward/Commune&hellip;', 'vietnam-address-woo')) + $this->get_list_village_select($district),
                     ),
                     'address_1' => array(
                         'label' => __('Address line 1', 'woocommerce'),
@@ -1634,16 +1672,16 @@ if (
                         'options' => array('' => __('Select a country&hellip;', 'woocommerce')) + WC()->countries->get_shipping_countries(),
                     ),
                     'state' => array(
-                        'label' => __('Province/City', 'vietnam-address-woocommerce'),
+                        'label' => __('Province/City', 'vietnam-address-woo'),
                         'class' => 'js_field-state select short',
                         'show' => false,
                     ),
                     'city' => array(
-                        'label' => __('District', 'vietnam-address-woocommerce'),
+                        'label' => __('District', 'vietnam-address-woo'),
                         'class' => 'js_field-city select short',
                         'type' => 'select',
                         'show' => false,
-                        'options' => array('' => __('Select District&hellip;', 'vietnam-address-woocommerce')) + $this->get_list_district_select($city),
+                        'options' => array('' => __('Select District&hellip;', 'vietnam-address-woo')) + $this->get_list_district_select($city),
                     ),
                     'address_1' => array(
                         'label' => __('Address line 1', 'woocommerce'),
@@ -1656,7 +1694,7 @@ if (
 
             function coolbirdzik_woocommerce_form_field_select($field, $key, $args, $value)
             {
-                // For non-checkout forms (e.g. My Account → Edit Address), let WooCommerce
+                // For non-checkout forms (e.g. My Account → Edit Address), let Woo
                 // render the <select> normally so that saved values are restored correctly.
                 // Our custom renderer is only needed on the checkout page for dynamic loading.
                 if (!is_checkout()) {
@@ -1670,7 +1708,7 @@ if (
                         $args['options'] = $city;
                     }
 
-                    // On checkout, we can rely on $value passed in from WooCommerce.
+                    // On checkout, we can rely on $value passed in from Woo.
                     $selected_value = $value;
 
                     if ($args['required']) {
@@ -1940,7 +1978,7 @@ if (
             }
 
             /**
-             * Add VNCheckout shipping method to WooCommerce
+             * Add VNCheckout shipping method to Woo
              *
              * @param array $methods Existing shipping methods
              * @return array Modified shipping methods

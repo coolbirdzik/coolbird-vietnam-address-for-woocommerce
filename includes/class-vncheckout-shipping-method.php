@@ -28,10 +28,10 @@ function vncheckout_shipping_method_init()
         {
             $this->id                 = 'vncheckout_shipping';
             $this->instance_id        = absint($instance_id);
-            $this->method_title       = __('Vietnam Shipping Calculator', 'vietnam-address-woocommerce');
+            $this->method_title       = __('Vietnam Shipping Calculator', 'vietnam-address-woo');
             $this->method_description = __(
                 'Shipping fees based on Vietnam province/district/ward, order total, and weight.',
-                'vietnam-address-woocommerce'
+                'vietnam-address-woo'
             );
             $this->supports = array('shipping-zones', 'instance-settings');
 
@@ -58,31 +58,31 @@ function vncheckout_shipping_method_init()
 
             $this->instance_form_fields = array(
                 'enabled' => array(
-                    'title'   => __('Enable/Disable', 'vietnam-address-woocommerce'),
+                    'title'   => __('Enable/Disable', 'vietnam-address-woo'),
                     'type'    => 'checkbox',
-                    'label'   => __('Enable this shipping method', 'vietnam-address-woocommerce'),
+                    'label'   => __('Enable this shipping method', 'vietnam-address-woo'),
                     'default' => 'yes',
                 ),
                 'title' => array(
-                    'title'       => __('Method Title', 'vietnam-address-woocommerce'),
+                    'title'       => __('Method Title', 'vietnam-address-woo'),
                     'type'        => 'text',
-                    'description' => __('Title displayed during checkout.', 'vietnam-address-woocommerce'),
-                    'default'     => __('Vietnam Shipping', 'vietnam-address-woocommerce'),
+                    'description' => __('Title displayed during checkout.', 'vietnam-address-woo'),
+                    'default'     => __('Vietnam Shipping', 'vietnam-address-woo'),
                     'desc_tip'    => true,
                 ),
                 'default_rate' => array(
-                    'title'       => __('Default Shipping Rate', 'vietnam-address-woocommerce'),
+                    'title'       => __('Default Shipping Rate', 'vietnam-address-woo'),
                     'type'        => 'text',
-                    'description' => __('Fallback rate (VND) when no location rule matches.', 'vietnam-address-woocommerce'),
+                    'description' => __('Fallback rate (VND) when no location rule matches.', 'vietnam-address-woo'),
                     'default'     => '30000',
                     'desc_tip'    => true,
                 ),
                 'manage_rates_link' => array(
-                    'title'       => __('Manage Rates', 'vietnam-address-woocommerce'),
+                    'title'       => __('Manage Rates', 'vietnam-address-woo'),
                     'type'        => 'title',
                     'description' => sprintf(
                         /* translators: %s: URL to the rate manager page */
-                        __('Configure shipping rates by region, province, district, and ward on the <a href="%s" style="font-weight:600">Shipping Rates</a> page (WooCommerce → Shipping Rates).', 'vietnam-address-woocommerce'),
+                        __('Configure shipping rates by region, province, district, and ward on the <a href="%s" style="font-weight:600">Shipping Rates</a> page (Woo → Shipping Rates).', 'vietnam-address-woo'),
                         esc_url($rates_url)
                     ),
                 ),

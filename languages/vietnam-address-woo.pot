@@ -17,167 +17,167 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: vietnam-address-woocommerce.php:367 vietnam-address-woocommerce.php:368
-msgid "Vietnam Address Woocommerce"
+#: vietnam-address-woo.php:367 vietnam-address-woo.php:368
+msgid "Vietnam Address Woo"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:412 vietnam-address-woocommerce.php:1168
+#: vietnam-address-woo.php:412 vietnam-address-woo.php:1168
 msgid "Full name"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:413 vietnam-address-woocommerce.php:1169
+#: vietnam-address-woo.php:413 vietnam-address-woo.php:1169
 msgctxt "placeholder"
 msgid "Type Full name"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:422
+#: vietnam-address-woo.php:422
 msgid "Type your phone"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:426
+#: vietnam-address-woo.php:426
 msgid "Type your email"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:429 vietnam-address-woocommerce.php:506
-#: vietnam-address-woocommerce.php:1116 vietnam-address-woocommerce.php:1245
-#: vietnam-address-woocommerce.php:1316
+#: vietnam-address-woo.php:429 vietnam-address-woo.php:506
+#: vietnam-address-woo.php:1116 vietnam-address-woo.php:1245
+#: vietnam-address-woo.php:1316
 msgid "Province/City"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:433 vietnam-address-woocommerce.php:510
+#: vietnam-address-woo.php:433 vietnam-address-woo.php:510
 msgctxt "placeholder"
 msgid "Select Province/City"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:434 vietnam-address-woocommerce.php:511
+#: vietnam-address-woo.php:434 vietnam-address-woo.php:511
 msgid "Select Province/City"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:438 vietnam-address-woocommerce.php:515
-#: vietnam-address-woocommerce.php:1122 vietnam-address-woocommerce.php:1179
-#: vietnam-address-woocommerce.php:1250 vietnam-address-woocommerce.php:1321
+#: vietnam-address-woo.php:438 vietnam-address-woo.php:515
+#: vietnam-address-woo.php:1122 vietnam-address-woo.php:1179
+#: vietnam-address-woo.php:1250 vietnam-address-woo.php:1321
 msgid "District"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:442 vietnam-address-woocommerce.php:519
-#: vietnam-address-woocommerce.php:1184
+#: vietnam-address-woo.php:442 vietnam-address-woo.php:519
+#: vietnam-address-woo.php:1184
 msgctxt "placeholder"
 msgid "Select District"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:448 vietnam-address-woocommerce.php:525
+#: vietnam-address-woo.php:448 vietnam-address-woo.php:525
 msgctxt "placeholder"
 msgid "Ex: No. 20, 90 Alley"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:470 vietnam-address-woocommerce.php:539
-#: vietnam-address-woocommerce.php:1136 vietnam-address-woocommerce.php:1192
-#: vietnam-address-woocommerce.php:1257
+#: vietnam-address-woo.php:470 vietnam-address-woo.php:539
+#: vietnam-address-woo.php:1136 vietnam-address-woo.php:1192
+#: vietnam-address-woo.php:1257
 msgid "Ward/Commune"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:474 vietnam-address-woocommerce.php:543
-#: vietnam-address-woocommerce.php:1197
+#: vietnam-address-woo.php:474 vietnam-address-woo.php:543
+#: vietnam-address-woo.php:1197
 msgctxt "placeholder"
 msgid "Select Ward/Commune"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:486
+#: vietnam-address-woo.php:486
 msgid "Recipient full name"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:487
+#: vietnam-address-woo.php:487
 msgctxt "placeholder"
 msgid "Recipient full name"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:495
+#: vietnam-address-woo.php:495
 msgid "Recipient phone"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:496
+#: vietnam-address-woo.php:496
 msgctxt "placeholder"
 msgid "Recipient phone"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:637 vietnam-address-woocommerce.php:979
-#: vietnam-address-woocommerce.php:991 vietnam-address-woocommerce.php:1006
+#: vietnam-address-woo.php:637 vietnam-address-woo.php:979
+#: vietnam-address-woo.php:991 vietnam-address-woo.php:1006
 msgid "No value"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:638
+#: vietnam-address-woo.php:638
 msgid "Phone number is incorrect"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:639
+#: vietnam-address-woo.php:639
 msgid "Loading..."
 msgstr ""
 
-#: vietnam-address-woocommerce.php:640
+#: vietnam-address-woo.php:640
 msgid "Phone number does not exist"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:923
+#: vietnam-address-woo.php:923
 msgid "Phone number of the recipient"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:933
+#: vietnam-address-woo.php:933
 msgid "Shipping Phone:"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:999
+#: vietnam-address-woo.php:999
 msgid "Delete the selected boxes?"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1093
+#: vietnam-address-woo.php:1093
 msgid "Settings"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1226 vietnam-address-woocommerce.php:1297
+#: vietnam-address-woo.php:1226 vietnam-address-woo.php:1297
 msgid "First name"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1230 vietnam-address-woocommerce.php:1301
+#: vietnam-address-woo.php:1230 vietnam-address-woo.php:1301
 msgid "Last name"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1234 vietnam-address-woocommerce.php:1305
+#: vietnam-address-woo.php:1234 vietnam-address-woo.php:1305
 msgid "Company"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1238 vietnam-address-woocommerce.php:1309
+#: vietnam-address-woo.php:1238 vietnam-address-woo.php:1309
 msgid "Country"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1242 vietnam-address-woocommerce.php:1313
+#: vietnam-address-woo.php:1242 vietnam-address-woo.php:1313
 msgid "Select a country&hellip;"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1254 vietnam-address-woocommerce.php:1325
+#: vietnam-address-woo.php:1254 vietnam-address-woo.php:1325
 msgid "Select District&hellip;"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1261
+#: vietnam-address-woo.php:1261
 msgid "Select Ward/Commune&hellip;"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1264 vietnam-address-woocommerce.php:1328
+#: vietnam-address-woo.php:1264 vietnam-address-woo.php:1328
 msgid "Address line 1"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1268
+#: vietnam-address-woo.php:1268
 msgid "Email address"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1271
+#: vietnam-address-woo.php:1271
 msgid "Phone"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1349 vietnam-address-woocommerce.php:1403
+#: vietnam-address-woo.php:1349 vietnam-address-woo.php:1403
 msgid "Choose an option"
 msgstr ""
 
-#: vietnam-address-woocommerce.php:1355
+#: vietnam-address-woo.php:1355
 msgid "required"
 msgstr ""
 

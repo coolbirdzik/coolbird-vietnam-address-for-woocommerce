@@ -24,7 +24,7 @@ export const GetAddressByPhoneModal: React.FC<GetAddressByPhoneModalProps> = ({
 
     // Validate phone number
     if (!phone || !/^0+(\d{9,10})$/.test(phone)) {
-      setErrorMessage(window.vncheckout_array?.phone_error || 'Invalid phone number');
+      setErrorMessage((window.vncheckout_array?.phone_error as string) || 'Invalid phone number');
       return;
     }
 
@@ -125,7 +125,7 @@ export const GetAddressByPhoneModal: React.FC<GetAddressByPhoneModalProps> = ({
 
               {isPending && (
                 <div className="get_address_content_mess">
-                  {window.vncheckout_array?.loading_text || 'Loading...'}
+                  {(window.vncheckout_array?.loading_text as string) || 'Loading...'}
                 </div>
               )}
 

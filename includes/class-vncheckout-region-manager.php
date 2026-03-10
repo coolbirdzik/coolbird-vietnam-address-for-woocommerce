@@ -122,7 +122,7 @@ class VNCheckout_Region_Manager
         $province_codes = is_array($data['province_codes']) ? $data['province_codes'] : array();
 
         if (!$region_name || !$region_code) {
-            return new WP_Error('missing_fields', __('Region name and code are required.', 'vietnam-address-woocommerce'));
+            return new WP_Error('missing_fields', __('Region name and code are required.', 'vietnam-address-woo'));
         }
 
         $row = array(
@@ -142,7 +142,7 @@ class VNCheckout_Region_Manager
                 ARRAY_A
             );
             if ($existing && $existing['is_predefined']) {
-                return new WP_Error('readonly', __('Predefined regions cannot be modified.', 'vietnam-address-woocommerce'));
+                return new WP_Error('readonly', __('Predefined regions cannot be modified.', 'vietnam-address-woo'));
             }
             $wpdb->update(self::table(), $row, array('id' => $id));
         } else {
@@ -151,7 +151,7 @@ class VNCheckout_Region_Manager
                 $wpdb->prepare('SELECT id FROM ' . self::table() . ' WHERE region_code = %s', $region_code)
             );
             if ($dup) {
-                return new WP_Error('duplicate', __('A region with that code already exists.', 'vietnam-address-woocommerce'));
+                return new WP_Error('duplicate', __('A region with that code already exists.', 'vietnam-address-woo'));
             }
             $wpdb->insert(self::table(), $row);
             $id = $wpdb->insert_id;
@@ -176,11 +176,11 @@ class VNCheckout_Region_Manager
         );
 
         if (!$existing) {
-            return new WP_Error('not_found', __('Region not found.', 'vietnam-address-woocommerce'));
+            return new WP_Error('not_found', __('Region not found.', 'vietnam-address-woo'));
         }
 
         if ($existing['is_predefined']) {
-            return new WP_Error('readonly', __('Predefined regions cannot be deleted.', 'vietnam-address-woocommerce'));
+            return new WP_Error('readonly', __('Predefined regions cannot be deleted.', 'vietnam-address-woo'));
         }
 
         $wpdb->delete(self::table(), array('id' => $id));

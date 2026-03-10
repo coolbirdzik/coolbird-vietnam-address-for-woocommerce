@@ -85,7 +85,7 @@ class CoolBirdZik_vncheckout_VND_PayPal_Standard
             $value['description'] .= '<br />';
             $value['description'] .=
                 sprintf(
-                    __('The prices will be converted to %1$s in the PayPal pages with the exchange rate %2$s.', 'vietnam-address-woocommerce'),
+                    __('The prices will be converted to %1$s in the PayPal pages with the exchange rate %2$s.', 'vietnam-address-woo'),
                     "<span style='color:red'> $this->paypal_currency</span>",
                     "<span style='color:red'> $this->paypal_currency / VND = $this->exchange_rate_to_vnd</span>"
                 );

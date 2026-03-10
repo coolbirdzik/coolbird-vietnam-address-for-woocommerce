@@ -47,8 +47,8 @@ class CoolBirdZik_Shipping_Admin
     {
         add_submenu_page(
             'woocommerce',
-            __('Vietnam Shipping Rates', 'vietnam-address-woocommerce'),
-            __('Shipping Rates', 'vietnam-address-woocommerce'),
+            __('Vietnam Shipping Rates', 'vietnam-address-woo'),
+            __('Shipping Rates', 'vietnam-address-woo'),
             'manage_woocommerce',
             'coolbirdzik-shipping-rates',
             array($this, 'render_admin_page')
@@ -67,7 +67,7 @@ class CoolBirdZik_Shipping_Admin
             // Show a friendly message instead of a blank page
             add_action('admin_notices', function () {
                 echo '<div class="notice notice-error"><p>'
-                    . esc_html__('Vietnam Shipping Rates: frontend assets not found. Run `npm run build` inside the frontend/ directory.', 'vietnam-address-woocommerce')
+                    . esc_html__('Vietnam Shipping Rates: frontend assets not found. Run `npm run build` inside the frontend/ directory.', 'vietnam-address-woo')
                     . '</p></div>';
             });
             return;

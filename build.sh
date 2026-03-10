@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Build Script - WooCommerce Vietnam Checkout
+# Build Script - Vietnam Address Woo
 # Builds frontend and creates distributable ZIP file
 #
 
@@ -14,13 +14,13 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 printf "${GREEN}========================================${NC}\n"
-printf "${GREEN}WooCommerce Vietnam Checkout${NC}\n"
+printf "${GREEN}Vietnam Address Woo${NC}\n"
 printf "${GREEN}Build & Package${NC}\n"
 printf "${GREEN}========================================${NC}\n"
 printf "\n"
 
 # Get plugin version from main file and strip whitespace
-VERSION=$(grep -m 1 "Version:" vietnam-address-woocommerce.php | awk '{print $3}' | tr -d '\r\n')
+VERSION=$(grep -m 1 "Version:" vietnam-address-woo.php | awk '{print $3}' | tr -d '\r\n')
 printf "${BLUE}Plugin version: ${VERSION}${NC}\n"
 printf "\n"
 
@@ -49,8 +49,8 @@ fi
 # Step 2: Clean up previous builds
 printf "${YELLOW}[2/4] Cleaning up...${NC}\n"
 rm -rf dist build-temp
-rm -f vietnam-address-woocommerce.zip vietnam-address-woocommerce-*.zip
-mkdir -p dist/vietnam-address-woocommerce
+rm -f vietnam-address-woo.zip vietnam-address-woo-*.zip
+mkdir -p dist/vietnam-address-woo
 printf "${GREEN}✓ Cleaned${NC}\n"
 printf "\n"
 
@@ -58,21 +58,21 @@ printf "\n"
 printf "${YELLOW}[3/4] Copying plugin files...${NC}\n"
 
 # Main files
-cp vietnam-address-woocommerce.php dist/vietnam-address-woocommerce/
-cp get-address.php dist/vietnam-address-woocommerce/
-cp readme.txt dist/vietnam-address-woocommerce/
-cp license.txt dist/vietnam-address-woocommerce/
+cp vietnam-address-woo.php dist/vietnam-address-woo/
+cp get-address.php dist/vietnam-address-woo/
+cp readme.txt dist/vietnam-address-woo/
+cp license.txt dist/vietnam-address-woo/
 
 # Directories
-cp -r includes dist/vietnam-address-woocommerce/
-cp -r cities dist/vietnam-address-woocommerce/
-cp -r i18n dist/vietnam-address-woocommerce/
-cp -r languages dist/vietnam-address-woocommerce/
+cp -r includes dist/vietnam-address-woo/
+cp -r cities dist/vietnam-address-woo/
+cp -r i18n dist/vietnam-address-woo/
+cp -r languages dist/vietnam-address-woo/
 
 # Copy built frontend (assets/dist folder)
-mkdir -p dist/vietnam-address-woocommerce/assets
+mkdir -p dist/vietnam-address-woo/assets
 if [ -d "assets/dist" ]; then
-    cp -r assets/dist dist/vietnam-address-woocommerce/assets/
+    cp -r assets/dist dist/vietnam-address-woo/assets/
     printf "${GREEN}✓ React bundles included${NC}\n"
 else
     printf "${RED}✗ Error: Frontend build not found${NC}\n"
@@ -81,10 +81,10 @@ else
 fi
 
 # Clean up unnecessary files
-find dist/vietnam-address-woocommerce -name ".DS_Store" -delete
-find dist/vietnam-address-woocommerce -name "*.log" -delete
-find dist/vietnam-address-woocommerce -name ".git*" -delete
-find dist/vietnam-address-woocommerce -name "node_modules" -type d -exec rm -rf {} + 2>/dev/null || true
+find dist/vietnam-address-woo -name ".DS_Store" -delete
+find dist/vietnam-address-woo -name "*.log" -delete
+find dist/vietnam-address-woo -name ".git*" -delete
+find dist/vietnam-address-woo -name "node_modules" -type d -exec rm -rf {} + 2>/dev/null || true
 
 printf "${GREEN}✓ Files copied${NC}\n"
 printf "\n"
@@ -92,18 +92,18 @@ printf "\n"
 # Step 4: Create ZIP file
 printf "${YELLOW}[4/4] Creating ZIP archive...${NC}\n"
 cd dist
-zip -r "vietnam-address-woocommerce-${VERSION}.zip" vietnam-address-woocommerce -q
+zip -r "vietnam-address-woo-${VERSION}.zip" vietnam-address-woo -q
 cd ..
 
 # Display result
-if [ -f "dist/vietnam-address-woocommerce-${VERSION}.zip" ]; then
-    FILE_SIZE=$(du -h "dist/vietnam-address-woocommerce-${VERSION}.zip" | cut -f1)
+if [ -f "dist/vietnam-address-woo-${VERSION}.zip" ]; then
+    FILE_SIZE=$(du -h "dist/vietnam-address-woo-${VERSION}.zip" | cut -f1)
     printf "\n"
     printf "${GREEN}========================================${NC}\n"
     printf "${GREEN}✓ BUILD SUCCESS!${NC}\n"
     printf "${GREEN}========================================${NC}\n"
     printf "\n"
-    printf "File: ${GREEN}dist/vietnam-address-woocommerce-${VERSION}.zip${NC}\n"
+    printf "File: ${GREEN}dist/vietnam-address-woo-${VERSION}.zip${NC}\n"
     printf "Size: ${GREEN}${FILE_SIZE}${NC}\n"
     printf "Version: ${GREEN}${VERSION}${NC}\n"
     printf "\n"
