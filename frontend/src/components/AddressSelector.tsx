@@ -20,6 +20,7 @@ const BLOCKS_SELECT_CLASSES = {
 const CHECKOUT_LAYOUT_STYLE_ID = 'vncheckout-blocks-layout';
 const BLOCKS_PROXY_SELECT_SUFFIX = '__vncheckout_select';
 const BLOCKS_PROXY_SOURCE_ATTR = 'data-vncheckout-source-id';
+const BLOCKS_PROXY_SYNC_BOUND_ATTR = 'data-vncheckout-sync-bound';
 
 // Store found element IDs for Select2 jQuery selectors
 const foundIds: Record<string, string> = {};
@@ -163,6 +164,7 @@ const syncBlocksSourceInput = (
     return;
   }
 
+  const previousValue = source.value;
   const nativeSetter = Object.getOwnPropertyDescriptor(
     HTMLInputElement.prototype,
     'value'
@@ -174,12 +176,55 @@ const syncBlocksSourceInput = (
     source.value = value;
   }
 
+  // Keep the DOM attribute in sync too so follow-up renders and validators
+  // don't read a stale empty value from the original Blocks input.
+  source.setAttribute('value', value);
+
+  // Woo Blocks is React-driven. Reset the React value tracker so the
+  // synthetic input/change events below are treated as real updates.
+  const tracker = (
+    source as HTMLInputElement & {
+      _valueTracker?: { setValue: (nextValue: string) => void };
+    }
+  )._valueTracker;
+
+  if (tracker) {
+    tracker.setValue(previousValue);
+  }
+
   if (!dispatchEvents) {
     return;
   }
 
-  source.dispatchEvent(new Event('input', { bubbles: true }));
+  try {
+    source.dispatchEvent(new InputEvent('input', { bubbles: true, data: value }));
+  } catch {
+    source.dispatchEvent(new Event('input', { bubbles: true }));
+  }
   source.dispatchEvent(new Event('change', { bubbles: true }));
+};
+
+const bindProxySelectSync = (select: HTMLSelectElement) => {
+  if (select.dataset.vncheckoutSyncBound === 'yes') {
+    return;
+  }
+
+  select.dataset.vncheckoutSyncBound = 'yes';
+  select.setAttribute(BLOCKS_PROXY_SYNC_BOUND_ATTR, 'yes');
+
+  const syncFromSelect = () => {
+    syncBlocksSourceInput(select, select.value, true);
+  };
+
+  select.addEventListener('change', syncFromSelect);
+
+  if (typeof jQuery !== 'undefined') {
+    const $select = (jQuery as any)(select);
+    $select.on('select2:select.vncheckoutSync', syncFromSelect);
+    $select.on('select2:clear.vncheckoutSync', syncFromSelect);
+    $select.on('select2:unselect.vncheckoutSync', syncFromSelect);
+    $select.on('change.vncheckoutSync', syncFromSelect);
+  }
 };
 
 const createBlocksExpandIcon = () => {
@@ -275,6 +320,7 @@ const convertBlocksInputToSelect = (input: HTMLInputElement): HTMLSelectElement 
   const existingProxy = findBlocksProxySelect(input.id);
 
   if (existingProxy) {
+    bindProxySelectSync(existingProxy);
     if (initialValue && !existingProxy.value) {
       existingProxy.dataset.vncheckoutInitialValue = initialValue;
       syncBlocksSourceInput(existingProxy, initialValue);
@@ -327,9 +373,7 @@ const convertBlocksInputToSelect = (input: HTMLInputElement): HTMLSelectElement 
   selectWrapper.appendChild(selectContainer);
   wrapper.appendChild(selectWrapper);
 
-  select.addEventListener('change', () => {
-    syncBlocksSourceInput(select, select.value, true);
-  });
+  bindProxySelectSync(select);
 
   return select;
 };
@@ -358,10 +402,16 @@ const findEl = (prefix: string, field: AddressField): HTMLSelectElement | null =
           if (!useBlocksSelectMarkup) {
             convertedFromInput.add(id);
           }
+          if (useBlocksSelectMarkup) {
+            bindProxySelectSync(select);
+          }
           foundIds[getFieldKey(prefix, field)] = select.id;
           console.log(`[AddressSelector] Converted ${id} from INPUT to SELECT`);
           return select;
         }
+      }
+      if (el instanceof HTMLSelectElement && el.hasAttribute(BLOCKS_PROXY_SOURCE_ATTR)) {
+        bindProxySelectSync(el);
       }
       foundIds[getFieldKey(prefix, field)] = el.id;
       // Already a SELECT - don't add Select2, let WooCommerce handle it
@@ -469,11 +519,13 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
   const prefix = type === 'calc_shipping' ? 'calc_shipping' : type;
   const [province, setProvince] = useState('');
   const [district, setDistrict] = useState('');
+  const [ward, setWard] = useState('');
 
-  console.log(`[AddressSelector ${prefix}] Rendering, province:`, province, 'district:', district);
+  console.log(`[AddressSelector ${prefix}] Rendering, province:`, province, 'district:', district, 'ward:', ward);
 
   const provinceRef = useRef('');
   const districtRef = useRef('');
+  const wardRef = useRef('');
 
   // Determine which schema we're using
   const schema = getAddressSchema();
@@ -493,6 +545,7 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
   // Keep refs in sync so event handlers always have fresh values
   useEffect(() => { provinceRef.current = province; }, [province]);
   useEffect(() => { districtRef.current = district; }, [district]);
+  useEffect(() => { wardRef.current = ward; }, [ward]);
 
   // Refs to latest data — needed inside event handlers that don't re-run on render
   const districtsOrWardsRef = useRef<(District | Ward)[]>([]);
@@ -506,16 +559,24 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
 
     const stateEl = findEl(prefix, 'state');
     const cityEl = findEl(prefix, 'city');
+    const wardEl = showWard ? findEl(prefix, 'address_2') : null;
     const initialProvince = stateEl?.value || '';
     const initialDistrict = cityEl?.value || cityEl?.dataset.vncheckoutInitialValue || '';
+    const initialWard = wardEl?.value || wardEl?.dataset.vncheckoutInitialValue || '';
 
     if (initialProvince) {
+      provinceRef.current = initialProvince;
       setProvince(initialProvince);
     }
     if (initialDistrict) {
+      districtRef.current = initialDistrict;
       setDistrict(initialDistrict);
     }
-  }, [prefix, isNewSchema]);
+    if (initialWard) {
+      wardRef.current = initialWard;
+      setWard(initialWard);
+    }
+  }, [prefix, isNewSchema, showWard]);
 
   // ─── Ward field visibility ────────────────────────────────────────────────
   useEffect(() => {
@@ -561,8 +622,12 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
     const onChange = () => {
       const val = stateEl.value;
       console.log(`[AddressSelector ${prefix}] Province changed to:`, val);
+      provinceRef.current = val;
+      districtRef.current = '';
+      wardRef.current = '';
       setProvince(val);
       setDistrict('');
+      setWard('');
       // Immediately clear district / ward selects
       const cityEl = findEl(prefix, 'city');
       const placeholder = isNewSchema ? 'Select ward/commune/town' : 'Select district';
@@ -609,7 +674,10 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
 
     const onChange = () => {
       const val = cityEl.value;
+      districtRef.current = val;
+      wardRef.current = '';
       setDistrict(val);
+      setWard('');
       // Immediately clear ward select
       if (showWard) {
         const wardEl = findEl(prefix, 'address_2');
@@ -648,6 +716,8 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
     arrangeVietnamAddressFields(prefix);
 
     const onChange = () => {
+      wardRef.current = wardEl.value;
+      setWard(wardEl.value);
       // Trigger shipping recalc when ward is chosen
       if (wardEl.value && typeof jQuery !== 'undefined') {
         (jQuery as any)('body').trigger('update_checkout');
@@ -679,6 +749,7 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
 
     const onChange = () => {
       const val = cityEl.value;
+      districtRef.current = val;
       setDistrict(val);
       console.log(`[AddressSelector ${prefix}] City/Ward changed to:`, val);
       // Trigger shipping recalc when ward is chosen
@@ -751,7 +822,8 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
     buildOptions(
       wardEl,
       wards.map((w: Ward) => ({ value: w.xaid, label: w.name })),
-      'Select ward/commune/town'
+      'Select ward/commune/town',
+      wardRef.current || undefined
     );
     if (select2WardSelector) trySelect2(select2WardSelector, 'refresh');
     arrangeVietnamAddressFields(prefix);
@@ -801,7 +873,8 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
           buildOptions(
             wardEl,
             wardsRef.current.map((w) => ({ value: w.xaid, label: w.name })),
-            'Select ward/commune/town'
+            'Select ward/commune/town',
+            wardRef.current || undefined
           );
           if (select2WardSelector) trySelect2(select2WardSelector, 'refresh');
         }
