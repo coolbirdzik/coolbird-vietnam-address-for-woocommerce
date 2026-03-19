@@ -20,6 +20,10 @@ declare global {
       required_village?: string;
       [key: string]: unknown;
     };
+    coolbirdzik_vn?: {
+      preloaded_names?: Record<string, string>;
+      [key: string]: unknown;
+    };
     woocommerce_district_admin?: {
       ajaxurl?: string;
       nonce?: string;

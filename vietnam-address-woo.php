@@ -181,6 +181,9 @@ if (
                 // Woo Blocks (block-based checkout) integration
                 add_action('woocommerce_blocks_loaded', array($this, 'coolbirdzik_register_store_api_extension'));
                 add_action('woocommerce_store_api_checkout_update_order_from_request', array($this, 'coolbirdzik_save_ward_from_blocks'), 10, 2);
+                
+                // Force Blocks to render SELECT fields instead of TEXT for districts/wards
+                add_filter('woocommerce_blocks_checkout_fields', array($this, 'coolbirdzik_modify_blocks_checkout_fields'), 10, 1);
 
                 // Filter Store API responses to resolve district/ward IDs to names for address card display
                 add_filter('woocommerce_store_api_cart_response', array($this, 'coolbirdzik_resolve_address_names_in_cart_response'), 10, 1);
@@ -189,6 +192,18 @@ if (
                 // Also filter the formatted address for emails and other displays
                 add_filter('woocommerce_order_get_formatted_billing_address', array($this, 'coolbirdzik_format_address_for_display'), 10, 2);
                 add_filter('woocommerce_order_get_formatted_shipping_address', array($this, 'coolbirdzik_format_address_for_display'), 10, 2);
+                
+                // Filter customer formatted address for address cards (WooCommerce Blocks)
+                add_filter('woocommerce_customer_formatted_address', array($this, 'coolbirdzik_format_customer_address_for_blocks'), 10, 3);
+                
+                // Additional hooks for Blocks address formatting
+                add_filter('woocommerce_customer_get_shipping_city', array($this, 'coolbirdzik_convert_city_id_to_name'), 10, 1);
+                add_filter('woocommerce_customer_get_billing_city', array($this, 'coolbirdzik_convert_city_id_to_name'), 10, 1);
+                add_filter('woocommerce_customer_get_shipping_address_2', array($this, 'coolbirdzik_convert_ward_id_to_name'), 10, 1);
+                add_filter('woocommerce_customer_get_billing_address_2', array($this, 'coolbirdzik_convert_ward_id_to_name'), 10, 1);
+                
+                // Hook into customer data retrieval for Blocks checkout
+                add_filter('woocommerce_checkout_get_value', array($this, 'coolbirdzik_convert_checkout_value'), 10, 2);
             }
 
             public function define_constants()
@@ -479,9 +494,13 @@ if (
                         'class' => array('form-row-last'),
                         'placeholder' => _x('Select District', 'placeholder', 'vietnam-address-woo'),
                         'options' => array(
-                            '' => ''
+                            '' => _x('Select District', 'placeholder', 'vietnam-address-woo')
                         ),
-                        'priority' => 40
+                        'priority' => 40,
+                        'input_class' => array('woocommerce-enhanced-select'),
+                        'custom_attributes' => array(
+                            'data-plugin' => 'vietnam-address-woo'
+                        )
                     );
                     $fields['billing']['billing_address_1']['placeholder'] = _x('Ex: No. 20, 90 Alley', 'placeholder', 'vietnam-address-woo');
                     $fields['billing']['billing_address_1']['class'] = array('form-row-wide');
@@ -511,8 +530,12 @@ if (
                             'type' => 'select',
                             'class' => array('form-row-wide'),
                             'placeholder' => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woo'),
-                            'options' => array('' => ''),
-                            'priority' => 50
+                            'options' => array('' => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woo')),
+                            'priority' => 50,
+                            'input_class' => array('woocommerce-enhanced-select'),
+                            'custom_attributes' => array(
+                                'data-plugin' => 'vietnam-address-woo'
+                            )
                         );
                     } else {
                         unset($fields['billing']['billing_address_2']);
@@ -559,9 +582,13 @@ if (
                         'class' => array('form-row-last'),
                         'placeholder' => _x('Select District', 'placeholder', 'vietnam-address-woo'),
                         'options' => array(
-                            '' => '',
+                            '' => _x('Select District', 'placeholder', 'vietnam-address-woo'),
                         ),
-                        'priority' => 40
+                        'priority' => 40,
+                        'input_class' => array('woocommerce-enhanced-select'),
+                        'custom_attributes' => array(
+                            'data-plugin' => 'vietnam-address-woo'
+                        )
                     );
                     $fields['shipping']['shipping_address_1']['placeholder'] = _x('Ex: No. 20, 90 Alley', 'placeholder', 'vietnam-address-woo');
                     $fields['shipping']['shipping_address_1']['class'] = array('form-row-wide');
@@ -584,8 +611,12 @@ if (
                             'type' => 'select',
                             'class' => array('form-row-wide'),
                             'placeholder' => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woo'),
-                            'options' => array('' => ''),
-                            'priority' => 50
+                            'options' => array('' => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woo')),
+                            'priority' => 50,
+                            'input_class' => array('woocommerce-enhanced-select'),
+                            'custom_attributes' => array(
+                                'data-plugin' => 'vietnam-address-woo'
+                            )
                         );
                     } else {
                         unset($fields['shipping']['shipping_address_2']);
@@ -846,6 +877,48 @@ if (
              * Register the custom extension data schema for the WC Store API (Blocks checkout).
              * This allows the JS to send ward codes alongside the checkout request.
              */
+            /**
+             * Modify WooCommerce Blocks checkout fields to render SELECT for districts/wards
+             */
+            function coolbirdzik_modify_blocks_checkout_fields($fields)
+            {
+                $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
+                $city_placeholder = ($schema === 'new')
+                    ? _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woo')
+                    : _x('Select District', 'placeholder', 'vietnam-address-woo');
+
+                // Force city and address_2 fields to be SELECT type in Blocks
+                if (isset($fields['billing_city'])) {
+                    $fields['billing_city']['type'] = 'select';
+                    $fields['billing_city']['options'] = array(
+                        '' => $city_placeholder
+                    );
+                }
+                
+                if (isset($fields['shipping_city'])) {
+                    $fields['shipping_city']['type'] = 'select'; 
+                    $fields['shipping_city']['options'] = array(
+                        '' => $city_placeholder
+                    );
+                }
+                
+                if (isset($fields['billing_address_2'])) {
+                    $fields['billing_address_2']['type'] = 'select';
+                    $fields['billing_address_2']['options'] = array(
+                        '' => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woo')
+                    );
+                }
+                
+                if (isset($fields['shipping_address_2'])) {
+                    $fields['shipping_address_2']['type'] = 'select';
+                    $fields['shipping_address_2']['options'] = array(
+                        '' => _x('Select Ward/Commune', 'placeholder', 'vietnam-address-woo')
+                    );
+                }
+                
+                return $fields;
+            }
+
             function coolbirdzik_register_store_api_extension()
             {
                 if (function_exists('woocommerce_store_api_register_endpoint_data')) {
@@ -898,47 +971,10 @@ if (
                     return $response;
                 }
 
-                // Handle both snake_case and camelCase keys
-                $address_mappings = array(
-                    'billing_address' => 'billingAddress',
-                    'shipping_address' => 'shippingAddress',
-                );
-
-                foreach ($address_mappings as $snake_key => $camel_key) {
-                    // Try snake_case first, then camelCase
-                    $address_type = null;
-                    if (isset($response[$snake_key]) && is_array($response[$snake_key])) {
-                        $address_type = &$response[$snake_key];
-                    } elseif (isset($response[$camel_key]) && is_array($response[$camel_key])) {
-                        $address_type = &$response[$camel_key];
-                    }
-
-                    if ($address_type === null) {
-                        continue;
-                    }
-
-                    // Resolve city (district) ID to name if it's numeric
-                    if (!empty($address_type['city']) && is_numeric($address_type['city'])) {
-                        $district_name = $this->get_name_district($address_type['city']);
-                        if ($district_name) {
-                            $address_type['city'] = $district_name;
-                        }
-                    }
-
-                    // Resolve address_2 (ward) ID to name if it's numeric (old schema)
-                    if (!empty($address_type['address_2']) && is_numeric($address_type['address_2'])) {
-                        $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
-                        if ($schema === 'old') {
-                            $ward_name = $this->get_name_village($address_type['address_2']);
-                            if ($ward_name) {
-                                $address_type['address_2'] = $ward_name;
-                            }
-                        } else {
-                            // In new schema, address_2 should be empty since we use city for ward
-                            $address_type['address_2'] = '';
-                        }
-                    }
-                }
+                // Do NOT convert IDs to names in Store API responses.
+                // Store API is used by WooCommerce Blocks checkout for edit forms,
+                // which need raw IDs to match against SELECT option values.
+                // Name conversion is handled separately for display purposes.
 
                 return $response;
             }
@@ -949,10 +985,19 @@ if (
             function coolbirdzik_format_address_for_display($address, $order)
             {
                 if (is_string($address)) {
+                    $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
                     // If it's already a formatted string, check for numeric IDs
                     if (preg_match('/\b\d{4,6}\b/', $address)) {
                         // Extract and replace IDs with names
                         $address = preg_replace_callback('/\b(\d{4,6})\b/', function ($matches) {
+                            $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
+                            if ($schema === 'new') {
+                                $name = $this->get_name_district($matches[1]);
+                                if ($name) return $name;
+                                $name = $this->get_name_village($matches[1]);
+                                if ($name) return $name;
+                                return $matches[1];
+                            }
                             $name = $this->get_name_district($matches[1]);
                             if ($name) return $name;
                             $name = $this->get_name_village($matches[1]);
@@ -960,8 +1005,98 @@ if (
                             return $matches[1];
                         }, $address);
                     }
+                    if ($schema === 'new') {
+                        $address = preg_replace('/,\s*,+/', ', ', $address);
+                    }
                 }
                 return $address;
+            }
+
+            /**
+             * Format customer address for WooCommerce Blocks address card - resolves IDs to names
+             */
+            function coolbirdzik_format_customer_address_for_blocks($formatted_address, $args, $customer)
+            {
+                if (empty($formatted_address) || !is_string($formatted_address)) {
+                    return $formatted_address;
+                }
+
+                $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
+
+                // Replace numeric IDs with names (4-6 digit numbers)
+                if (preg_match('/\b\d{4,6}\b/', $formatted_address)) {
+                    $formatted_address = preg_replace_callback('/\b(\d{4,6})\b/', function ($matches) {
+                        $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
+                        if ($schema === 'new') {
+                            $name = $this->get_name_district($matches[1]);
+                            if ($name) return $name;
+                            $name = $this->get_name_village($matches[1]);
+                            if ($name) return $name;
+                            return $matches[1];
+                        }
+                        $name = $this->get_name_village($matches[1]);
+                        if ($name) return $name;
+                        $name = $this->get_name_district($matches[1]);
+                        if ($name) return $name;
+                        return $matches[1];
+                    }, $formatted_address);
+                }
+
+                if ($schema === 'new') {
+                    $formatted_address = preg_replace('/,\s*,+/', ', ', $formatted_address);
+                }
+                return $formatted_address;
+            }
+
+            /**
+             * Convert city ID to name for customer address display
+             */
+            function coolbirdzik_convert_city_id_to_name($city)
+            {
+                if (is_checkout()) {
+                    return $city;
+                }
+                if (is_numeric($city)) {
+                    $name = $this->get_name_district($city);
+                    if ($name) return $name;
+                }
+                return $city;
+            }
+
+            /**
+             * Convert ward ID to name for customer address display
+             */
+            function coolbirdzik_convert_ward_id_to_name($ward)
+            {
+                $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
+                if ($schema === 'new') {
+                    return '';
+                }
+                if (is_numeric($ward)) {
+                    $name = $this->get_name_village($ward);
+                    if ($name) return $name;
+                }
+                return $ward;
+            }
+
+            /**
+             * Convert checkout value IDs to names for address display
+             */
+            function coolbirdzik_convert_checkout_value($value, $input)
+            {
+                $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
+
+                // Checkout and edit forms must keep raw IDs so the selected option
+                // matches the rendered <select> values. Only clear legacy address_2
+                // when the new schema is active.
+                if (
+                    $schema === 'new'
+                    && in_array($input, array('billing_address_2', 'shipping_address_2'), true)
+                ) {
+                    return '';
+                }
+
+                return $value;
             }
 
             function coolbirdzik_get_name_location($arg = array(), $id = '', $key = '')
@@ -1145,6 +1280,17 @@ if (
             function get_list_district($matp = '')
             {
                 if (!$matp) return false;
+                
+                $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
+                if ($schema === 'new' && !is_numeric($matp)) {
+                    include 'cities/districts.php';
+                    $matp = wc_clean(wp_unslash($matp));
+                    $result = $this->search_in_array($quan_huyen, 'matp', $matp);
+                    usort($result, array($this, 'natorder'));
+                    return $result;
+                }
+                
+                // Original logic for old schema or numeric codes
                 if (is_numeric($matp)) {
                     include 'cities/districts-legacy.php';
                     $matp = sprintf("%02d", intval($matp));
@@ -1697,22 +1843,66 @@ if (
 
             function coolbirdzik_woocommerce_form_field_select($field, $key, $args, $value)
             {
-                // For non-checkout forms (e.g. My Account → Edit Address), let Woo
-                // render the <select> normally so that saved values are restored correctly.
-                // Our custom renderer is only needed on the checkout page for dynamic loading.
-                if (!is_checkout()) {
-                    return $field;
-                }
+                // Handle billing_city and shipping_city fields (districts)
+                // AND billing_address_2 and shipping_address_2 fields (wards)
+                if (in_array($key, array('billing_city', 'shipping_city', 'billing_address_2', 'shipping_address_2'))) {
+                    // Determine if this is district or ward field
+                    $is_district = in_array($key, array('billing_city', 'shipping_city'));
+                    $is_ward = in_array($key, array('billing_address_2', 'shipping_address_2'));
+                    
+                    // On checkout page, render minimal select with placeholder for JavaScript to populate
+                    if (is_checkout()) {
+                        // Set minimal placeholder option - JavaScript will load districts/wards dynamically
+                        $args['options'] = array('' => ($args['placeholder']) ? $args['placeholder'] : __('Choose an option', 'woocommerce'));
+                        $selected_value = ''; // No pre-selection on checkout
+                    } else {
+                        // On My Account edit-address page, populate full options from saved parent field
+                        
+                        if ($is_district) {
+                            // For district field, get province to load districts
+                            $state_key = 'billing_city' === $key ? 'billing_state' : 'shipping_state';
+                            $state = '';
+                            
+                            // Get from posted data or user meta
+                            if (isset($_POST[$state_key])) {
+                                $state = sanitize_text_field($_POST[$state_key]);
+                            } elseif (is_user_logged_in()) {
+                                $user_id = get_current_user_id();
+                                $state = get_user_meta($user_id, $state_key, true);
+                            }
+                            
+                            // Populate district options based on selected province
+                            if ($state) {
+                                $city = array('' => ($args['placeholder']) ? $args['placeholder'] : __('Choose an option', 'woocommerce')) + $this->get_list_district_select($state);
+                                $args['options'] = $city;
+                            }
+                        } elseif ($is_ward) {
+                            // For ward field, get district to load wards
+                            $city_key = 'billing_address_2' === $key ? 'billing_city' : 'shipping_city';
+                            $district = '';
+                            
+                            // Get from posted data or user meta
+                            if (isset($_POST[$city_key])) {
+                                $district = sanitize_text_field($_POST[$city_key]);
+                            } elseif (is_user_logged_in()) {
+                                $user_id = get_current_user_id();
+                                $district = get_user_meta($user_id, $city_key, true);
+                            }
+                            
+                            // Populate ward options based on selected district
+                            if ($district) {
+                                $wards = array('' => ($args['placeholder']) ? $args['placeholder'] : __('Choose an option', 'woocommerce')) + $this->get_list_village_select($district);
+                                $args['options'] = $wards;
+                            }
+                        }
 
-                if (in_array($key, array('billing_city', 'shipping_city'))) {
-                    if (in_array($key, array('billing_city', 'shipping_city'))) {
-                        $state = WC()->checkout->get_value('billing_city' === $key ? 'billing_state' : 'shipping_state');
-                        $city = array('' => ($args['placeholder']) ? $args['placeholder'] : __('Choose an option', 'woocommerce')) + $this->get_list_district_select($state);
-                        $args['options'] = $city;
+                        // Set selected value - use passed $value parameter, or get from user meta as fallback
+                        $selected_value = $value;
+                        if (empty($selected_value) && is_user_logged_in()) {
+                            $user_id = get_current_user_id();
+                            $selected_value = get_user_meta($user_id, $key, true);
+                        }
                     }
-
-                    // On checkout, we can rely on $value passed in from Woo.
-                    $selected_value = $value;
 
                     if ($args['required']) {
                         $args['class'][] = 'validate-required';
@@ -1835,6 +2025,7 @@ if (
             function coolbirdzik_woocommerce_get_order_address($value, $type)
             {
                 if ($type == 'billing' || $type == 'shipping') {
+                    $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
                     if (isset($value['state']) && $value['state']) {
                         $state = $value['state'];
                         $value['state'] = $this->get_name_city($state);
@@ -1844,8 +2035,12 @@ if (
                         $value['city'] = $this->get_name_district($city);
                     }
                     if (isset($value['address_2']) && $value['address_2']) {
-                        $address_2 = $value['address_2'];
-                        $value['address_2'] = $this->get_name_village($address_2);
+                        if ($schema === 'new') {
+                            $value['address_2'] = '';
+                        } else {
+                            $address_2 = $value['address_2'];
+                            $value['address_2'] = $this->get_name_village($address_2);
+                        }
                     }
                 }
                 return $value;
@@ -1857,50 +2052,20 @@ if (
                     return $response;
                 }
 
-                $fields = array(
-                    'billing',
-                    'shipping'
-                );
-
-                foreach ($fields as $field) {
-                    if (isset($response->data[$field]['state']) && $response->data[$field]['state']) {
-                        $state = $response->data[$field]['state'];
-                        $response->data[$field]['state'] = $this->get_name_city($state);
-                    }
-
-                    if (isset($response->data[$field]['city']) && $response->data[$field]['city']) {
-                        $city = $response->data[$field]['city'];
-                        $response->data[$field]['city'] = $this->get_name_district($city);
-                    }
-
-                    if (isset($response->data[$field]['address_2']) && $response->data[$field]['address_2']) {
-                        $address_2 = $response->data[$field]['address_2'];
-                        $response->data[$field]['address_2'] = $this->get_name_village($address_2);
-                    }
-                }
+                // Do NOT convert IDs to names in REST response.
+                // REST API is used by WooCommerce Blocks checkout for edit forms,
+                // which need raw IDs to match against SELECT option values.
+                // Name conversion is handled separately for display purposes
+                // (via formatted_address and customer getters).
 
                 return $response;
             }
 
             function coolbirdzik_woocommerce_api_order_response($order_data, $order)
             {
-                if (isset($order_data['customer'])) {
-                    //billing
-                    if (isset($order_data['customer']['billing_address']['city']) && $order_data['customer']['billing_address']['city']) {
-                        $order_data['customer']['billing_address']['city'] = $this->get_name_district($order_data['customer']['billing_address']['city']);
-                    }
-                    if (isset($order_data['customer']['billing_address']['address_2']) && $order_data['customer']['billing_address']['address_2']) {
-                        $order_data['customer']['billing_address']['address_2'] = $this->get_name_village($order_data['customer']['billing_address']['address_2']);
-                    }
-
-                    //shipping
-                    if (isset($order_data['customer']['shipping_address']['city']) && $order_data['customer']['shipping_address']['city']) {
-                        $order_data['customer']['shipping_address']['city'] = $this->get_name_district($order_data['customer']['shipping_address']['city']);
-                    }
-                    if (isset($order_data['customer']['shipping_address']['address_2']) && $order_data['customer']['shipping_address']['address_2']) {
-                        $order_data['customer']['shipping_address']['address_2'] = $this->get_name_village($order_data['customer']['shipping_address']['address_2']);
-                    }
-                }
+                // Do NOT convert IDs to names in API response.
+                // API is used by checkout forms which need raw IDs to match against SELECT option values.
+                // Name conversion is handled separately for display purposes.
                 return $order_data;
             }
 
@@ -1911,23 +2076,28 @@ if (
 
             function coolbirdzik_woocommerce_formatted_address_replacements($replace)
             {
+                $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
+                
                 if (isset($replace['{city}']) && is_numeric($replace['{city}'])) {
-                    $oldCity = isset($replace['{city}']) ? $replace['{city}'] : '';
+                    $oldCity = $replace['{city}'];
                     $replace['{city}'] = $this->get_name_district($oldCity);
                 }
 
                 if (isset($replace['{city_upper}']) && is_numeric($replace['{city_upper}'])) {
-                    $oldCityUpper = isset($replace['{city_upper}']) ? $replace['{city_upper}'] : '';
+                    $oldCityUpper = $replace['{city_upper}'];
                     $replace['{city_upper}'] = strtoupper($this->get_name_district($oldCityUpper));
                 }
 
-                if (isset($replace['{address_2}']) && is_numeric($replace['{address_2}'])) {
-                    $oldCity = isset($replace['{address_2}']) ? $replace['{address_2}'] : '';
+                if ($schema === 'new') {
+                    $replace['{address_2}'] = '';
+                    $replace['{address_2_upper}'] = '';
+                } elseif (isset($replace['{address_2}']) && is_numeric($replace['{address_2}'])) {
+                    $oldCity = $replace['{address_2}'];
                     $replace['{address_2}'] = $this->get_name_village($oldCity);
                 }
 
-                if (isset($replace['{address_2_upper}']) && is_numeric($replace['{address_2_upper}'])) {
-                    $oldCityUpper = isset($replace['{address_2_upper}']) ? $replace['{address_2_upper}'] : '';
+                if ($schema !== 'new' && isset($replace['{address_2_upper}']) && is_numeric($replace['{address_2_upper}'])) {
+                    $oldCityUpper = $replace['{address_2_upper}'];
                     $replace['{address_2_upper}'] = strtoupper($this->get_name_village($oldCityUpper));
                 }
 

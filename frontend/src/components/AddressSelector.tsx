@@ -28,6 +28,67 @@ const foundIds: Record<string, string> = {};
 const convertedFromInput: Set<string> = new Set();
 
 const getFieldKey = (prefix: string, field: AddressField) => `${prefix}:${field}`;
+const isNumericCode = (value?: string | null) => !!value && /^\d+$/.test(value.trim());
+const normalizeOptionText = (value?: string | null) =>
+  (value || '')
+    .normalize('NFC')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+
+const pickInitialSelectValue = (
+  currentValue: string,
+  datasetValue: string,
+  savedValue: string
+) => {
+  if (isNumericCode(currentValue)) {
+    return currentValue;
+  }
+  if (isNumericCode(datasetValue)) {
+    return datasetValue;
+  }
+  if (isNumericCode(savedValue)) {
+    return savedValue;
+  }
+  return currentValue || datasetValue || savedValue || '';
+};
+
+const resolveSelectOptionValue = (
+  el: HTMLSelectElement,
+  candidateValue?: string
+) => {
+  const rawCandidate = (candidateValue || el.dataset.vncheckoutInitialValue || '').trim();
+  if (!rawCandidate) {
+    return '';
+  }
+
+  const options = Array.from(el.options);
+  const exactValueMatch = options.find((option) => option.value === rawCandidate);
+  if (exactValueMatch) {
+    return rawCandidate;
+  }
+
+  const normalizedCandidate = normalizeOptionText(rawCandidate);
+  const exactLabelMatch = options.find(
+    (option) => normalizeOptionText(option.textContent) === normalizedCandidate
+  );
+  if (exactLabelMatch) {
+    return exactLabelMatch.value;
+  }
+
+  return rawCandidate;
+};
+
+const refreshSelectEnhancement = (select: HTMLSelectElement) => {
+  if (typeof jQuery === 'undefined' || !(jQuery as any).fn?.select2) {
+    return;
+  }
+
+  const $select = (jQuery as any)(select);
+  if ($select.hasClass('select2-hidden-accessible')) {
+    $select.trigger('change.select2');
+  }
+};
 
 const ensureCheckoutLayoutStyles = () => {
   if (document.getElementById(CHECKOUT_LAYOUT_STYLE_ID)) {
@@ -79,9 +140,13 @@ const ensureCheckoutLayoutStyles = () => {
 };
 
 const getPossibleFieldIds = (prefix: string, field: AddressField) => {
+  // My Account classic: shipping_state, billing_city
+  // WooCommerce Blocks: billing-state, billing_city
+  // WooCommerce Blocks wrapper: billing-billing-state, billing-billing-city
   return [
-    `${prefix}-${field}`,
     `${prefix}_${field}`,
+    `${prefix}-${field}`,
+    `${prefix}-${prefix}-${field}`,
   ];
 };
 
@@ -91,12 +156,15 @@ const getPossibleFieldWrapperIds = (prefix: string, field: AddressField) => {
       `${prefix}-address_2-field`,
       `${prefix}_address_2_field`,
       `${prefix}-address-2-field`,
+      `${prefix}_${prefix}-address_2-field`,
+      `${prefix}_${prefix}-address-2-field`,
     ];
   }
 
   return [
     `${prefix}-${field}-field`,
     `${prefix}_${field}_field`,
+    `${prefix}_${prefix}-${field}-field`,
   ];
 };
 
@@ -118,9 +186,13 @@ const findFieldWrapper = (prefix: string, field: AddressField): HTMLElement | nu
 };
 
 const findCountryElement = (prefix: string): HTMLSelectElement | null => {
+  // Checkout/Blocks: billing-country, billing_country
+  // My Account edit-address: billing_billing-country, billing_country
   const possibleIds = [
     `${prefix}-country`,
     `${prefix}_country`,
+    `${prefix}_${prefix}-country`,
+    `${prefix}_${prefix}_country`,
   ];
 
   for (const id of possibleIds) {
@@ -218,6 +290,26 @@ const bindProxySelectSync = (select: HTMLSelectElement) => {
 
   select.addEventListener('change', syncFromSelect);
 
+  const sourceId = select.getAttribute(BLOCKS_PROXY_SOURCE_ATTR);
+  const source = sourceId ? document.getElementById(sourceId) : null;
+  if (source instanceof HTMLInputElement) {
+    const syncFromSource = () => {
+      const resolvedValue = resolveSelectOptionValue(select, source.value);
+      if (resolvedValue && select.value !== resolvedValue) {
+        select.value = resolvedValue;
+      }
+
+      if (isNumericCode(resolvedValue) && source.value !== resolvedValue) {
+        syncBlocksSourceInput(select, resolvedValue, false);
+      }
+
+      refreshSelectEnhancement(select);
+    };
+
+    source.addEventListener('input', syncFromSource);
+    source.addEventListener('change', syncFromSource);
+  }
+
   if (typeof jQuery !== 'undefined') {
     const $select = (jQuery as any)(select);
     $select.on('select2:select.vncheckoutSync', syncFromSelect);
@@ -262,6 +354,23 @@ const findAddress2Element = (prefix: string): HTMLElement | null => {
     const select = form.querySelector('.wc-block-components-address-form__address_2 select');
     if (select instanceof HTMLElement) {
       return select;
+    }
+  }
+
+  // My Account edit-address (classic): find by ID patterns
+  const possibleIds = [
+    `${prefix}-address_2`,
+    `${prefix}_address_2`,
+    `${prefix}-address-2`,
+    `${prefix}_address_2-field`,
+    `${prefix}-address_2-field`,
+    `${prefix}-address-2-field`,
+  ];
+
+  for (const id of possibleIds) {
+    const el = document.getElementById(id);
+    if (el instanceof HTMLSelectElement || el instanceof HTMLInputElement) {
+      return el;
     }
   }
 
@@ -323,7 +432,6 @@ const convertBlocksInputToSelect = (input: HTMLInputElement): HTMLSelectElement 
     bindProxySelectSync(existingProxy);
     if (initialValue && !existingProxy.value) {
       existingProxy.dataset.vncheckoutInitialValue = initialValue;
-      syncBlocksSourceInput(existingProxy, initialValue);
     }
     return existingProxy;
   }
@@ -381,14 +489,27 @@ const convertBlocksInputToSelect = (input: HTMLInputElement): HTMLSelectElement 
 // Helper to find element by multiple possible IDs (kebab-case and snake_case for WooCommerce Blocks)
 // Returns HTMLSelectElement - for city field it will convert INPUT to SELECT
 const findEl = (prefix: string, field: AddressField): HTMLSelectElement | null => {
+  // WooCommerce Blocks: find form by id="billing" / id="shipping"
+  // My Account / classic: form has no id — find element by ID directly in document
   const possibleIds = field === 'address_2'
     ? [getFieldKey(prefix, field)]
     : getPossibleFieldIds(prefix, field);
 
   for (const id of possibleIds) {
-    const el = field === 'address_2'
-      ? findAddress2Element(prefix)
-      : findBlocksProxySelect(id) || document.getElementById(id);
+    // Try form-scoped lookup (WooCommerce Blocks / checkout)
+    let el: HTMLElement | null = null;
+    const form = document.getElementById(prefix);
+    if (form) {
+      el = field === 'address_2'
+        ? findAddress2Element(prefix)
+        : findBlocksProxySelect(id) || form.querySelector(`#${id}`);
+    }
+    // Fallback: search document directly (My Account edit-address pages)
+    if (!el) {
+      el = field === 'address_2'
+        ? findAddress2Element(prefix)
+        : document.getElementById(id);
+    }
 
     if (el) {
       // If it's an input (WooCommerce Blocks), convert to select
@@ -406,7 +527,6 @@ const findEl = (prefix: string, field: AddressField): HTMLSelectElement | null =
             bindProxySelectSync(select);
           }
           foundIds[getFieldKey(prefix, field)] = select.id;
-          console.log(`[AddressSelector] Converted ${id} from INPUT to SELECT`);
           return select;
         }
       }
@@ -414,8 +534,14 @@ const findEl = (prefix: string, field: AddressField): HTMLSelectElement | null =
         bindProxySelectSync(el);
       }
       foundIds[getFieldKey(prefix, field)] = el.id;
-      // Already a SELECT - don't add Select2, let WooCommerce handle it
-      console.log(`[AddressSelector] ${id} is already a SELECT, skipping Select2`);
+      // Already a SELECT - on checkout WooCommerce usually handles Select2, but on
+      // My Account / non-checkout pages we need to apply it ourselves.
+      // Check if Select2 is already initialized (has select2-hidden-accessible class).
+      const alreadyHasSelect2 = el.classList.contains('select2-hidden-accessible');
+      if (!alreadyHasSelect2 && typeof jQuery !== 'undefined' && (jQuery as any).fn?.select2) {
+        const selector = `#${el.id}`;
+        trySelect2(selector, 'init');
+      }
       return el as HTMLSelectElement;
     }
   }
@@ -452,9 +578,7 @@ const getEl = (id: string): HTMLSelectElement | null => {
 };
 
 const trySelect2 = (selector: string, method: 'init' | 'refresh' | 'destroy') => {
-  console.log(`[trySelect2] ${selector} - ${method}, jQuery:`, typeof jQuery !== 'undefined', 'select2:', !!(jQuery as any)?.fn?.select2);
   if (typeof jQuery === 'undefined' || !(jQuery as any).fn?.select2) {
-    console.log(`[trySelect2] ${selector} - No jQuery/Select2`);
     return;
   }
   try {
@@ -464,17 +588,14 @@ const trySelect2 = (selector: string, method: 'init' | 'refresh' | 'destroy') =>
 
     if (method === 'init') {
       if (isInitialized) {
-        console.log(`[trySelect2] ${selector} - Already initialized, skipping`);
         // Just refresh instead
         $el.trigger('change.select2');
       } else {
         $el.select2();
-        console.log(`[trySelect2] ${selector} - Initialized`);
       }
     }
     else if (method === 'refresh') $el.trigger('change.select2');
     else if (method === 'destroy') $el.select2('destroy');
-    console.log(`[trySelect2] ${selector} - Success`);
   } catch (e) {
     console.error(`[trySelect2] ${selector} - Error:`, e);
   }
@@ -497,9 +618,10 @@ const buildOptions = (
     opt.textContent = label;
     el.appendChild(opt);
   });
-  const resolvedValue = currentValue || el.dataset.vncheckoutInitialValue || '';
+  const resolvedValue = resolveSelectOptionValue(el, currentValue);
   el.value = resolvedValue;
   syncBlocksSourceInput(el, resolvedValue);
+  refreshSelectEnhancement(el);
   delete el.dataset.vncheckoutInitialValue;
 };
 
@@ -521,8 +643,6 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
   const [district, setDistrict] = useState('');
   const [ward, setWard] = useState('');
 
-  console.log(`[AddressSelector ${prefix}] Rendering, province:`, province, 'district:', district, 'ward:', ward);
-
   const provinceRef = useRef('');
   const districtRef = useRef('');
   const wardRef = useRef('');
@@ -530,17 +650,14 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
   // Determine which schema we're using
   const schema = getAddressSchema();
   const isNewSchema = schema === 'new';
-  console.log(`[AddressSelector ${prefix}] Schema:`, schema, 'isNewSchema:', isNewSchema, 'showWard:', showWard);
 
   // In 'new' schema: city field contains wards/communes directly from province
   // (districts.php in new schema contains villages, not districts!)
   // In 'old' schema: city field contains districts, then wards from district
   const { data: districtsOrWards = [], isLoading: loadingDistricts } = useDistricts(province ? province : null);
-  console.log(`[AddressSelector ${prefix}] useDistricts called with:`, province, 'data length:', districtsOrWards.length, 'loading:', loadingDistricts);
 
   // For old schema only - wards come from district (when showWard is enabled)
   const { data: wards = [], isLoading: loadingWards } = useWards(!isNewSchema && showWard && district ? district : null);
-  console.log(`[AddressSelector ${prefix}] useWards enabled:`, !isNewSchema && showWard && district, 'district:', district);
 
   // Keep refs in sync so event handlers always have fresh values
   useEffect(() => { provinceRef.current = province; }, [province]);
@@ -560,9 +677,24 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
     const stateEl = findEl(prefix, 'state');
     const cityEl = findEl(prefix, 'city');
     const wardEl = showWard ? findEl(prefix, 'address_2') : null;
-    const initialProvince = stateEl?.value || '';
-    const initialDistrict = cityEl?.value || cityEl?.dataset.vncheckoutInitialValue || '';
-    const initialWard = wardEl?.value || wardEl?.dataset.vncheckoutInitialValue || '';
+    
+    // Get saved values from localized data (from PHP)
+    const savedData = (window.vncheckout_array?.saved as any)?.[prefix];
+    const savedProvince = savedData?.state || '';
+    const savedDistrict = savedData?.city || '';
+    const savedWard = savedData?.ward || '';
+    
+    const initialProvince = stateEl?.value || savedProvince || '';
+    const initialDistrict = pickInitialSelectValue(
+      cityEl?.value || '',
+      cityEl?.dataset.vncheckoutInitialValue || '',
+      savedDistrict
+    );
+    const initialWard = pickInitialSelectValue(
+      wardEl?.value || '',
+      wardEl?.dataset.vncheckoutInitialValue || '',
+      savedWard
+    );
 
     if (initialProvince) {
       provinceRef.current = initialProvince;
@@ -610,9 +742,7 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
   useEffect(() => {
     // Use findEl to support both kebab-case (billing-state) and snake_case (billing_state)
     const stateEl = findEl(prefix, 'state') as HTMLSelectElement | null;
-    console.log(`[AddressSelector ${prefix}] State element found:`, !!stateEl, 'tag:', stateEl?.tagName, 'id:', stateEl?.id);
     if (!stateEl) {
-      console.log(`[AddressSelector ${prefix}] State element not found - skipping province listener`);
       return;
     }
 
@@ -621,7 +751,6 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
 
     const onChange = () => {
       const val = stateEl.value;
-      console.log(`[AddressSelector ${prefix}] Province changed to:`, val);
       provinceRef.current = val;
       districtRef.current = '';
       wardRef.current = '';
@@ -751,10 +880,8 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
       const val = cityEl.value;
       districtRef.current = val;
       setDistrict(val);
-      console.log(`[AddressSelector ${prefix}] City/Ward changed to:`, val);
       // Trigger shipping recalc when ward is chosen
       if (val && typeof jQuery !== 'undefined') {
-        console.log(`[AddressSelector ${prefix}] Triggering update_checkout`);
         (jQuery as any)('body').trigger('update_checkout');
       }
     };
@@ -775,7 +902,6 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
   useEffect(() => {
     const cityEl = findEl(prefix, 'city');
     const select2CitySelector = getSelect2Selector(prefix, 'city');
-    console.log(`[AddressSelector ${prefix}] Populate city field - province:`, province, 'cityEl:', !!cityEl, 'isNewSchema:', isNewSchema, 'select2Selector:', select2CitySelector);
     if (!cityEl || !province) return;
 
     if (loadingDistricts) {
@@ -792,15 +918,17 @@ export const AddressSelector: React.FC<AddressSelectorProps> = ({ type, showWard
         const code = 'xaid' in item ? (item as Ward).xaid : (item as District).maqh;
         return { value: code, label: item.name };
       });
-      buildOptions(cityEl, items, 'Select ward/commune/town');
+      buildOptions(cityEl, items, 'Select ward/commune/town', districtRef.current || undefined);
     } else {
       // Old schema: city field = districts
       const items = districtsOrWards.map((item) => {
         const code = 'xaid' in item ? (item as Ward).xaid : (item as District).maqh;
         return { value: code, label: item.name };
       });
-      buildOptions(cityEl, items, 'Select district');
+      buildOptions(cityEl, items, 'Select district', districtRef.current || undefined);
     }
+    // Trigger Select2 to update display
+    if (select2CitySelector) trySelect2(select2CitySelector, 'refresh');
     // NOTE: Do NOT call triggerWooCommerceUpdate here — it would wipe the select we just built
   }, [districtsOrWards, loadingDistricts, prefix, province, isNewSchema]);
 
