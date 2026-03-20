@@ -40,7 +40,7 @@ jobs:
       - name: Update plugin version
         run: |
           VERSION="${{ steps.get_version.outputs.VERSION }}"
-          sed -i "s/\* Version:.*/\* Version: $VERSION/" vietnam-address-woo.php
+          sed -i "s/\* Version:.*/\* Version: $VERSION/" coolbird-vietnam-address.php
           sed -i "s/Stable tag:.*/Stable tag: $VERSION/" readme.txt
 
       - name: Build plugin
@@ -85,6 +85,6 @@ jobs:
           body_path: release_notes.md
           draft: false
           prerelease: false
-          files: dist/vietnam-address-woo-*.zip
+          files: dist/coolbird-vietnam-address-*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

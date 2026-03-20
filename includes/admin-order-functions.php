@@ -103,7 +103,7 @@ if (!class_exists('CoolBirdZik_Order_Filter')) {
                 <input type="date"
                        name="coolbirdzik_date_from"
                        value="<?php echo esc_attr($from); ?>"
-                       placeholder="<?php esc_attr_e('From Date', 'vietnam-address-woo'); ?>"
+                       placeholder="<?php esc_attr_e('From Date', 'coolbird-vietnam-address'); ?>"
                        class="date-picker"
                        style="width: 130px;">
             </div>
@@ -112,7 +112,7 @@ if (!class_exists('CoolBirdZik_Order_Filter')) {
                 <input type="date"
                        name="coolbirdzik_date_to"
                        value="<?php echo esc_attr($to); ?>"
-                       placeholder="<?php esc_attr_e('To Date', 'vietnam-address-woo'); ?>"
+                       placeholder="<?php esc_attr_e('To Date', 'coolbird-vietnam-address'); ?>"
                        class="date-picker"
                        style="width: 130px;">
             </div>
@@ -124,7 +124,7 @@ if (!class_exists('CoolBirdZik_Order_Filter')) {
             ?>
             <div class="coolbirdzik-filter-row">
                 <select name="coolbirdzik_billing_state" id="coolbirdzik_billing_state" style="width: 160px;">
-                    <option value=""><?php esc_html_e('All Provinces', 'vietnam-address-woo'); ?></option>
+                    <option value=""><?php esc_html_e('All Provinces', 'coolbird-vietnam-address'); ?></option>
                     <?php foreach ($vn_states as $code => $name) : ?>
                         <option value="<?php echo esc_attr($code); ?>" <?php selected($code, $billing_state); ?>><?php echo esc_html($name); ?></option>
                     <?php endforeach; ?>

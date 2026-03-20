@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class VNCheckout_Region_Manager
+class CoolBirdVietnam_Region_Manager
 {
     /** @var string DB table name */
     private static $table_name;

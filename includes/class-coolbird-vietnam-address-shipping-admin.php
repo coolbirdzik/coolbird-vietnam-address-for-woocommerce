@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class VNCheckout_Shipping_Admin
+class CoolBirdVietnam_Shipping_Admin
 {
     /**
      * Get shipping rates table name.
@@ -402,4 +402,4 @@ class VNCheckout_Shipping_Admin
 }
 
 // Initialize
-new VNCheckout_Shipping_Admin();
+new CoolBirdVietnam_Shipping_Admin();

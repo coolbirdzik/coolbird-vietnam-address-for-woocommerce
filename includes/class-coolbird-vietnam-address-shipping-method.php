@@ -18,11 +18,11 @@ if (!defined('ABSPATH')) {
 
 function vncheckout_shipping_method_init()
 {
-    if (class_exists('VNCheckout_Shipping_Method')) {
+    if (class_exists('CoolBirdVietnam_Shipping_Method')) {
         return;
     }
 
-    class VNCheckout_Shipping_Method extends WC_Shipping_Method
+    class CoolBirdVietnam_Shipping_Method extends WC_Shipping_Method
     {
         public function __construct($instance_id = 0)
         {
@@ -147,9 +147,9 @@ function vncheckout_shipping_method_init()
                 }
             }
 
-            // 4. Region (resolve via VNCheckout_Region_Manager)
-            if ($province && class_exists('VNCheckout_Region_Manager')) {
-                $region_code = VNCheckout_Region_Manager::get_region_for_province($province);
+            // 4. Region (resolve via CoolBirdVietnam_Region_Manager)
+            if ($province && class_exists('CoolBirdVietnam_Region_Manager')) {
+                $region_code = CoolBirdVietnam_Region_Manager::get_region_for_province($province);
                 if ($region_code) {
                     $rate = $this->find_rate('region', $region_code);
                     if ($rate) {

@@ -142,8 +142,8 @@ class CoolBirdZik_Shipping_Admin
 
     private function get_regions_for_js(): array
     {
-        if (class_exists('VNCheckout_Region_Manager')) {
-            return VNCheckout_Region_Manager::get_regions();
+        if (class_exists('CoolBirdVietnam_Region_Manager')) {
+            return CoolBirdVietnam_Region_Manager::get_regions();
         }
         return array();
     }
@@ -158,8 +158,8 @@ class CoolBirdZik_Shipping_Admin
             case 'ward':
                 return function_exists('get_name_village') ? get_name_village($code) : $code;
             case 'region':
-                if (class_exists('VNCheckout_Region_Manager')) {
-                    $region = VNCheckout_Region_Manager::get_region($code);
+                if (class_exists('CoolBirdVietnam_Region_Manager')) {
+                    $region = CoolBirdVietnam_Region_Manager::get_region($code);
                     return $region ? $region['region_name'] : $code;
                 }
                 return $code;
@@ -395,11 +395,11 @@ class CoolBirdZik_Shipping_Admin
             wp_send_json_error(array('message' => 'Permission denied'));
         }
 
-        if (!class_exists('VNCheckout_Region_Manager')) {
+        if (!class_exists('CoolBirdVietnam_Region_Manager')) {
             wp_send_json_error(array('message' => 'Region manager not available'));
         }
 
-        wp_send_json_success(VNCheckout_Region_Manager::get_regions());
+        wp_send_json_success(CoolBirdVietnam_Region_Manager::get_regions());
     }
 
     public function ajax_save_region(): void
@@ -409,7 +409,7 @@ class CoolBirdZik_Shipping_Admin
             wp_send_json_error(array('message' => 'Permission denied'));
         }
 
-        if (!class_exists('VNCheckout_Region_Manager')) {
+        if (!class_exists('CoolBirdVietnam_Region_Manager')) {
             wp_send_json_error(array('message' => 'Region manager not available'));
         }
 
@@ -420,7 +420,7 @@ class CoolBirdZik_Shipping_Admin
             wp_send_json_error(array('message' => 'Invalid region data'));
         }
 
-        $result = VNCheckout_Region_Manager::save_region($region_data);
+        $result = CoolBirdVietnam_Region_Manager::save_region($region_data);
         if (is_wp_error($result)) {
             wp_send_json_error(array('message' => $result->get_error_message()));
         }
@@ -435,12 +435,12 @@ class CoolBirdZik_Shipping_Admin
             wp_send_json_error(array('message' => 'Permission denied'));
         }
 
-        if (!class_exists('VNCheckout_Region_Manager')) {
+        if (!class_exists('CoolBirdVietnam_Region_Manager')) {
             wp_send_json_error(array('message' => 'Region manager not available'));
         }
 
         $id     = intval($_POST['id'] ?? 0);
-        $result = VNCheckout_Region_Manager::delete_region($id);
+        $result = CoolBirdVietnam_Region_Manager::delete_region($id);
         if (is_wp_error($result)) {
             wp_send_json_error(array('message' => $result->get_error_message()));
         }
@@ -467,7 +467,7 @@ class CoolBirdZik_Shipping_Admin
             wp_send_json_error(array('message' => 'Permission denied'));
         }
 
-        if (!class_exists('VNCheckout_Region_Manager')) {
+        if (!class_exists('CoolBirdVietnam_Region_Manager')) {
             wp_send_json_error(array('message' => 'Region manager not available'));
         }
 
@@ -479,7 +479,7 @@ class CoolBirdZik_Shipping_Admin
             wp_send_json_error(array('message' => 'Missing region_code or rate'));
         }
 
-        $region = VNCheckout_Region_Manager::get_region($region_code);
+        $region = CoolBirdVietnam_Region_Manager::get_region($region_code);
         if (!$region) {
             wp_send_json_error(array('message' => 'Region not found'));
         }
