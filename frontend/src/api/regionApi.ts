@@ -7,13 +7,13 @@ import type {
 } from "@/types/shipping.types";
 
 const nonce = (): string =>
-  (window.coolbirdvik_district_admin?.nonce as string) || "";
+  (window.coolviad_district_admin?.nonce as string) || "";
 
 // ---- Regions ----------------------------------------------------------------
 
 export const getRegions = async (): Promise<Region[]> => {
   const response = await apiClient.post<AjaxResponse<Region[]>>("", {
-    action: "coolbirdzik_get_regions",
+    action: "coolviad_get_regions",
     nonce: nonce(),
   });
   return response.data.data || [];
@@ -21,7 +21,7 @@ export const getRegions = async (): Promise<Region[]> => {
 
 export const saveRegion = async (region: Partial<Region>): Promise<Region> => {
   const response = await apiClient.post<AjaxResponse<Region>>("", {
-    action: "coolbirdzik_save_region",
+    action: "coolviad_save_region",
     nonce: nonce(),
     region: JSON.stringify(region),
   });
@@ -33,7 +33,7 @@ export const saveRegion = async (region: Partial<Region>): Promise<Region> => {
 
 export const deleteRegion = async (id: number): Promise<void> => {
   const response = await apiClient.post<AjaxResponse>("", {
-    action: "coolbirdzik_delete_region",
+    action: "coolviad_delete_region",
     nonce: nonce(),
     id,
   });
@@ -49,7 +49,7 @@ export const bulkApplyRegionRate = async (
   rate: Partial<ShippingRate>,
 ): Promise<BulkApplyResult> => {
   const response = await apiClient.post<AjaxResponse<BulkApplyResult>>("", {
-    action: "coolbirdzik_bulk_apply_region_rate",
+    action: "coolviad_bulk_apply_region_rate",
     nonce: nonce(),
     region_code: regionCode,
     rate: JSON.stringify(rate),

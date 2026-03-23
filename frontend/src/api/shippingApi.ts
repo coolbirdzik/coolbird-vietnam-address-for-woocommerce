@@ -7,14 +7,14 @@ import type {
 } from "@/types/shipping.types";
 
 const nonce = (): string =>
-  (window.coolbirdvik_district_admin?.nonce as string) || "";
+  (window.coolviad_district_admin?.nonce as string) || "";
 
 export const getShippingRates = async (
   locationType?: LocationType,
   locationCode?: string,
 ): Promise<ShippingRate[]> => {
   const response = await apiClient.post<AjaxResponse<ShippingRate[]>>("", {
-    action: "coolbirdzik_get_shipping_rates",
+    action: "coolbird_vietnam_address_get_shipping_rates",
     nonce: nonce(),
     location_type: locationType,
     location_code: locationCode,
@@ -26,7 +26,7 @@ export const saveShippingRate = async (
   rate: Partial<ShippingRate>,
 ): Promise<ShippingRate> => {
   const response = await apiClient.post<AjaxResponse<ShippingRate>>("", {
-    action: "coolbirdzik_save_shipping_rate",
+    action: "coolbird_vietnam_address_save_shipping_rate",
     nonce: nonce(),
     rate: JSON.stringify(rate),
   });
@@ -38,7 +38,7 @@ export const saveShippingRate = async (
 
 export const deleteShippingRate = async (id: number): Promise<void> => {
   const response = await apiClient.post<AjaxResponse>("", {
-    action: "coolbirdzik_delete_shipping_rate",
+    action: "coolbird_vietnam_address_delete_shipping_rate",
     nonce: nonce(),
     id,
   });
@@ -49,7 +49,7 @@ export const deleteShippingRate = async (id: number): Promise<void> => {
 
 export const importRatesCSV = async (file: File): Promise<CSVImportResult> => {
   const formData = new FormData();
-  formData.append("action", "coolbirdzik_import_rates_csv");
+  formData.append("action", "coolbird_vietnam_address_import_rates_csv");
   formData.append("nonce", nonce());
   formData.append("file", file);
 
@@ -69,7 +69,7 @@ export const importRatesCSV = async (file: File): Promise<CSVImportResult> => {
 export const exportRatesCSV = async (): Promise<void> => {
   const response = await apiClient.post(
     "",
-    { action: "coolbirdzik_export_rates_csv", nonce: nonce() },
+    { action: "coolbird_vietnam_address_export_rates_csv", nonce: nonce() },
     { responseType: "blob" },
   );
   const url = window.URL.createObjectURL(new Blob([response.data]));

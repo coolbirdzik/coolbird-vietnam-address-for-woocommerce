@@ -1,7 +1,7 @@
 <?php
 
 /**
- * VNCheckout Region Manager
+ * Coolviad Region Manager
  *
  * Manages shipping regions (groups of provinces) for Vietnam shipping calculations.
  * Rate lookup priority: ward > district > province > region > default.
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class CoolBirdVietnam_Region_Manager
+class Coolviad_Region_Manager
 {
     /** @var string DB table name */
     private static $table_name;
@@ -23,7 +23,7 @@ class CoolBirdVietnam_Region_Manager
     {
         global $wpdb;
         if (empty(self::$table_name)) {
-            self::$table_name = $wpdb->prefix . 'coolbirdzik_shipping_regions';
+            self::$table_name = $wpdb->prefix . 'coolviad_shipping_regions';
         }
         return self::$table_name;
     }
@@ -125,7 +125,7 @@ class CoolBirdVietnam_Region_Manager
         $province_codes = is_array($data['province_codes']) ? $data['province_codes'] : array();
 
         if (!$region_name || !$region_code) {
-            return new WP_Error('missing_fields', __('Region name and code are required.', 'coolbird-vietnam-address-for-woocommerce'));
+            return new WP_Error('missing_fields', __('Region name and code are required.', 'coolbird-vietnam-address'));
         }
 
         $row = array(
@@ -146,7 +146,7 @@ class CoolBirdVietnam_Region_Manager
                 ARRAY_A
             );
             if ($existing && $existing['is_predefined']) {
-                return new WP_Error('readonly', __('Predefined regions cannot be modified.', 'coolbird-vietnam-address-for-woocommerce'));
+                return new WP_Error('readonly', __('Predefined regions cannot be modified.', 'coolbird-vietnam-address'));
             }
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Intentionally direct UPDATE on plugin-owned table; no caching needed.
             $wpdb->update(self::table(), $row, array('id' => $id));
@@ -157,7 +157,7 @@ class CoolBirdVietnam_Region_Manager
                 $wpdb->prepare('SELECT id FROM ' . esc_sql(self::table()) . ' WHERE region_code = %s', $region_code)
             );
             if ($dup) {
-                return new WP_Error('duplicate', __('A region with that code already exists.', 'coolbird-vietnam-address-for-woocommerce'));
+                return new WP_Error('duplicate', __('A region with that code already exists.', 'coolbird-vietnam-address'));
             }
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Intentionally direct INSERT for new region.
             $wpdb->insert(self::table(), $row);
@@ -184,11 +184,11 @@ class CoolBirdVietnam_Region_Manager
         );
 
         if (!$existing) {
-            return new WP_Error('not_found', __('Region not found.', 'coolbird-vietnam-address-for-woocommerce'));
+            return new WP_Error('not_found', __('Region not found.', 'coolbird-vietnam-address'));
         }
 
         if ($existing['is_predefined']) {
-            return new WP_Error('readonly', __('Predefined regions cannot be deleted.', 'coolbird-vietnam-address-for-woocommerce'));
+            return new WP_Error('readonly', __('Predefined regions cannot be deleted.', 'coolbird-vietnam-address'));
         }
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Intentionally direct DELETE on plugin-owned table; no caching needed.

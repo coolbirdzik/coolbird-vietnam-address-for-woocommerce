@@ -1,6 +1,6 @@
-# Vietnam Address Woo - Frontend
+# Coolbird Vietnam Address - Frontend
 
-React + TypeScript frontend for the Vietnam Address Woo plugin.
+React + TypeScript frontend for the Coolbird Vietnam Address plugin.
 
 ## Prerequisites
 
@@ -89,7 +89,7 @@ The React apps mount to specific DOM elements:
 Data is passed from PHP via `wp_localize_script()`:
 
 ```javascript
-window.vncheckout_array = {
+window.coolbird_vietnam_address_array = {
   ajaxurl: '...',
   nonce: '...',
   // ...

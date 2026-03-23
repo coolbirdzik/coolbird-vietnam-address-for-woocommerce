@@ -7,7 +7,7 @@ declare global {
   interface Window {
     jQuery?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     $?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-    vncheckout_array?: {
+    coolbird_vietnam_address_array?: {
       ajaxurl?: string;
       nonce?: string;
       provinces?: Province[];
@@ -20,16 +20,25 @@ declare global {
       required_village?: string;
       [key: string]: unknown;
     };
-    coolbirdzik_vn?: {
-      preloaded_names?: Record<string, string>;
-      [key: string]: unknown;
-    };
-    coolbirdvik_district_admin?: {
+    coolviad_district_admin?: {
       ajaxurl?: string;
       nonce?: string;
       provinces?: Province[];
       regions?: Region[];
       [key: string]: unknown;
+    };
+    coolviad_vn?: {
+      ajax_url?: string;
+      address_schema?: "old" | "new";
+      preloaded_names?: Record<string, string>;
+      i18n?: {
+        district_label?: string;
+        ward_label?: string;
+        select_district?: string;
+        select_ward?: string;
+        loading?: string;
+        load_error?: string;
+      };
     };
     woocommerce_district_shipping_rate_rows?: {
       i18n: { delete_rates: string };

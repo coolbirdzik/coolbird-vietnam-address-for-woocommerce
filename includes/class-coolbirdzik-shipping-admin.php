@@ -18,25 +18,25 @@ class CoolBirdZik_Shipping_Admin
     public function __construct()
     {
         global $wpdb;
-        $this->rates_table = $wpdb->prefix . 'coolbirdzik_shipping_rates';
+        $this->rates_table = $wpdb->prefix . 'coolviad_shipping_rates';
 
         add_action('admin_menu', array($this, 'add_admin_menu'), 99);
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
 
         // Shipping rate AJAX
-        add_action('wp_ajax_coolbirdzik_get_shipping_rates',  array($this, 'ajax_get_shipping_rates'));
-        add_action('wp_ajax_coolbirdzik_save_shipping_rate',  array($this, 'ajax_save_shipping_rate'));
-        add_action('wp_ajax_coolbirdzik_delete_shipping_rate', array($this, 'ajax_delete_shipping_rate'));
-        add_action('wp_ajax_coolbirdzik_import_rates_csv',    array($this, 'ajax_import_rates_csv'));
-        add_action('wp_ajax_coolbirdzik_export_rates_csv',    array($this, 'ajax_export_rates_csv'));
+        add_action('wp_ajax_coolviad_get_shipping_rates',  array($this, 'ajax_get_shipping_rates'));
+        add_action('wp_ajax_coolviad_save_shipping_rate',  array($this, 'ajax_save_shipping_rate'));
+        add_action('wp_ajax_coolviad_delete_shipping_rate', array($this, 'ajax_delete_shipping_rate'));
+        add_action('wp_ajax_coolviad_import_rates_csv',    array($this, 'ajax_import_rates_csv'));
+        add_action('wp_ajax_coolviad_export_rates_csv',    array($this, 'ajax_export_rates_csv'));
 
         // Region AJAX
-        add_action('wp_ajax_coolbirdzik_get_regions',    array($this, 'ajax_get_regions'));
-        add_action('wp_ajax_coolbirdzik_save_region',    array($this, 'ajax_save_region'));
-        add_action('wp_ajax_coolbirdzik_delete_region',  array($this, 'ajax_delete_region'));
+        add_action('wp_ajax_coolviad_get_regions',    array($this, 'ajax_get_regions'));
+        add_action('wp_ajax_coolviad_save_region',    array($this, 'ajax_save_region'));
+        add_action('wp_ajax_coolviad_delete_region',  array($this, 'ajax_delete_region'));
 
         // Bulk-apply a rate to all provinces in a region
-        add_action('wp_ajax_coolbirdzik_bulk_apply_region_rate', array($this, 'ajax_bulk_apply_region_rate'));
+        add_action('wp_ajax_coolviad_bulk_apply_region_rate', array($this, 'ajax_bulk_apply_region_rate'));
     }
 
     // ------------------------------------------------------------------ //
@@ -47,17 +47,17 @@ class CoolBirdZik_Shipping_Admin
     {
         add_submenu_page(
             'woocommerce',
-            __('Vietnam Shipping Rates', 'coolbird-vietnam-address-for-woocommerce'),
-            __('Shipping Rates', 'coolbird-vietnam-address-for-woocommerce'),
+            __('Vietnam Shipping Rates', 'coolbird-vietnam-address'),
+            __('Shipping Rates', 'coolbird-vietnam-address'),
             'manage_woocommerce',
-            'coolbirdzik-shipping-rates',
+            'coolviad-shipping-rates',
             array($this, 'render_admin_page')
         );
     }
 
     public function enqueue_admin_scripts(string $hook): void
     {
-        if ($hook !== 'woocommerce_page_coolbirdzik-shipping-rates') {
+        if ($hook !== 'woocommerce_page_coolviad-shipping-rates') {
             return;
         }
 
@@ -67,14 +67,14 @@ class CoolBirdZik_Shipping_Admin
             // Show a friendly message instead of a blank page
             add_action('admin_notices', function () {
                 echo '<div class="notice notice-error"><p>'
-                    . esc_html__('Vietnam Shipping Rates: frontend assets not found. Run `npm run build` inside the frontend/ directory.', 'coolbird-vietnam-address-for-woocommerce')
+                    . esc_html__('Vietnam Shipping Rates: frontend assets not found. Run `npm run build` inside the frontend/ directory.', 'coolbird-vietnam-address')
                     . '</p></div>';
             });
             return;
         }
 
         wp_enqueue_script(
-            'coolbirdzik-admin-shipping',
+            'coolviad-admin-shipping',
             plugins_url('assets/dist/admin-shipping.js', dirname(__FILE__)),
             array(),
             filemtime($asset_file),
@@ -87,16 +87,16 @@ class CoolBirdZik_Shipping_Admin
         $css_file = $plugin_root . 'assets/dist/admin-shipping.css';
         if (file_exists($css_file)) {
             wp_enqueue_style(
-                'coolbirdzik-admin-shipping',
+                'coolviad-admin-shipping',
                 plugins_url('assets/dist/admin-shipping.css', dirname(__FILE__)),
                 array(),
                 filemtime($css_file)
             );
         }
 
-        wp_localize_script('coolbirdzik-admin-shipping', 'coolbirdvik_district_admin', array(
+        wp_localize_script('coolviad-admin-shipping', 'coolviad_district_admin', array(
             'ajaxurl'   => admin_url('admin-ajax.php'),
-            'nonce'     => wp_create_nonce('coolbirdzik_shipping_admin'),
+            'nonce'     => wp_create_nonce('coolviad_shipping_admin'),
             'provinces' => $this->get_provinces_for_js(),
             'regions'   => $this->get_regions_for_js(),
         ));
@@ -108,7 +108,7 @@ class CoolBirdZik_Shipping_Admin
      */
     public function set_module_type(string $tag, string $handle): string
     {
-        if ($handle === 'coolbirdzik-admin-shipping') {
+        if ($handle === 'coolviad-admin-shipping') {
             // Replace <script  with <script type="module"
             return str_replace('<script ', '<script type="module" ', $tag);
         }
@@ -117,7 +117,7 @@ class CoolBirdZik_Shipping_Admin
 
     public function render_admin_page(): void
     {
-        echo '<div id="coolbirdzik-admin-shipping-app"></div>';
+        echo '<div id="coolviad-admin-shipping-app"></div>';
     }
 
     // ------------------------------------------------------------------ //
@@ -142,8 +142,8 @@ class CoolBirdZik_Shipping_Admin
 
     private function get_regions_for_js(): array
     {
-        if (class_exists('CoolBirdVietnam_Region_Manager')) {
-            return CoolBirdVietnam_Region_Manager::get_regions();
+        if (class_exists('Coolviad_Region_Manager')) {
+            return Coolviad_Region_Manager::get_regions();
         }
         return array();
     }
@@ -158,8 +158,8 @@ class CoolBirdZik_Shipping_Admin
             case 'ward':
                 return function_exists('get_name_village') ? get_name_village($code) : $code;
             case 'region':
-                if (class_exists('CoolBirdVietnam_Region_Manager')) {
-                    $region = CoolBirdVietnam_Region_Manager::get_region($code);
+                if (class_exists('Coolviad_Region_Manager')) {
+                    $region = Coolviad_Region_Manager::get_region($code);
                     return $region ? $region['region_name'] : $code;
                 }
                 return $code;
@@ -174,7 +174,7 @@ class CoolBirdZik_Shipping_Admin
 
     public function ajax_get_shipping_rates(): void
     {
-        check_ajax_referer('coolbirdzik_shipping_admin', 'nonce');
+        check_ajax_referer('coolviad_shipping_admin', 'nonce');
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(array('message' => 'Permission denied'));
         }
@@ -210,7 +210,7 @@ class CoolBirdZik_Shipping_Admin
 
     public function ajax_save_shipping_rate(): void
     {
-        check_ajax_referer('coolbirdzik_shipping_admin', 'nonce');
+        check_ajax_referer('coolviad_shipping_admin', 'nonce');
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(array('message' => 'Permission denied'));
         }
@@ -262,7 +262,7 @@ class CoolBirdZik_Shipping_Admin
 
     public function ajax_delete_shipping_rate(): void
     {
-        check_ajax_referer('coolbirdzik_shipping_admin', 'nonce');
+        check_ajax_referer('coolviad_shipping_admin', 'nonce');
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(array('message' => 'Permission denied'));
         }
@@ -280,7 +280,7 @@ class CoolBirdZik_Shipping_Admin
 
     public function ajax_import_rates_csv(): void
     {
-        check_ajax_referer('coolbirdzik_shipping_admin', 'nonce');
+        check_ajax_referer('coolviad_shipping_admin', 'nonce');
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(array('message' => 'Permission denied'));
         }
@@ -344,7 +344,7 @@ class CoolBirdZik_Shipping_Admin
 
     public function ajax_export_rates_csv(): void
     {
-        check_ajax_referer('coolbirdzik_shipping_admin', 'nonce');
+        check_ajax_referer('coolviad_shipping_admin', 'nonce');
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(array('message' => 'Permission denied'));
         }
@@ -390,26 +390,26 @@ class CoolBirdZik_Shipping_Admin
 
     public function ajax_get_regions(): void
     {
-        check_ajax_referer('coolbirdzik_shipping_admin', 'nonce');
+        check_ajax_referer('coolviad_shipping_admin', 'nonce');
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(array('message' => 'Permission denied'));
         }
 
-        if (!class_exists('CoolBirdVietnam_Region_Manager')) {
+        if (!class_exists('Coolviad_Region_Manager')) {
             wp_send_json_error(array('message' => 'Region manager not available'));
         }
 
-        wp_send_json_success(CoolBirdVietnam_Region_Manager::get_regions());
+        wp_send_json_success(Coolviad_Region_Manager::get_regions());
     }
 
     public function ajax_save_region(): void
     {
-        check_ajax_referer('coolbirdzik_shipping_admin', 'nonce');
+        check_ajax_referer('coolviad_shipping_admin', 'nonce');
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(array('message' => 'Permission denied'));
         }
 
-        if (!class_exists('CoolBirdVietnam_Region_Manager')) {
+        if (!class_exists('Coolviad_Region_Manager')) {
             wp_send_json_error(array('message' => 'Region manager not available'));
         }
 
@@ -420,7 +420,7 @@ class CoolBirdZik_Shipping_Admin
             wp_send_json_error(array('message' => 'Invalid region data'));
         }
 
-        $result = CoolBirdVietnam_Region_Manager::save_region($region_data);
+        $result = Coolviad_Region_Manager::save_region($region_data);
         if (is_wp_error($result)) {
             wp_send_json_error(array('message' => $result->get_error_message()));
         }
@@ -430,17 +430,17 @@ class CoolBirdZik_Shipping_Admin
 
     public function ajax_delete_region(): void
     {
-        check_ajax_referer('coolbirdzik_shipping_admin', 'nonce');
+        check_ajax_referer('coolviad_shipping_admin', 'nonce');
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(array('message' => 'Permission denied'));
         }
 
-        if (!class_exists('CoolBirdVietnam_Region_Manager')) {
+        if (!class_exists('Coolviad_Region_Manager')) {
             wp_send_json_error(array('message' => 'Region manager not available'));
         }
 
         $id     = intval($_POST['id'] ?? 0);
-        $result = CoolBirdVietnam_Region_Manager::delete_region($id);
+        $result = Coolviad_Region_Manager::delete_region($id);
         if (is_wp_error($result)) {
             wp_send_json_error(array('message' => $result->get_error_message()));
         }
@@ -462,12 +462,12 @@ class CoolBirdZik_Shipping_Admin
      */
     public function ajax_bulk_apply_region_rate(): void
     {
-        check_ajax_referer('coolbirdzik_shipping_admin', 'nonce');
+        check_ajax_referer('coolviad_shipping_admin', 'nonce');
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(array('message' => 'Permission denied'));
         }
 
-        if (!class_exists('CoolBirdVietnam_Region_Manager')) {
+        if (!class_exists('Coolviad_Region_Manager')) {
             wp_send_json_error(array('message' => 'Region manager not available'));
         }
 
@@ -479,7 +479,7 @@ class CoolBirdZik_Shipping_Admin
             wp_send_json_error(array('message' => 'Missing region_code or rate'));
         }
 
-        $region = CoolBirdVietnam_Region_Manager::get_region($region_code);
+        $region = Coolviad_Region_Manager::get_region($region_code);
         if (!$region) {
             wp_send_json_error(array('message' => 'Region not found'));
         }

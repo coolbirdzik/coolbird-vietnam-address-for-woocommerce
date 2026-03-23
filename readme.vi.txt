@@ -47,6 +47,23 @@ Có, được cập nhật định kỳ từ nguồn chính thức.
 = Plugin có làm chậm website không? =
 Không. Dữ liệu lưu trong mảng PHP, không truy vấn database.
 
+== Mã nguồn & Phát triển ==
+
+Plugin này bao gồm các file JavaScript đã được nén để sử dụng production. Mã nguồn gốc (dễ đọc) có sẵn trên GitHub repository công khai:
+
+**Repository:** https://github.com/coolbirdzik/coolbird-vietnam-address-for-woocommerce
+
+**Mã nguồn Frontend:** Nằm trong thư mục `frontend/`
+- Được xây dựng với TypeScript, React, và Vite
+- Các file nguồn: `frontend/src/`
+- Điểm khởi đầu: `frontend/src/main-checkout.tsx`, `frontend/src/main-admin-order.tsx`, `frontend/src/main-admin-shipping.tsx`
+
+**Để build từ mã nguồn:**
+1. Clone repository về
+2. Chạy `cd frontend && npm install && npm run build`
+3. File đã build sẽ nằm trong `assets/dist/`
+
+
 == Lịch sử phiên bản =
 
 = 1.0.0 - 2026-02-25 =

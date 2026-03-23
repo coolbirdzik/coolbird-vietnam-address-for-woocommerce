@@ -1,0 +1,14 @@
+.coolviad-filter-row {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 8px;
+}
+.coolviad-filter-row input {
+    height: 28px;
+    line-height: 28px;
+    width: 130px;
+}
+.coolviad-filter-row select {
+    height: 28px;
+    line-height: 28px;
+}

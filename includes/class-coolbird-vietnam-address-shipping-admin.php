@@ -1,7 +1,7 @@
 <?php
 
 /**
- * VNCheckout Shipping Admin Class
+ * Coolviad Shipping Admin Class
  * 
  * Handles admin UI and AJAX for shipping rate management
  */
@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class CoolBirdVietnam_Shipping_Admin
+class Coolviad_Shipping_Admin
 {
     /**
      * Get shipping rates table name.
@@ -21,7 +21,7 @@ class CoolBirdVietnam_Shipping_Admin
     {
         global $wpdb;
 
-        return $wpdb->prefix . 'vncheckout_shipping_rates';
+        return $wpdb->prefix . 'coolbird_vietnam_address_shipping_rates';
     }
 
     /**
@@ -58,11 +58,11 @@ class CoolBirdVietnam_Shipping_Admin
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
 
         // AJAX actions
-        add_action('wp_ajax_vncheckout_get_shipping_rates', array($this, 'ajax_get_shipping_rates'));
-        add_action('wp_ajax_vncheckout_save_shipping_rate', array($this, 'ajax_save_shipping_rate'));
-        add_action('wp_ajax_vncheckout_delete_shipping_rate', array($this, 'ajax_delete_shipping_rate'));
-        add_action('wp_ajax_vncheckout_import_rates_csv', array($this, 'ajax_import_rates_csv'));
-        add_action('wp_ajax_vncheckout_export_rates_csv', array($this, 'ajax_export_rates_csv'));
+        add_action('wp_ajax_coolbird_vietnam_address_get_shipping_rates', array($this, 'ajax_get_shipping_rates'));
+        add_action('wp_ajax_coolbird_vietnam_address_save_shipping_rate', array($this, 'ajax_save_shipping_rate'));
+        add_action('wp_ajax_coolbird_vietnam_address_delete_shipping_rate', array($this, 'ajax_delete_shipping_rate'));
+        add_action('wp_ajax_coolbird_vietnam_address_import_rates_csv', array($this, 'ajax_import_rates_csv'));
+        add_action('wp_ajax_coolbird_vietnam_address_export_rates_csv', array($this, 'ajax_export_rates_csv'));
     }
 
     /**
@@ -72,10 +72,10 @@ class CoolBirdVietnam_Shipping_Admin
     {
         add_submenu_page(
             'woocommerce',
-            __('Vietnam Shipping Rates', 'coolbird-vietnam-address-for-woocommerce'),
-            __('Shipping Rates', 'coolbird-vietnam-address-for-woocommerce'),
+            __('Vietnam Shipping Rates', 'coolbird-vietnam-address'),
+            __('Shipping Rates', 'coolbird-vietnam-address'),
             'manage_woocommerce',
-            'vncheckout-shipping-rates',
+            'coolbird_vietnam_address-shipping-rates',
             array($this, 'render_admin_page')
         );
     }
@@ -87,12 +87,12 @@ class CoolBirdVietnam_Shipping_Admin
      */
     public function enqueue_admin_scripts($hook)
     {
-        if ($hook === 'woocommerce_page_vncheckout-shipping-rates') {
+        if ($hook === 'woocommerce_page_coolbird_vietnam_address-shipping-rates') {
             // Enqueue React admin shipping app
             $asset_file = plugin_dir_path(dirname(__FILE__)) . 'assets/dist/admin-shipping.js';
             if (file_exists($asset_file)) {
                 wp_enqueue_script(
-                    'vncheckout-admin-shipping',
+                    'coolbird_vietnam_address-admin-shipping',
                     plugins_url('assets/dist/admin-shipping.js', dirname(__FILE__)),
                     array(),
                     filemtime($asset_file),
@@ -102,7 +102,7 @@ class CoolBirdVietnam_Shipping_Admin
                 $css_file = plugin_dir_path(dirname(__FILE__)) . 'assets/dist/admin-shipping.css';
                 if (file_exists($css_file)) {
                     wp_enqueue_style(
-                        'vncheckout-admin-shipping',
+                        'coolbird_vietnam_address-admin-shipping',
                         plugins_url('assets/dist/admin-shipping.css', dirname(__FILE__)),
                         array(),
                         filemtime($css_file)
@@ -110,9 +110,9 @@ class CoolBirdVietnam_Shipping_Admin
                 }
 
                 // Localize script
-                wp_localize_script('vncheckout-admin-shipping', 'coolbirdvik_district_admin', array(
+                wp_localize_script('coolbird_vietnam_address-admin-shipping', 'coolviad_district_admin', array(
                     'ajaxurl' => admin_url('admin-ajax.php'),
-                    'nonce' => wp_create_nonce('vncheckout_shipping_admin'),
+                    'nonce' => wp_create_nonce('coolbird_vietnam_address_shipping_admin'),
                     'provinces' => $this->get_provinces_for_js(),
                 ));
             }
@@ -124,7 +124,7 @@ class CoolBirdVietnam_Shipping_Admin
      */
     public function render_admin_page()
     {
-        echo '<div id="vncheckout-admin-shipping-app"></div>';
+        echo '<div id="coolbird_vietnam_address-admin-shipping-app"></div>';
     }
 
     /**
@@ -156,7 +156,7 @@ class CoolBirdVietnam_Shipping_Admin
      */
     public function ajax_get_shipping_rates()
     {
-        check_ajax_referer('vncheckout_shipping_admin', 'nonce');
+        check_ajax_referer('coolbird_vietnam_address_shipping_admin', 'nonce');
 
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(array('message' => 'Permission denied'));
@@ -195,7 +195,7 @@ class CoolBirdVietnam_Shipping_Admin
      */
     public function ajax_save_shipping_rate()
     {
-        check_ajax_referer('vncheckout_shipping_admin', 'nonce');
+        check_ajax_referer('coolbird_vietnam_address_shipping_admin', 'nonce');
 
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(array('message' => 'Permission denied'));
@@ -248,7 +248,7 @@ class CoolBirdVietnam_Shipping_Admin
      */
     public function ajax_delete_shipping_rate()
     {
-        check_ajax_referer('vncheckout_shipping_admin', 'nonce');
+        check_ajax_referer('coolbird_vietnam_address_shipping_admin', 'nonce');
 
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(array('message' => 'Permission denied'));
@@ -274,7 +274,7 @@ class CoolBirdVietnam_Shipping_Admin
      */
     public function ajax_import_rates_csv()
     {
-        check_ajax_referer('vncheckout_shipping_admin', 'nonce');
+        check_ajax_referer('coolbird_vietnam_address_shipping_admin', 'nonce');
 
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(array('message' => 'Permission denied'));
@@ -342,7 +342,7 @@ class CoolBirdVietnam_Shipping_Admin
      */
     public function ajax_export_rates_csv()
     {
-        check_ajax_referer('vncheckout_shipping_admin', 'nonce');
+        check_ajax_referer('coolbird_vietnam_address_shipping_admin', 'nonce');
 
         if (!current_user_can('manage_woocommerce')) {
             wp_send_json_error(array('message' => 'Permission denied'));
@@ -402,4 +402,4 @@ class CoolBirdVietnam_Shipping_Admin
 }
 
 // Initialize
-new CoolBirdVietnam_Shipping_Admin();
+new Coolviad_Shipping_Admin();

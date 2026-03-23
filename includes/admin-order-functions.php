@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Order Functions - Order Filtering
  *
@@ -18,11 +19,11 @@ if (!class_exists('CoolBirdZik_Order_Filter')) {
         public function __construct()
         {
             // Only load if feature is enabled
-            if (!coolbirdzik_vietnam_shipping()->get_options('active_filter_order')) {
+            if (!coolviad_vietnam_shipping()->get_options('active_filter_order')) {
                 return;
             }
 
-            if (coolbirdzik_vietnam_shipping()->hpos_enabled()) {
+            if (coolviad_vietnam_shipping()->hpos_enabled()) {
                 // HPOS: Use Woo 7.3+ filters
                 add_action('woocommerce_order_list_table_restrict_manage_orders', array($this, 'render_hpos_filters'), 10, 2);
                 add_filter('woocommerce_shop_order_list_table_prepare_items_query_args', array($this, 'filter_hpos_query'));
@@ -77,44 +78,22 @@ if (!class_exists('CoolBirdZik_Order_Filter')) {
          */
         private function render_filter_html()
         {
-            $from = isset($_GET['coolbirdzik_date_from']) ? sanitize_text_field($_GET['coolbirdzik_date_from']) : '';
-            $to = isset($_GET['coolbirdzik_date_to']) ? sanitize_text_field($_GET['coolbirdzik_date_to']) : '';
-            $billing_state = isset($_GET['coolbirdzik_billing_state']) ? sanitize_text_field($_GET['coolbirdzik_billing_state']) : '';
-            $billing_city = isset($_GET['coolbirdzik_billing_city']) ? sanitize_text_field($_GET['coolbirdzik_billing_city']) : '';
-            ?>
-            <style>
-            .coolbirdzik-filter-row {
-                display: inline-block;
-                vertical-align: top;
-                margin-right: 8px;
-            }
-            .coolbirdzik-filter-row input {
-                height: 28px;
-                line-height: 28px;
-                width: 130px;
-            }
-            .coolbirdzik-filter-row select {
-                height: 28px;
-                line-height: 28px;
-            }
-            </style>
+            $from = isset($_GET['coolviad_date_from']) ? sanitize_text_field($_GET['coolviad_date_from']) : '';
+            $to = isset($_GET['coolviad_date_to']) ? sanitize_text_field($_GET['coolviad_date_to']) : '';
+            $billing_state = isset($_GET['coolviad_billing_state']) ? sanitize_text_field($_GET['coolviad_billing_state']) : '';
+            $billing_city = isset($_GET['coolviad_billing_city']) ? sanitize_text_field($_GET['coolviad_billing_city']) : '';
+?>
 
-            <div class="coolbirdzik-filter-row">
-                <input type="date"
-                       name="coolbirdzik_date_from"
-                       value="<?php echo esc_attr($from); ?>"
-                       placeholder="<?php esc_attr_e('From Date', 'coolbird-vietnam-address'); ?>"
-                       class="date-picker"
-                       style="width: 130px;">
+            <div class="coolviad-filter-row">
+                <input type="date" name="coolviad_date_from" value="<?php echo esc_attr($from); ?>"
+                    placeholder="<?php esc_attr_e('From Date', 'coolbird-vietnam-address'); ?>" class="date-picker"
+                    style="width: 130px;">
             </div>
 
-            <div class="coolbirdzik-filter-row">
-                <input type="date"
-                       name="coolbirdzik_date_to"
-                       value="<?php echo esc_attr($to); ?>"
-                       placeholder="<?php esc_attr_e('To Date', 'coolbird-vietnam-address'); ?>"
-                       class="date-picker"
-                       style="width: 130px;">
+            <div class="coolviad-filter-row">
+                <input type="date" name="coolviad_date_to" value="<?php echo esc_attr($to); ?>"
+                    placeholder="<?php esc_attr_e('To Date', 'coolbird-vietnam-address'); ?>" class="date-picker"
+                    style="width: 130px;">
             </div>
 
             <?php
@@ -122,16 +101,17 @@ if (!class_exists('CoolBirdZik_Order_Filter')) {
             $vn_states = $country->get_states('VN');
             if ($vn_states && is_array($vn_states)) :
             ?>
-            <div class="coolbirdzik-filter-row">
-                <select name="coolbirdzik_billing_state" id="coolbirdzik_billing_state" style="width: 160px;">
-                    <option value=""><?php esc_html_e('All Provinces', 'coolbird-vietnam-address'); ?></option>
-                    <?php foreach ($vn_states as $code => $name) : ?>
-                        <option value="<?php echo esc_attr($code); ?>" <?php selected($code, $billing_state); ?>><?php echo esc_html($name); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+                <div class="coolviad-filter-row">
+                    <select name="coolviad_billing_state" id="coolviad_billing_state" style="width: 160px;">
+                        <option value=""><?php esc_html_e('All Provinces', 'coolbird-vietnam-address'); ?></option>
+                        <?php foreach ($vn_states as $code => $name) : ?>
+                            <option value="<?php echo esc_attr($code); ?>" <?php selected($code, $billing_state); ?>>
+                                <?php echo esc_html($name); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
             <?php endif; ?>
-            <?php
+<?php
         }
 
         /**
@@ -154,8 +134,8 @@ if (!class_exists('CoolBirdZik_Order_Filter')) {
             }
 
             // Date filter
-            $date_from = isset($_GET['coolbirdzik_date_from']) ? sanitize_text_field($_GET['coolbirdzik_date_from']) : '';
-            $date_to = isset($_GET['coolbirdzik_date_to']) ? sanitize_text_field($_GET['coolbirdzik_date_to']) : '';
+            $date_from = isset($_GET['coolviad_date_from']) ? sanitize_text_field($_GET['coolviad_date_from']) : '';
+            $date_to = isset($_GET['coolviad_date_to']) ? sanitize_text_field($_GET['coolviad_date_to']) : '';
 
             if ($date_from || $date_to) {
                 $query->set('date_query', array(
@@ -167,7 +147,7 @@ if (!class_exists('CoolBirdZik_Order_Filter')) {
             }
 
             // Province filter
-            $billing_state = isset($_GET['coolbirdzik_billing_state']) ? sanitize_text_field($_GET['coolbirdzik_billing_state']) : '';
+            $billing_state = isset($_GET['coolviad_billing_state']) ? sanitize_text_field($_GET['coolviad_billing_state']) : '';
 
             if ($billing_state) {
                 $meta_query = $query->get('meta_query') ?: array();
@@ -186,8 +166,8 @@ if (!class_exists('CoolBirdZik_Order_Filter')) {
         public function filter_hpos_query($query_args)
         {
             // Date filter
-            $date_from = isset($_GET['coolbirdzik_date_from']) ? sanitize_text_field($_GET['coolbirdzik_date_from']) : '';
-            $date_to = isset($_GET['coolbirdzik_date_to']) ? sanitize_text_field($_GET['coolbirdzik_date_to']) : '';
+            $date_from = isset($_GET['coolviad_date_from']) ? sanitize_text_field($_GET['coolviad_date_from']) : '';
+            $date_to = isset($_GET['coolviad_date_to']) ? sanitize_text_field($_GET['coolviad_date_to']) : '';
 
             if ($date_from) {
                 $query_args['date_after'] = $date_from;
@@ -197,13 +177,13 @@ if (!class_exists('CoolBirdZik_Order_Filter')) {
             }
 
             // Province filter
-            $billing_state = isset($_GET['coolbirdzik_billing_state']) ? sanitize_text_field($_GET['coolbirdzik_billing_state']) : '';
+            $billing_state = isset($_GET['coolviad_billing_state']) ? sanitize_text_field($_GET['coolviad_billing_state']) : '';
 
             if ($billing_state) {
                 $query_args['billing_state'] = $billing_state;
 
                 // Also filter by city if selected
-                $billing_city = isset($_GET['coolbirdzik_billing_city']) ? sanitize_text_field($_GET['coolbirdzik_billing_city']) : '';
+                $billing_city = isset($_GET['coolviad_billing_city']) ? sanitize_text_field($_GET['coolviad_billing_city']) : '';
                 if ($billing_city) {
                     $query_args['billing_city'] = $billing_city;
                 }

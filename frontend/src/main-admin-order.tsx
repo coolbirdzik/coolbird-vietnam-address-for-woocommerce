@@ -18,16 +18,16 @@ const AdminOrderApp: React.FC = () => {
   // Get provinces and initial values from localized data
   const provinces: Province[] = React.useMemo(() => {
     if (
-      window.coolbirdvik_district_admin &&
-      (window.coolbirdvik_district_admin as any).provinces
+      window.coolviad_district_admin &&
+      (window.coolviad_district_admin as any).provinces
     ) {
-      return (window.coolbirdvik_district_admin as any).provinces;
+      return (window.coolviad_district_admin as any).provinces;
     }
     return [];
   }, []);
 
   const initialValues = React.useMemo(() => {
-    const getData = window.coolbirdvik_district_admin as any;
+    const getData = window.coolviad_district_admin as any;
     return {
       billingState: getData?.billing_state || "",
       billingCity: getData?.billing_city || "",

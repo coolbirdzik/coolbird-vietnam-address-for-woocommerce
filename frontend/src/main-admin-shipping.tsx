@@ -15,7 +15,7 @@ const queryClient = new QueryClient({
 });
 
 const AdminShippingApp: React.FC = () => {
-  const data = window.coolbirdvik_district_admin;
+  const data = window.coolviad_district_admin;
 
   const provinces: Province[] = React.useMemo(
     () => (data?.provinces as unknown as Province[]) || [],

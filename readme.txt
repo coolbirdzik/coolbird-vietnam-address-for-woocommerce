@@ -47,6 +47,22 @@ Yes, regularly updated from official sources.
 = Does the plugin slow down the website? =
 No. Data is stored in PHP arrays, no database queries.
 
+== Source Code & Development ==
+
+This plugin includes minified JavaScript bundles for production use. The original human-readable source code is available in our public GitHub repository:
+
+**Repository:** https://github.com/coolbirdzik/coolbird-vietnam-address-for-woocommerce
+
+**Frontend Source:** Located in the `frontend/` directory
+- Built with TypeScript, React, and Vite
+- Source files: `frontend/src/`
+- Entry points: `frontend/src/main-checkout.tsx`, `frontend/src/main-admin-order.tsx`, `frontend/src/main-admin-shipping.tsx`
+
+**To build from source:**
+1. Clone the repository
+2. Run `cd frontend && npm install && npm run build`
+3. Built assets will be in `assets/dist/`
+
 == Changelog ==
 
 = 1.0.0 - 2026-02-25 =

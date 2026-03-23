@@ -35,7 +35,7 @@ Woocommerce plugin optimized for the Vietnamese market with Province/City, Distr
 ## Installation
 
 1. WordPress Admin → Plugins → Add New
-2. Search "Vietnam Address Woo"
+2. Search "Coolbird Vietnam Address"
 3. Install → Activate
 4. Go to **Woo → Settings → Vietnam Address** to configure
 

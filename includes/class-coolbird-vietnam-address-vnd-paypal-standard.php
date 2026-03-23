@@ -2,7 +2,7 @@
 if (! defined('ABSPATH')) {
     exit;
 }
-class CoolBirdZik_vncheckout_VND_PayPal_Standard
+class CoolBirdZik_coolbird_vietnam_address_VND_PayPal_Standard
 {
 
     /**
@@ -85,9 +85,10 @@ class CoolBirdZik_vncheckout_VND_PayPal_Standard
             $value['description'] .= '<br />';
             $value['description'] .=
                 sprintf(
-                    __('The prices will be converted to %1$s in the PayPal pages with the exchange rate %2$s.', 'coolbird-vietnam-address-for-woocommerce'),
-                    "<span style='color:red'> $this->paypal_currency</span>",
-                    "<span style='color:red'> $this->paypal_currency / VND = $this->exchange_rate_to_vnd</span>"
+                    /* translators: %1$s: currency code, %2$s: exchange rate info */
+                    esc_html__('The prices will be converted to %1$s in the PayPal pages with the exchange rate %2$s.', 'coolbird-vietnam-address'),
+                    '<span style="color:red">' . esc_html($this->paypal_currency) . '</span>',
+                    '<span style="color:red">' . esc_html($this->paypal_currency) . ' / VND = ' . esc_html($this->exchange_rate_to_vnd) . '</span>'
                 );
         }
         return $value;

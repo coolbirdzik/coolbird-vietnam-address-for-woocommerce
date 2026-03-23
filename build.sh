@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Build Script - Vietnam Address Woo
+# Build Script - Coolbird Vietnam Address
 # Builds frontend and creates distributable ZIP file
 #
 
@@ -14,7 +14,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 printf "${GREEN}========================================${NC}\n"
-printf "${GREEN}Vietnam Address Woo${NC}\n"
+printf "${GREEN}Coolbird Vietnam Address${NC}\n"
 printf "${GREEN}Build & Package${NC}\n"
 printf "${GREEN}========================================${NC}\n"
 printf "\n"

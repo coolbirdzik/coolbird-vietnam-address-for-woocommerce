@@ -36,8 +36,8 @@ if($flra_options['freeship_remove_other_methob']){
     add_filter( 'woocommerce_package_rates', 'dwas_hide_shipping_when_free_is_available', 100 );
 }
 if($flra_options['active_vnd2usd']){
-    include( 'class-vncheckout-vnd-paypal-standard.php' );
-    new CoolBirdZik_vncheckout_VND_PayPal_Standard(
+    include( 'class-coolbird_vietnam_address-vnd-paypal-standard.php' );
+    new CoolBirdZik_coolbird_vietnam_address_VND_PayPal_Standard(
         $flra_options['vnd_usd_rate'],
         $flra_options['vnd2usd_currency']
     );

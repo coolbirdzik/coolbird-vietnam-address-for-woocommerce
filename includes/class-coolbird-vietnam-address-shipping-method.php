@@ -1,7 +1,7 @@
 <?php
 
 /**
- * VNCheckout Shipping Method
+ * Coolviad Shipping Method
  *
  * Calculates shipping fees based on Vietnam province/district/ward, region,
  * order total, and weight.
@@ -16,22 +16,22 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-function vncheckout_shipping_method_init()
+function coolbird_vietnam_address_shipping_method_init()
 {
-    if (class_exists('CoolBirdVietnam_Shipping_Method')) {
+    if (class_exists('Coolviad_Shipping_Method')) {
         return;
     }
 
-    class CoolBirdVietnam_Shipping_Method extends WC_Shipping_Method
+    class Coolviad_Shipping_Method extends WC_Shipping_Method
     {
         public function __construct($instance_id = 0)
         {
-            $this->id                 = 'vncheckout_shipping';
+            $this->id                 = 'coolbird_vietnam_address_shipping';
             $this->instance_id        = absint($instance_id);
-            $this->method_title       = __('Vietnam Shipping Calculator', 'coolbird-vietnam-address-for-woocommerce');
+            $this->method_title       = __('Vietnam Shipping Calculator', 'coolbird-vietnam-address');
             $this->method_description = __(
                 'Shipping fees based on Vietnam province/district/ward, order total, and weight.',
-                'coolbird-vietnam-address-for-woocommerce'
+                'coolbird-vietnam-address'
             );
             $this->supports = array('shipping-zones', 'instance-settings');
 
@@ -54,35 +54,35 @@ function vncheckout_shipping_method_init()
 
         public function init_form_fields(): void
         {
-            $rates_url = admin_url('admin.php?page=coolbirdzik-shipping-rates');
+            $rates_url = admin_url('admin.php?page=coolviad-shipping-rates');
 
             $this->instance_form_fields = array(
                 'enabled' => array(
-                    'title'   => __('Enable/Disable', 'coolbird-vietnam-address-for-woocommerce'),
+                    'title'   => __('Enable/Disable', 'coolbird-vietnam-address'),
                     'type'    => 'checkbox',
-                    'label'   => __('Enable this shipping method', 'coolbird-vietnam-address-for-woocommerce'),
+                    'label'   => __('Enable this shipping method', 'coolbird-vietnam-address'),
                     'default' => 'yes',
                 ),
                 'title' => array(
-                    'title'       => __('Method Title', 'coolbird-vietnam-address-for-woocommerce'),
+                    'title'       => __('Method Title', 'coolbird-vietnam-address'),
                     'type'        => 'text',
-                    'description' => __('Title displayed during checkout.', 'coolbird-vietnam-address-for-woocommerce'),
-                    'default'     => __('Vietnam Shipping', 'coolbird-vietnam-address-for-woocommerce'),
+                    'description' => __('Title displayed during checkout.', 'coolbird-vietnam-address'),
+                    'default'     => __('Vietnam Shipping', 'coolbird-vietnam-address'),
                     'desc_tip'    => true,
                 ),
                 'default_rate' => array(
-                    'title'       => __('Default Shipping Rate', 'coolbird-vietnam-address-for-woocommerce'),
+                    'title'       => __('Default Shipping Rate', 'coolbird-vietnam-address'),
                     'type'        => 'text',
-                    'description' => __('Fallback rate (VND) when no location rule matches.', 'coolbird-vietnam-address-for-woocommerce'),
+                    'description' => __('Fallback rate (VND) when no location rule matches.', 'coolbird-vietnam-address'),
                     'default'     => '30000',
                     'desc_tip'    => true,
                 ),
                 'manage_rates_link' => array(
-                    'title'       => __('Manage Rates', 'coolbird-vietnam-address-for-woocommerce'),
+                    'title'       => __('Manage Rates', 'coolbird-vietnam-address'),
                     'type'        => 'title',
                     'description' => sprintf(
                         /* translators: %s: URL to the rate manager page */
-                        __('Configure shipping rates by region, province, district, and ward on the <a href="%s" style="font-weight:600">Shipping Rates</a> page (Woo → Shipping Rates).', 'coolbird-vietnam-address-for-woocommerce'),
+                        __('Configure shipping rates by region, province, district, and ward on the <a href="%s" style="font-weight:600">Shipping Rates</a> page (Woo → Shipping Rates).', 'coolbird-vietnam-address'),
                         esc_url($rates_url)
                     ),
                 ),
@@ -147,9 +147,9 @@ function vncheckout_shipping_method_init()
                 }
             }
 
-            // 4. Region (resolve via CoolBirdVietnam_Region_Manager)
-            if ($province && class_exists('CoolBirdVietnam_Region_Manager')) {
-                $region_code = CoolBirdVietnam_Region_Manager::get_region_for_province($province);
+            // 4. Region (resolve via Coolviad_Region_Manager)
+            if ($province && class_exists('Coolviad_Region_Manager')) {
+                $region_code = Coolviad_Region_Manager::get_region_for_province($province);
                 if ($region_code) {
                     $rate = $this->find_rate('region', $region_code);
                     if ($rate) {
@@ -170,7 +170,7 @@ function vncheckout_shipping_method_init()
         private function find_rate(string $type, string $code): ?array
         {
             global $wpdb;
-            $table = $wpdb->prefix . 'coolbirdzik_shipping_rates';
+            $table = $wpdb->prefix . 'coolviad_shipping_rates';
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Read-only SELECT on plugin-owned rates table; table name is plugin-controlled and escaped with esc_sql().
             $row = $wpdb->get_row(
@@ -286,4 +286,4 @@ function vncheckout_shipping_method_init()
     }
 }
 
-add_action('woocommerce_shipping_init', 'vncheckout_shipping_method_init');
+add_action('woocommerce_shipping_init', 'coolbird_vietnam_address_shipping_method_init');

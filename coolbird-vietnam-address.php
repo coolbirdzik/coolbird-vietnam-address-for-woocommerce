@@ -1,20 +1,20 @@
 <?php
 /*
  * Plugin Name: Coolbird Vietnam Address for WooCommerce
- * Plugin URI: https://github.com/coolbirdzik/coolbird-vietnam-address
+ * Plugin URI: https://github.com/coolviad/coolbird-vietnam-address
  * Version: 1.0.0
  * Description: Add province/city, district, commune/ward/town to checkout form and simplify checkout form
  * Author: CoolBirdZik
- * Author URI: https://github.com/coolbirdzik
+ * Author URI: https://github.com/coolviad
  * Text Domain: coolbird-vietnam-address
  * Domain Path: /languages
  * WC requires at least: 8.0.0
  * WC tested up to: 10.1.2
  * License: GPLv3
  * License URI: http://www.gnu.org/licenses/gpl-3.0
-Vietnam Address Woo
+Coolbird Vietnam Address
 
-Copyright (C) 2026 Nguyen Tan Hung - https://github.com/coolbirdzik
+Copyright (C) 2026 Nguyen Tan Hung - https://github.com/coolviad
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -34,25 +34,36 @@ defined('ABSPATH') or die('No script kiddies please!');
 
 use Automattic\WooCommerce\Utilities\OrderUtil;
 
+// Define constants before using them
+if (!defined('COOLVIAD_PLUGIN_DIR')) {
+    define('COOLVIAD_PLUGIN_DIR', plugin_dir_path(__FILE__));
+}
+if (!defined('COOLVIAD_URL')) {
+    define('COOLVIAD_URL', plugin_dir_url(__FILE__));
+}
+if (!defined('COOLVIAD_PLUGIN_FILE')) {
+    define('COOLVIAD_PLUGIN_FILE', __FILE__);
+}
+
 if (
     in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))
-    && !function_exists('vn_checkout')
+    && !function_exists('coolviad_checkout')
 ) {
 
-    include 'cities/provinces.php';
+    include COOLVIAD_PLUGIN_DIR . 'cities/provinces.php';
 
-    register_activation_hook(__FILE__, array('Woo_Address_Selectbox_Class', 'on_activation'));
-    register_deactivation_hook(__FILE__, array('Woo_Address_Selectbox_Class', 'on_deactivation'));
-    register_uninstall_hook(__FILE__, array('Woo_Address_Selectbox_Class', 'on_uninstall'));
+    register_activation_hook(__FILE__, array('Coolviad_Address_Selectbox_Class', 'on_activation'));
+    register_deactivation_hook(__FILE__, array('Coolviad_Address_Selectbox_Class', 'on_deactivation'));
+    register_uninstall_hook(__FILE__, array('Coolviad_Address_Selectbox_Class', 'on_uninstall'));
 
-    if (!class_exists('Woo_Address_Selectbox_Class')) {
-        class Woo_Address_Selectbox_Class
+    if (!class_exists('Coolviad_Address_Selectbox_Class')) {
+        class Coolviad_Address_Selectbox_Class
         {
             protected static $instance;
 
             protected $_version = '2.1.6';
-            public $_optionName = 'coolbirdzik_woo_district';
-            public $_optionGroup = 'coolbirdzik-district-options-group';
+            public $_optionName = 'coolviad_woo_district';
+            public $_optionGroup = 'coolviad-district-options-group';
             public $_defaultOptions = array(
                 'active_village' => '',
                 'required_village' => '',
@@ -100,31 +111,31 @@ if (
                 add_filter('woocommerce_checkout_fields', array($this, 'custom_override_checkout_fields'), 999999);
                 add_filter('woocommerce_states', array($this, 'vietnam_cities_woocommerce'), 99999);
 
-                add_action('wp_enqueue_scripts', array($this, 'coolbirdzik_enqueue_UseAjaxInWp'));
+                add_action('wp_enqueue_scripts', array($this, 'coolviad_enqueue_UseAjaxInWp'));
                 add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_scripts'));
 
                 add_action('wp_ajax_load_diagioihanhchinh', array($this, 'load_diagioihanhchinh_func'));
                 add_action('wp_ajax_nopriv_load_diagioihanhchinh', array($this, 'load_diagioihanhchinh_func'));
 
                 // AJAX handlers for getting district and ward names (for Blocks checkout address card)
-                add_action('wp_ajax_coolbirdzik_get_district_name', array($this, 'coolbirdzik_ajax_get_district_name'));
-                add_action('wp_ajax_nopriv_coolbirdzik_get_district_name', array($this, 'coolbirdzik_ajax_get_district_name'));
-                add_action('wp_ajax_coolbirdzik_get_ward_name', array($this, 'coolbirdzik_ajax_get_ward_name'));
-                add_action('wp_ajax_nopriv_coolbirdzik_get_ward_name', array($this, 'coolbirdzik_ajax_get_ward_name'));
+                add_action('wp_ajax_coolviad_get_district_name', array($this, 'coolviad_ajax_get_district_name'));
+                add_action('wp_ajax_nopriv_coolviad_get_district_name', array($this, 'coolviad_ajax_get_district_name'));
+                add_action('wp_ajax_coolviad_get_ward_name', array($this, 'coolviad_ajax_get_ward_name'));
+                add_action('wp_ajax_nopriv_coolviad_get_ward_name', array($this, 'coolviad_ajax_get_ward_name'));
 
-                add_filter('woocommerce_localisation_address_formats', array($this, 'coolbirdzik_woocommerce_localisation_address_formats'), 99999);
-                add_filter('woocommerce_order_formatted_billing_address', array($this, 'coolbirdzik_woocommerce_order_formatted_billing_address'), 10, 2);
+                add_filter('woocommerce_localisation_address_formats', array($this, 'coolviad_woocommerce_localisation_address_formats'), 99999);
+                add_filter('woocommerce_order_formatted_billing_address', array($this, 'coolviad_woocommerce_order_formatted_billing_address'), 10, 2);
 
-                add_action('woocommerce_admin_order_data_after_shipping_address', array($this, 'coolbirdzik_after_shipping_address'), 10, 1);
+                add_action('woocommerce_admin_order_data_after_shipping_address', array($this, 'coolviad_after_shipping_address'), 10, 1);
                 add_action('woocommerce_after_order_object_save', array($this, 'save_shipping_phone_meta'), 10);
-                add_filter('woocommerce_order_formatted_shipping_address', array($this, 'coolbirdzik_woocommerce_order_formatted_shipping_address'), 10, 2);
+                add_filter('woocommerce_order_formatted_shipping_address', array($this, 'coolviad_woocommerce_order_formatted_shipping_address'), 10, 2);
 
-                add_filter('woocommerce_order_details_after_customer_details', array($this, 'coolbirdzik_woocommerce_order_details_after_customer_details'), 10);
+                add_filter('woocommerce_order_details_after_customer_details', array($this, 'coolviad_woocommerce_order_details_after_customer_details'), 10);
 
                 //my account
-                add_filter('woocommerce_my_account_my_address_formatted_address', array($this, 'coolbirdzik_woocommerce_my_account_my_address_formatted_address'), 10, 3);
-                add_filter('woocommerce_default_address_fields', array($this, 'coolbirdzik_custom_override_default_address_fields'), 99999);
-                add_filter('woocommerce_get_country_locale', array($this, 'coolbirdzik_woocommerce_get_country_locale'), 99999);
+                add_filter('woocommerce_my_account_my_address_formatted_address', array($this, 'coolviad_woocommerce_my_account_my_address_formatted_address'), 10, 3);
+                add_filter('woocommerce_default_address_fields', array($this, 'coolviad_custom_override_default_address_fields'), 99999);
+                add_filter('woocommerce_get_country_locale', array($this, 'coolviad_woocommerce_get_country_locale'), 99999);
 
                 //More action
                 add_filter('default_checkout_billing_country', array($this, 'change_default_checkout_country'), 9999);
@@ -136,41 +147,42 @@ if (
                 add_action('admin_init', array($this, 'register_mysettings'));
                 add_filter('plugin_action_links_' . plugin_basename(__FILE__), array($this, 'plugin_action_links'));
 
-                add_filter('woocommerce_package_rates', array($this, 'coolbirdzik_hide_shipping_when_shipdisable'), 100);
+                add_filter('woocommerce_package_rates', array($this, 'coolviad_hide_shipping_when_shipdisable'), 100);
 
                 add_option($this->_optionName, $this->_defaultOptions);
 
-                include_once('includes/apps.php');
+                include_once(COOLVIAD_PLUGIN_DIR . 'includes/apps.php');
 
                 // Include shipping method and admin classes
-                include_once('includes/class-coolbird-vietnam-address-shipping-method.php');
-                include_once('includes/class-coolbird-vietnam-address-region-manager.php');
-                include_once('includes/class-coolbirdzik-shipping-admin.php');
+                include_once(COOLVIAD_PLUGIN_DIR . 'includes/class-coolbird-vietnam-address-shipping-method.php');
+                include_once(COOLVIAD_PLUGIN_DIR . 'includes/class-coolbird-vietnam-address-region-manager.php');
+                include_once(COOLVIAD_PLUGIN_DIR . 'includes/class-coolbird-vietnam-address-shipping-admin.php');
+                include_once(COOLVIAD_PLUGIN_DIR . 'includes/class-coolbirdzik-shipping-admin.php');
 
                 // Run dbDelta on every load to apply schema upgrades for existing installs
-                add_action('admin_init', array('Woo_Address_Selectbox_Class', 'create_shipping_rates_table'));
-                add_action('admin_init', array('Woo_Address_Selectbox_Class', 'create_shipping_regions_table'));
+                add_action('admin_init', array('Coolviad_Address_Selectbox_Class', 'create_shipping_rates_table'));
+                add_action('admin_init', array('Coolviad_Address_Selectbox_Class', 'create_shipping_regions_table'));
 
                 // Vite builds ES modules — add type="module" to all Vite-built scripts
-                add_filter('script_loader_tag', array($this, 'coolbirdzik_set_module_type'), 10, 2);
+                add_filter('script_loader_tag', array($this, 'coolviad_set_module_type'), 10, 2);
 
                 // Register shipping method
                 add_filter('woocommerce_shipping_methods', array($this, 'add_coolbird_vietnam_address_shipping_method'));
 
                 //admin order address, form billing
-                add_filter('woocommerce_admin_billing_fields', array($this, 'coolbirdzik_woocommerce_admin_billing_fields'), 99);
-                add_filter('woocommerce_admin_shipping_fields', array($this, 'coolbirdzik_woocommerce_admin_shipping_fields'), 99);
+                add_filter('woocommerce_admin_billing_fields', array($this, 'coolviad_woocommerce_admin_billing_fields'), 99);
+                add_filter('woocommerce_admin_shipping_fields', array($this, 'coolviad_woocommerce_admin_shipping_fields'), 99);
 
-                add_filter('woocommerce_form_field_select', array($this, 'coolbirdzik_woocommerce_form_field_select'), 10, 4);
+                add_filter('woocommerce_form_field_select', array($this, 'coolviad_woocommerce_form_field_select'), 10, 4);
 
                 add_filter('woocommerce_shipping_calculator_enable_postcode', '__return_false');
 
-                add_filter('woocommerce_get_order_address', array($this, 'coolbirdzik_woocommerce_get_order_address'), 99, 2);  //API V1
-                add_filter('woocommerce_rest_prepare_shop_order_object', array($this, 'coolbirdzik_woocommerce_rest_prepare_shop_order_object'), 99, 3); //API V2
-                add_filter('woocommerce_api_order_response', array($this, 'coolbirdzik_woocommerce_api_order_response'), 99, 2); //API V3
+                add_filter('woocommerce_get_order_address', array($this, 'coolviad_woocommerce_get_order_address'), 99, 2);  //API V1
+                add_filter('woocommerce_rest_prepare_shop_order_object', array($this, 'coolviad_woocommerce_rest_prepare_shop_order_object'), 99, 3); //API V2
+                add_filter('woocommerce_api_order_response', array($this, 'coolviad_woocommerce_api_order_response'), 99, 2); //API V3
                 //woocommerce_api_customer_response
 
-                add_filter('woocommerce_formatted_address_replacements', array($this, 'coolbirdzik_woocommerce_formatted_address_replacements'), 99);
+                add_filter('woocommerce_formatted_address_replacements', array($this, 'coolviad_woocommerce_formatted_address_replacements'), 99);
 
                 add_action('before_woocommerce_init', function () {
                     if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
@@ -179,43 +191,45 @@ if (
                 });
 
                 // Woo Blocks (block-based checkout) integration
-                add_action('woocommerce_blocks_loaded', array($this, 'coolbirdzik_register_store_api_extension'));
-                add_action('woocommerce_store_api_checkout_update_order_from_request', array($this, 'coolbirdzik_save_ward_from_blocks'), 10, 2);
+                add_action('woocommerce_blocks_loaded', array($this, 'coolviad_register_store_api_extension'));
+                add_action('woocommerce_store_api_checkout_update_order_from_request', array($this, 'coolviad_save_ward_from_blocks'), 10, 2);
 
                 // Force Blocks to render SELECT fields instead of TEXT for districts/wards
-                add_filter('woocommerce_blocks_checkout_fields', array($this, 'coolbirdzik_modify_blocks_checkout_fields'), 10, 1);
+                add_filter('woocommerce_blocks_checkout_fields', array($this, 'coolviad_modify_blocks_checkout_fields'), 10, 1);
 
                 // Filter Store API responses to resolve district/ward IDs to names for address card display
-                add_filter('woocommerce_store_api_cart_response', array($this, 'coolbirdzik_resolve_address_names_in_cart_response'), 10, 1);
-                add_filter('woocommerce_store_api_checkout_response', array($this, 'coolbirdzik_resolve_address_names_in_cart_response'), 10, 1);
+                add_filter('woocommerce_store_api_cart_response', array($this, 'coolviad_resolve_address_names_in_cart_response'), 10, 1);
+                add_filter('woocommerce_store_api_checkout_response', array($this, 'coolviad_resolve_address_names_in_cart_response'), 10, 1);
 
                 // Also filter the formatted address for emails and other displays
-                add_filter('woocommerce_order_get_formatted_billing_address', array($this, 'coolbirdzik_format_address_for_display'), 10, 2);
-                add_filter('woocommerce_order_get_formatted_shipping_address', array($this, 'coolbirdzik_format_address_for_display'), 10, 2);
+                add_filter('woocommerce_order_get_formatted_billing_address', array($this, 'coolviad_format_address_for_display'), 10, 2);
+                add_filter('woocommerce_order_get_formatted_shipping_address', array($this, 'coolviad_format_address_for_display'), 10, 2);
 
                 // Filter customer formatted address for address cards (WooCommerce Blocks)
-                add_filter('woocommerce_customer_formatted_address', array($this, 'coolbirdzik_format_customer_address_for_blocks'), 10, 3);
+                add_filter('woocommerce_customer_formatted_address', array($this, 'coolviad_format_customer_address_for_blocks'), 10, 3);
 
                 // Additional hooks for Blocks address formatting
-                add_filter('woocommerce_customer_get_shipping_city', array($this, 'coolbirdzik_convert_city_id_to_name'), 10, 1);
-                add_filter('woocommerce_customer_get_billing_city', array($this, 'coolbirdzik_convert_city_id_to_name'), 10, 1);
-                add_filter('woocommerce_customer_get_shipping_address_2', array($this, 'coolbirdzik_convert_ward_id_to_name'), 10, 1);
-                add_filter('woocommerce_customer_get_billing_address_2', array($this, 'coolbirdzik_convert_ward_id_to_name'), 10, 1);
+                add_filter('woocommerce_customer_get_shipping_city', array($this, 'coolviad_convert_city_id_to_name'), 10, 1);
+                add_filter('woocommerce_customer_get_billing_city', array($this, 'coolviad_convert_city_id_to_name'), 10, 1);
+                add_filter('woocommerce_customer_get_shipping_address_2', array($this, 'coolviad_convert_ward_id_to_name'), 10, 1);
+                add_filter('woocommerce_customer_get_billing_address_2', array($this, 'coolviad_convert_ward_id_to_name'), 10, 1);
 
                 // Hook into customer data retrieval for Blocks checkout
-                add_filter('woocommerce_checkout_get_value', array($this, 'coolbirdzik_convert_checkout_value'), 10, 2);
+                add_filter('woocommerce_checkout_get_value', array($this, 'coolviad_convert_checkout_value'), 10, 2);
             }
 
             public function define_constants()
             {
-                if (!defined('COOLBIRDZIK_DWAS_VERSION_NUM'))
-                    define('COOLBIRDZIK_DWAS_VERSION_NUM', $this->_version);
-                if (!defined('COOLBIRDZIK_DWAS_URL'))
-                    define('COOLBIRDZIK_DWAS_URL', plugin_dir_url(__FILE__));
-                if (!defined('COOLBIRDZIK_DWAS_BASENAME'))
-                    define('COOLBIRDZIK_DWAS_BASENAME', plugin_basename(__FILE__));
-                if (!defined('COOLBIRDZIK_DWAS_PLUGIN_DIR'))
-                    define('COOLBIRDZIK_DWAS_PLUGIN_DIR', plugin_dir_path(__FILE__));
+                if (!defined('COOLVIAD_PLUGIN_FILE'))
+                    define('COOLVIAD_PLUGIN_FILE', __FILE__);
+                if (!defined('COOLVIAD_VERSION_NUM'))
+                    define('COOLVIAD_VERSION_NUM', $this->_version);
+                if (!defined('COOLVIAD_URL'))
+                    define('COOLVIAD_URL', plugin_dir_url(__FILE__));
+                if (!defined('COOLVIAD_BASENAME'))
+                    define('COOLVIAD_BASENAME', plugin_basename(__FILE__));
+                if (!defined('COOLVIAD_PLUGIN_DIR'))
+                    define('COOLVIAD_PLUGIN_DIR', plugin_dir_path(__FILE__));
             }
 
             public function load_textdomain()
@@ -231,8 +245,8 @@ if (
                 $locale = apply_filters('plugin_locale', $locale, 'coolbird-vietnam-address');
 
                 unload_textdomain('coolbird-vietnam-address');
-                load_textdomain('coolbird-vietnam-address', WP_LANG_DIR . '/plugins/coolbird-vietnam-address-' . $locale . '.mo');
-                load_plugin_textdomain('coolbird-vietnam-address', false, dirname(plugin_basename(__FILE__)) . '/languages/');
+                load_textdomain('coolbird-vietnam-address', COOLVIAD_PLUGIN_DIR . 'languages/coolbird-vietnam-address-' . $locale . '.mo');
+                load_plugin_textdomain('coolbird-vietnam-address', false, dirname(plugin_basename(COOLVIAD_PLUGIN_FILE)) . '/languages/');
             }
 
             public static function on_activation()
@@ -253,7 +267,7 @@ if (
             public static function create_shipping_rates_table()
             {
                 global $wpdb;
-                $table_name = $wpdb->prefix . 'coolbirdzik_shipping_rates';
+                $table_name = $wpdb->prefix . 'coolviad_shipping_rates';
                 $charset_collate = $wpdb->get_charset_collate();
 
                 $sql = "CREATE TABLE IF NOT EXISTS $table_name (
@@ -282,7 +296,7 @@ if (
             public static function create_shipping_regions_table()
             {
                 global $wpdb;
-                $table_name = $wpdb->prefix . 'coolbirdzik_shipping_regions';
+                $table_name = $wpdb->prefix . 'coolviad_shipping_regions';
                 $charset_collate = $wpdb->get_charset_collate();
 
                 $sql = "CREATE TABLE IF NOT EXISTS $table_name (
@@ -308,7 +322,7 @@ if (
             private static function seed_predefined_regions()
             {
                 global $wpdb;
-                $table_name = $wpdb->prefix . 'coolbirdzik_shipping_regions';
+                $table_name = $wpdb->prefix . 'coolviad_shipping_regions';
 
                 $predefined = array(
                     array(
@@ -402,13 +416,13 @@ if (
             {
                 add_submenu_page(
                     'woocommerce',
-                    __('Vietnam Address Woo', 'coolbird-vietnam-address'),
-                    __('Vietnam Address Woo', 'coolbird-vietnam-address'),
+                    __('Coolbird Vietnam Address', 'coolbird-vietnam-address'),
+                    __('Coolbird Vietnam Address', 'coolbird-vietnam-address'),
                     'manage_woocommerce',
-                    'coolbirdzik-district-address',
+                    'coolviad-district-address',
                     array(
                         $this,
-                        'coolbirdzik_district_setting'
+                        'coolviad_district_setting'
                     )
                 );
             }
@@ -431,9 +445,9 @@ if (
                 return $sanitized;
             }
 
-            function coolbirdzik_district_setting()
+            function coolviad_district_setting()
             {
-                include 'includes/options-page.php';
+                include COOLVIAD_PLUGIN_DIR . 'includes/options-page.php';
             }
 
             function vietnam_cities_woocommerce($states)
@@ -443,11 +457,11 @@ if (
                 // - new: string province codes (HANOI, HOCHIMINH...) + districts.php
                 $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
                 if ($schema === 'old') {
-                    include 'cities/provinces-legacy.php';
+                    include COOLVIAD_PLUGIN_DIR . 'cities/provinces-legacy.php';
                 } else {
-                    include 'cities/provinces.php';
+                    include COOLVIAD_PLUGIN_DIR . 'cities/provinces.php';
                 }
-                $states['VN'] = apply_filters('coolbirdzik_states_vn', $tinh_thanhpho);
+                $states['VN'] = apply_filters('coolviad_states_vn', $tinh_thanhpho);
                 return $states;
             }
 
@@ -486,7 +500,7 @@ if (
                         'type' => 'select',
                         'class' => array('form-row-first', 'address-field', 'update_totals_on_change'),
                         'placeholder' => _x('Select Province/City', 'placeholder', 'coolbird-vietnam-address'),
-                        'options' => array('' => __('Select Province/City', 'coolbird-vietnam-address')) + apply_filters('coolbirdzik_states_vn', $tinh_thanhpho),
+                        'options' => array('' => __('Select Province/City', 'coolbird-vietnam-address')) + apply_filters('coolviad_states_vn', $tinh_thanhpho),
                         'priority' => 30
                     );
                     $fields['billing']['billing_city'] = array(
@@ -574,7 +588,7 @@ if (
                         'type' => 'select',
                         'class' => array('form-row-first', 'address-field', 'update_totals_on_change'),
                         'placeholder' => _x('Select Province/City', 'placeholder', 'coolbird-vietnam-address'),
-                        'options' => array('' => __('Select Province/City', 'coolbird-vietnam-address')) + apply_filters('coolbirdzik_states_vn', $tinh_thanhpho),
+                        'options' => array('' => __('Select Province/City', 'coolbird-vietnam-address')) + apply_filters('coolviad_states_vn', $tinh_thanhpho),
                         'priority' => 30
                     );
                     $fields['shipping']['shipping_city'] = array(
@@ -629,7 +643,7 @@ if (
                 uasort($fields['billing'], array($this, 'sort_fields_by_order'));
                 uasort($fields['shipping'], array($this, 'sort_fields_by_order'));
 
-                return apply_filters('coolbirdzik_checkout_fields', $fields);
+                return apply_filters('coolviad_checkout_fields', $fields);
             }
 
             function sort_fields_by_order($a, $b)
@@ -693,15 +707,14 @@ if (
             }
 
 
-            function coolbirdzik_enqueue_UseAjaxInWp()
+            function coolviad_enqueue_UseAjaxInWp()
             {
                 // Support both classic and block-based checkout pages (including translated checkouts)
-                if (is_checkout() || is_cart() || is_account_page() || apply_filters('vn_checkout_allow_script_all_page', false)) {
-                    // Load React and ReactDOM for checkout page components
-                    wp_enqueue_script('react', 'https://unpkg.com/react@18/umd/react.production.min.js', array(), '18', true);
-                    wp_enqueue_script('react-dom', 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js', array('react'), '18', true);
+                if (is_checkout() || is_cart() || is_account_page() || apply_filters('coolviad_checkout_allow_script_all_page', false)) {
+                    // React and ReactDOM are already bundled locally via Vite in assets/dist/
+                    // No need to load from external CDN (https://unpkg.com)
 
-                    $get_address = COOLBIRDZIK_DWAS_URL . 'get-address.php';
+                    $get_address = COOLVIAD_URL . 'get-address.php';
                     if ($this->check_file_open_status($get_address) != 200) {
                         $get_address = admin_url('admin-ajax.php');
                     }
@@ -782,31 +795,31 @@ if (
                     $localize_data['ajax_url'] = admin_url('admin-ajax.php');
 
                     // Woo Blocks checkout — inject district/ward dropdowns
-                    // Must depend on react and react-dom for React components to work
-                    $checkout_asset = COOLBIRDZIK_DWAS_PLUGIN_DIR . 'assets/dist/checkout.js';
+                    // React and ReactDOM are already bundled locally in the Vite build (assets/dist/)
+                    $checkout_asset = COOLVIAD_PLUGIN_DIR . 'assets/dist/checkout.js';
                     $checkout_asset_version = file_exists($checkout_asset) ? filemtime($checkout_asset) : $this->_version;
 
                     wp_enqueue_script(
-                        'coolbirdzik_blocks_checkout',
-                        plugins_url('assets/dist/checkout.js', __FILE__),
-                        array('react', 'react-dom'),
+                        'coolviad_blocks_checkout',
+                        COOLVIAD_URL . 'assets/dist/checkout.js',
+                        array(),
                         $checkout_asset_version,
                         true
                     );
 
                     // Add type="module" for ES module support
                     add_filter('script_loader_tag', function ($tag, $handle) {
-                        if ($handle === 'coolbirdzik_blocks_checkout') {
+                        if ($handle === 'coolviad_blocks_checkout') {
                             $tag = str_replace(' src=', ' type="module" src=', $tag);
                         }
                         return $tag;
                     }, 10, 2);
 
                     // Localize config for React AddressSelector
-                    wp_localize_script('coolbirdzik_blocks_checkout', 'vncheckout_array', $localize_data);
+                    wp_localize_script('coolviad_blocks_checkout', 'coolbird_vietnam_address_array', $localize_data);
 
                     // Also localize for jQuery legacy code (if any)
-                    wp_localize_script('coolbirdzik_blocks_checkout', 'coolbirdzik_vn', array(
+                    wp_localize_script('coolviad_blocks_checkout', 'coolviad_vn', array(
                         'ajax_url'        => admin_url('admin-ajax.php'),
                         'address_schema'  => $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new',
                         'preloaded_names' => $preloaded_names,
@@ -842,7 +855,7 @@ if (
             /**
              * AJAX handler to get district name by ID
              */
-            function coolbirdzik_ajax_get_district_name()
+            function coolviad_ajax_get_district_name()
             {
                 $district_id = isset($_POST['district_id']) ? wc_clean(wp_unslash($_POST['district_id'])) : '';
                 if (!$district_id) {
@@ -860,7 +873,7 @@ if (
             /**
              * AJAX handler to get ward name by ID
              */
-            function coolbirdzik_ajax_get_ward_name()
+            function coolviad_ajax_get_ward_name()
             {
                 $ward_id = isset($_POST['ward_id']) ? wc_clean(wp_unslash($_POST['ward_id'])) : '';
                 if (!$ward_id) {
@@ -882,7 +895,7 @@ if (
             /**
              * Modify WooCommerce Blocks checkout fields to render SELECT for districts/wards
              */
-            function coolbirdzik_modify_blocks_checkout_fields($fields)
+            function coolviad_modify_blocks_checkout_fields($fields)
             {
                 $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
                 $city_placeholder = ($schema === 'new')
@@ -921,12 +934,12 @@ if (
                 return $fields;
             }
 
-            function coolbirdzik_register_store_api_extension()
+            function coolviad_register_store_api_extension()
             {
                 if (function_exists('woocommerce_store_api_register_endpoint_data')) {
                     woocommerce_store_api_register_endpoint_data(array(
                         'endpoint'        => \Automattic\WooCommerce\StoreApi\Schemas\V1\CheckoutSchema::IDENTIFIER,
-                        'namespace'       => 'coolbirdzik',
+                        'namespace'       => 'coolviad',
                         'schema_callback' => function () {
                             return array(
                                 'shipping_ward_code' => array(
@@ -950,11 +963,11 @@ if (
             /**
              * Save ward codes sent from the Blocks checkout (Store API) to order meta.
              */
-            function coolbirdzik_save_ward_from_blocks($order, $request)
+            function coolviad_save_ward_from_blocks($order, $request)
             {
                 $extensions = $request->get_param('extensions');
-                if (empty($extensions['coolbirdzik'])) return;
-                $data = $extensions['coolbirdzik'];
+                if (empty($extensions['coolviad'])) return;
+                $data = $extensions['coolviad'];
                 if (!empty($data['shipping_ward_code'])) {
                     $order->update_meta_data('_shipping_ward', wc_clean($data['shipping_ward_code']));
                 }
@@ -967,7 +980,7 @@ if (
              * Resolve district/ward IDs to names in Store API cart response
              * This ensures address cards in Blocks checkout show names instead of IDs
              */
-            function coolbirdzik_resolve_address_names_in_cart_response($response)
+            function coolviad_resolve_address_names_in_cart_response($response)
             {
                 if (empty($response) || !is_array($response)) {
                     return $response;
@@ -984,7 +997,7 @@ if (
             /**
              * Format address for display - resolves IDs to names
              */
-            function coolbirdzik_format_address_for_display($address, $order)
+            function coolviad_format_address_for_display($address, $order)
             {
                 if (is_string($address)) {
                     $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
@@ -1017,7 +1030,7 @@ if (
             /**
              * Format customer address for WooCommerce Blocks address card - resolves IDs to names
              */
-            function coolbirdzik_format_customer_address_for_blocks($formatted_address, $args, $customer)
+            function coolviad_format_customer_address_for_blocks($formatted_address, $args, $customer)
             {
                 if (empty($formatted_address) || !is_string($formatted_address)) {
                     return $formatted_address;
@@ -1053,7 +1066,7 @@ if (
             /**
              * Convert city ID to name for customer address display
              */
-            function coolbirdzik_convert_city_id_to_name($city)
+            function coolviad_convert_city_id_to_name($city)
             {
                 if (is_checkout()) {
                     return $city;
@@ -1068,7 +1081,7 @@ if (
             /**
              * Convert ward ID to name for customer address display
              */
-            function coolbirdzik_convert_ward_id_to_name($ward)
+            function coolviad_convert_ward_id_to_name($ward)
             {
                 $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
                 if ($schema === 'new') {
@@ -1084,7 +1097,7 @@ if (
             /**
              * Convert checkout value IDs to names for address display
              */
-            function coolbirdzik_convert_checkout_value($value, $input)
+            function coolviad_convert_checkout_value($value, $input)
             {
                 $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
 
@@ -1101,7 +1114,7 @@ if (
                 return $value;
             }
 
-            function coolbirdzik_get_name_location($arg = array(), $id = '', $key = '')
+            function coolviad_get_name_location($arg = array(), $id = '', $key = '')
             {
                 if (is_array($arg) && !empty($arg)) {
                     $nameQuan = $this->search_in_array($arg, $key, $id);
@@ -1114,18 +1127,18 @@ if (
             function get_name_city($id = '')
             {
                 global $tinh_thanhpho;
-                $tinh_thanhpho = apply_filters('coolbirdzik_states_vn', $tinh_thanhpho);
+                $tinh_thanhpho = apply_filters('coolviad_states_vn', $tinh_thanhpho);
                 if (is_numeric($id)) {
                     $id_tinh = sprintf("%02d", intval($id));
                     if (!is_array($tinh_thanhpho) || empty($tinh_thanhpho)) {
-                        include 'cities/provinces-legacy.php';
+                        include COOLVIAD_PLUGIN_DIR . 'cities/provinces-legacy.php';
                     }
                 } else {
                     $id_tinh = wc_clean(wp_unslash($id));
                 }
                 $tinh_thanhpho_name = (isset($tinh_thanhpho[$id_tinh])) ? $tinh_thanhpho[$id_tinh] : '';
                 if (!$tinh_thanhpho_name) {
-                    include 'cities/provinces-fallback.php';
+                    include COOLVIAD_PLUGIN_DIR . 'cities/provinces-fallback.php';
                     $tinh_thanhpho_name = (isset($tinh_thanhpho[$id_tinh])) ? $tinh_thanhpho[$id_tinh] : '';
                 }
                 return $tinh_thanhpho_name;
@@ -1134,10 +1147,10 @@ if (
             function get_name_district($id = '')
             {
                 if (strlen($id) === 3) {
-                    include 'cities/districts-legacy.php';
+                    include COOLVIAD_PLUGIN_DIR . 'cities/districts-legacy.php';
                     $id_quan = sprintf("%03d", intval($id));
                 } else {
-                    include 'cities/districts.php';
+                    include COOLVIAD_PLUGIN_DIR . 'cities/districts.php';
                     $id_quan = sprintf("%05d", intval($id));
                 }
                 if (is_array($quan_huyen) && !empty($quan_huyen)) {
@@ -1150,7 +1163,7 @@ if (
 
             function get_name_village($id = '')
             {
-                include 'cities/wards.php';
+                include COOLVIAD_PLUGIN_DIR . 'cities/wards.php';
                 $id_xa = sprintf("%05d", intval($id));
                 if (is_array($xa_phuong_thitran) && !empty($xa_phuong_thitran)) {
                     $name = $this->search_in_array($xa_phuong_thitran, 'xaid', $id_xa);
@@ -1160,7 +1173,7 @@ if (
                 return false;
             }
 
-            function coolbirdzik_woocommerce_localisation_address_formats($arg)
+            function coolviad_woocommerce_localisation_address_formats($arg)
             {
                 unset($arg['default']);
                 unset($arg['VN']);
@@ -1169,7 +1182,7 @@ if (
                 return $arg;
             }
 
-            function coolbirdzik_woocommerce_order_formatted_billing_address($eArg, $eThis)
+            function coolviad_woocommerce_order_formatted_billing_address($eArg, $eThis)
             {
 
                 if (!$eArg) return '';
@@ -1206,7 +1219,7 @@ if (
                 return $eArg;
             }
 
-            function coolbirdzik_woocommerce_order_formatted_shipping_address($eArg, $eThis)
+            function coolviad_woocommerce_order_formatted_shipping_address($eArg, $eThis)
             {
 
                 if (!$eArg) return '';
@@ -1243,7 +1256,7 @@ if (
                 return $eArg;
             }
 
-            function coolbirdzik_woocommerce_my_account_my_address_formatted_address($args, $customer_id, $name)
+            function coolviad_woocommerce_my_account_my_address_formatted_address($args, $customer_id, $name)
             {
 
                 if (!$args) return '';
@@ -1285,7 +1298,7 @@ if (
 
                 $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
                 if ($schema === 'new' && !is_numeric($matp)) {
-                    include 'cities/districts.php';
+                    include COOLVIAD_PLUGIN_DIR . 'cities/districts.php';
                     $matp = wc_clean(wp_unslash($matp));
                     $result = $this->search_in_array($quan_huyen, 'matp', $matp);
                     usort($result, array($this, 'natorder'));
@@ -1294,10 +1307,10 @@ if (
 
                 // Original logic for old schema or numeric codes
                 if (is_numeric($matp)) {
-                    include 'cities/districts-legacy.php';
+                    include COOLVIAD_PLUGIN_DIR . 'cities/districts-legacy.php';
                     $matp = sprintf("%02d", intval($matp));
                 } else {
-                    include 'cities/districts.php';
+                    include COOLVIAD_PLUGIN_DIR . 'cities/districts.php';
                     $matp = wc_clean(wp_unslash($matp));
                 }
                 $result = $this->search_in_array($quan_huyen, 'matp', $matp);
@@ -1320,7 +1333,7 @@ if (
             function get_list_village($maqh = '')
             {
                 if (!$maqh) return false;
-                include 'cities/wards.php';
+                include COOLVIAD_PLUGIN_DIR . 'cities/wards.php';
                 $maqh_raw = wc_clean(wp_unslash($maqh));
                 // Old dataset uses 3-digit district codes; new dataset uses 5-digit codes.
                 if (strlen($maqh_raw) <= 3) {
@@ -1345,21 +1358,21 @@ if (
                 return $village_select;
             }
 
-            function coolbirdzik_after_shipping_address($order)
+            function coolviad_after_shipping_address($order)
             {
-                echo '<p><label for="_shipping_phone">' . __('Phone number of the recipient', 'coolbird-vietnam-address') . ':</label> <br>
+                echo '<p><label for="_shipping_phone">' . esc_html__('Phone number of the recipient', 'coolbird-vietnam-address') . ':</label> <br>
                 <input type="text" class="short" style="" name="_shipping_phone" id="_shipping_phone" value="' . esc_attr($order->get_shipping_phone()) . '" placeholder=""></p>';
             }
 
-            function coolbirdzik_woocommerce_order_details_after_customer_details($order)
+            function coolviad_woocommerce_order_details_after_customer_details($order)
             {
                 ob_start();
                 $sdtnguoinhan = $order->get_shipping_phone();
                 if ($sdtnguoinhan) : ?>
-<tr>
-    <th><?php _e('Shipping Phone:', 'coolbird-vietnam-address'); ?></th>
-    <td><?php echo esc_html($sdtnguoinhan); ?></td>
-</tr>
+                    <tr>
+                        <th><?php esc_html_e('Shipping Phone:', 'coolbird-vietnam-address'); ?></th>
+                        <td><?php echo esc_html($sdtnguoinhan); ?></td>
+                    </tr>
 <?php endif;
                 echo ob_get_clean();
             }
@@ -1370,16 +1383,95 @@ if (
                 return isset($flra_options[$option]) ? $flra_options[$option] : false;
             }
 
-            public function admin_enqueue_scripts()
+            public function admin_enqueue_scripts($hook_suffix = '')
             {
                 global $post, $pagenow;
 
                 // Get current screen
                 $current_screen = function_exists('get_current_screen') ? get_current_screen() : null;
 
+                // Enqueue options page CSS and JS when our settings page is active
+                $options_page_screen_ids = array(
+                    'woocommerce_page_coolviad-district-address',
+                    'toplevel_page_coolviad-district-address',
+                );
+                $is_options_page = false;
+                if ($current_screen && in_array($current_screen->id, $options_page_screen_ids, true)) {
+                    $is_options_page = true;
+                }
+
                 // The Shipping Rates page loads its own scripts via CoolBirdZik_Shipping_Admin
-                if ($current_screen && $current_screen->id === 'woocommerce_page_coolbirdzik-shipping-rates') {
+                if ($current_screen && $current_screen->id === 'woocommerce_page_coolviad-shipping-rates') {
                     return;
+                }
+
+                // Enqueue options page styles
+                if ($is_options_page) {
+                    $css_file = COOLVIAD_PLUGIN_DIR . 'assets/css/admin-options.css';
+                    $css_url  = COOLVIAD_URL . 'assets/css/admin-options.css';
+                    $css_ver  = file_exists($css_file) ? filemtime($css_file) : COOLVIAD_VERSION_NUM;
+
+                    wp_enqueue_style(
+                        'coolviad-admin-options',
+                        $css_url,
+                        array(),
+                        $css_ver
+                    );
+
+                    // Register a dummy handle so we can attach inline JS to it
+                    wp_register_script(
+                        'coolviad-admin-options',
+                        false,
+                        array(),
+                        COOLVIAD_VERSION_NUM,
+                        true
+                    );
+                    wp_enqueue_script('coolviad-admin-options');
+
+                    $tab_script = <<<'JS'
+document.addEventListener('DOMContentLoaded', function() {
+    var tabs = document.querySelectorAll('.coolbird_vietnam_address-tab');
+    var tabContents = document.querySelectorAll('.coolbird_vietnam_address-tab-content');
+
+    tabs.forEach(function(tab) {
+        tab.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            var targetId = this.getAttribute('href').substring(1);
+
+            // Remove active class from all tabs and contents
+            tabs.forEach(function(t) { t.classList.remove('active'); });
+            tabContents.forEach(function(c) { c.classList.remove('active'); });
+
+            // Add active class to clicked tab and corresponding content
+            this.classList.add('active');
+            var targetContent = document.getElementById(targetId);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+
+            // Store active tab in localStorage
+            localStorage.setItem('coolbird_vietnam_address_active_tab', targetId);
+        });
+    });
+
+    // Restore active tab from localStorage
+    var savedTab = localStorage.getItem('coolbird_vietnam_address_active_tab');
+    if (savedTab) {
+        var savedTabEl = document.querySelector('.coolbird_vietnam_address-tab[href="#' + savedTab + '"]');
+        if (savedTabEl) {
+            tabs.forEach(function(t) { t.classList.remove('active'); });
+            tabContents.forEach(function(c) { c.classList.remove('active'); });
+            savedTabEl.classList.add('active');
+            var savedContent = document.getElementById(savedTab);
+            if (savedContent) {
+                savedContent.classList.add('active');
+            }
+        }
+    }
+});
+JS;
+                    wp_add_inline_script('coolviad-admin-options', $tab_script);
                 }
 
                 // Check if we're on an order edit page (both Classic Editor and HPOS)
@@ -1401,13 +1493,13 @@ if (
 
                 // Enqueue React admin order bundle on order edit page
                 if ($is_order_edit_page && $order_id > 0) {
-                    $react_js = COOLBIRDZIK_DWAS_PLUGIN_DIR . 'assets/dist/admin-order.js';
+                    $react_js = COOLVIAD_PLUGIN_DIR . 'assets/dist/admin-order.js';
                     if (file_exists($react_js)) {
-                        wp_enqueue_script('coolbirdzik_admin_order_react', plugins_url('assets/dist/admin-order.js', __FILE__), array('jquery'), filemtime($react_js), true);
+                        wp_enqueue_script('coolviad_admin_order_react', COOLVIAD_URL . 'assets/dist/admin-order.js', array('jquery'), filemtime($react_js), true);
 
-                        $react_css = COOLBIRDZIK_DWAS_PLUGIN_DIR . 'assets/dist/admin-order.css';
+                        $react_css = COOLVIAD_PLUGIN_DIR . 'assets/dist/admin-order.css';
                         if (file_exists($react_css)) {
-                            wp_enqueue_style('coolbirdzik_admin_order_react', plugins_url('assets/dist/admin-order.css', __FILE__), array(), filemtime($react_css));
+                            wp_enqueue_style('coolviad_admin_order_react', COOLVIAD_URL . 'assets/dist/admin-order.css', array(), filemtime($react_css));
                         }
 
                         global $tinh_thanhpho;
@@ -1435,7 +1527,7 @@ if (
                             }
                         }
 
-                        wp_localize_script('coolbirdzik_admin_order_react', 'woocommerce_district_admin', array(
+                        wp_localize_script('coolviad_admin_order_react', 'woocommerce_district_admin', array(
                             'ajaxurl' => admin_url('admin-ajax.php'),
                             'formatNoMatches' => __('No value', 'coolbird-vietnam-address'),
                             'provinces' => $provinces,
@@ -1454,7 +1546,7 @@ if (
             }
 
             /*Check version*/
-            function coolbirdzik_district_zone_shipping_check_woo_version($minimum_required = "2.6")
+            function coolviad_district_zone_shipping_check_woo_version($minimum_required = "2.6")
             {
                 $woocommerce = WC();
                 $version = $woocommerce->version;
@@ -1535,7 +1627,7 @@ if (
             public static function plugin_action_links($links)
             {
                 $action_links = array(
-                    'settings' => '<a href="' . admin_url('admin.php?page=coolbirdzik-district-address') . '" title="' . esc_attr(__('Settings', 'coolbird-vietnam-address')) . '">' . __('Settings', 'coolbird-vietnam-address') . '</a>',
+                    'settings' => '<a href="' . admin_url('admin.php?page=coolviad-district-address') . '" title="' . esc_attr__('Settings', 'coolbird-vietnam-address') . '">' . esc_html__('Settings', 'coolbird-vietnam-address') . '</a>',
                 );
 
                 return array_merge($action_links, $links);
@@ -1582,7 +1674,7 @@ if (
                 return strtoupper($country) === 'VN';
             }
 
-            function coolbirdzik_woocommerce_get_country_locale($args)
+            function coolviad_woocommerce_get_country_locale($args)
             {
                 $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
                 $field_s = array(
@@ -1626,7 +1718,7 @@ if (
                 return ($state) ? $state : '01';
             }
 
-            function coolbirdzik_hide_shipping_when_shipdisable($rates)
+            function coolviad_hide_shipping_when_shipdisable($rates)
             {
                 $shipdisable = array();
                 foreach ($rates as $rate_id => $rate) {
@@ -1638,7 +1730,7 @@ if (
                 return !empty($shipdisable) ? $shipdisable : $rates;
             }
 
-            function coolbirdzik_custom_override_default_address_fields($address_fields)
+            function coolviad_custom_override_default_address_fields($address_fields)
             {
                 $country = wc_get_post_data_by_key('country', '');
                 if (!$country && WC()->customer) {
@@ -1714,7 +1806,7 @@ if (
                 return $reordered_fields;
             }
 
-            function coolbirdzik_woocommerce_admin_billing_fields($billing_fields)
+            function coolviad_woocommerce_admin_billing_fields($billing_fields)
             {
                 global $thepostid, $post;
 
@@ -1785,7 +1877,7 @@ if (
                 return $billing_fields;
             }
 
-            function coolbirdzik_woocommerce_admin_shipping_fields($shipping_fields)
+            function coolviad_woocommerce_admin_shipping_fields($shipping_fields)
             {
                 global $thepostid, $post;
 
@@ -1843,7 +1935,7 @@ if (
                 return $billing_fields;
             }
 
-            function coolbirdzik_woocommerce_form_field_select($field, $key, $args, $value)
+            function coolviad_woocommerce_form_field_select($field, $key, $args, $value)
             {
                 // Handle billing_city and shipping_city fields (districts)
                 // AND billing_address_2 and shipping_address_2 fields (wards)
@@ -2024,7 +2116,7 @@ if (
                 return $dimension; //return cm
             }
 
-            function coolbirdzik_woocommerce_get_order_address($value, $type)
+            function coolviad_woocommerce_get_order_address($value, $type)
             {
                 if ($type == 'billing' || $type == 'shipping') {
                     $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
@@ -2048,7 +2140,7 @@ if (
                 return $value;
             }
 
-            function coolbirdzik_woocommerce_rest_prepare_shop_order_object($response, $order, $request)
+            function coolviad_woocommerce_rest_prepare_shop_order_object($response, $order, $request)
             {
                 if (empty($response->data)) {
                     return $response;
@@ -2063,7 +2155,7 @@ if (
                 return $response;
             }
 
-            function coolbirdzik_woocommerce_api_order_response($order_data, $order)
+            function coolviad_woocommerce_api_order_response($order_data, $order)
             {
                 // Do NOT convert IDs to names in API response.
                 // API is used by checkout forms which need raw IDs to match against SELECT option values.
@@ -2071,12 +2163,12 @@ if (
                 return $order_data;
             }
 
-            function coolbirdzik_modify_plugin_update_message($plugin_data, $response)
+            function coolviad_modify_plugin_update_message($plugin_data, $response)
             {
                 // Removed license notice
             }
 
-            function coolbirdzik_woocommerce_formatted_address_replacements($replace)
+            function coolviad_woocommerce_formatted_address_replacements($replace)
             {
                 $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
 
@@ -2124,12 +2216,12 @@ if (
              * Add type="module" to Vite-built ES module scripts.
              * Vite outputs native ES modules which require this attribute.
              */
-            public function coolbirdzik_set_module_type($tag, $handle)
+            public function coolviad_set_module_type($tag, $handle)
             {
                 $vite_handles = array(
-                    'coolbirdzik_checkout_react',
-                    'coolbirdzik_admin_order_react',
-                    'coolbirdzik-admin-shipping', // handled by CoolBirdZik_Shipping_Admin too, harmless
+                    'coolviad_checkout_react',
+                    'coolviad_admin_order_react',
+                    'coolviad-admin-shipping', // handled by CoolBirdZik_Shipping_Admin too, harmless
                 );
                 if (in_array($handle, $vite_handles, true)) {
                     return str_replace('<script ', '<script type="module" ', $tag);
@@ -2153,39 +2245,39 @@ if (
             }
 
             /**
-             * Add VNCheckout shipping method to Woo
+             * Add Coolviad shipping method to Woo
              *
              * @param array $methods Existing shipping methods
              * @return array Modified shipping methods
              */
             public function add_coolbird_vietnam_address_shipping_method($methods)
             {
-                $methods['vncheckout_shipping'] = 'CoolBirdVietnam_Shipping_Method';
+                $methods['coolbird_vietnam_address_shipping'] = 'Coolviad_Shipping_Method';
                 return $methods;
             }
         }
     }
 
-    if (!function_exists('vn_checkout_up_to_pro')) {
-        function vn_checkout_up_to_pro()
+    if (!function_exists('coolviad_up_to_pro')) {
+        function coolviad_up_to_pro()
         {
             // Removed pro version notice
         }
     }
 
-    if (!function_exists('coolbirdzik_vietnam_shipping')) {
-        function coolbirdzik_vietnam_shipping()
+    if (!function_exists('coolviad_vietnam_shipping')) {
+        function coolviad_vietnam_shipping()
         {
-            return Woo_Address_Selectbox_Class::init();
+            return Coolviad_Address_Selectbox_Class::init();
         }
 
-        coolbirdzik_vietnam_shipping();
+        coolviad_vietnam_shipping();
     }
 
-    include_once('includes/admin-order-functions.php');
+    include_once(COOLVIAD_PLUGIN_DIR . 'includes/admin-order-functions.php');
 
-    if (!function_exists('coolbirdzik_round_up')) {
-        function coolbirdzik_round_up($value, $step)
+    if (!function_exists('coolviad_round_up')) {
+        function coolviad_round_up($value, $step)
         {
             if (intval($value) == $value) return $value;
             $value_int = intval($value);
