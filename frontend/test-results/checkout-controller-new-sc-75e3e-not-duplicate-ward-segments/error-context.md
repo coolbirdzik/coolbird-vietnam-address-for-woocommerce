@@ -1,0 +1,235 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e5]:
+      - link "PM Fruit Ferment" [ref=e10] [cursor=pointer]:
+        - /url: http://localhost:1234
+        - img "PM Fruit Ferment" [ref=e11]
+      - list [ref=e18]:
+        - listitem [ref=e19]:
+          - link "Trang chủ" [ref=e20] [cursor=pointer]:
+            - /url: http://localhost:1234/
+        - listitem [ref=e21]:
+          - link "Mua hàng" [ref=e22] [cursor=pointer]:
+            - /url: http://localhost:1234/mua-hang/
+        - listitem [ref=e23]:
+          - link "Chúng tôi" [ref=e24] [cursor=pointer]:
+            - /url: http://localhost:1234/en/about/
+        - listitem [ref=e25]:
+          - link "Liên hệ" [ref=e26] [cursor=pointer]:
+            - /url: http://localhost:1234/en/contact/
+        - listitem [ref=e27]:
+          - link "Tiếng Việt" [ref=e28] [cursor=pointer]:
+            - /url: "#pll_switcher"
+          - list [ref=e29]:
+            - listitem [ref=e30]:
+              - link "Tiếng Việt" [ref=e31] [cursor=pointer]:
+                - /url: http://localhost:1234/checkout-3/
+            - listitem [ref=e32]:
+              - link "English" [ref=e33] [cursor=pointer]:
+                - /url: http://localhost:1234/en/checkout/
+      - generic [ref=e34]:
+        - link "Search products" [ref=e38] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e40]
+        - link [ref=e46] [cursor=pointer]:
+          - /url: http://localhost:1234/my-account/
+          - img [ref=e48]
+        - link "1" [ref=e55] [cursor=pointer]:
+          - /url: http://localhost:1234/cart-3/
+          - img [ref=e57]
+          - generic [ref=e61]: "1"
+  - article [ref=e66]:
+    - generic [ref=e69]:
+      - form "Thanh toán" [ref=e71]:
+        - group "Thông tin liên lạc" [ref=e72]:
+          - heading "Thông tin liên lạc" [level=2] [ref=e75]
+          - generic [ref=e78]:
+            - textbox "Địa chỉ email" [ref=e79]: vylygec@mailsac.com
+            - generic [ref=e80]: Địa chỉ email
+        - group "Địa chỉ giao hàng" [ref=e81]:
+          - heading "Địa chỉ giao hàng" [level=2] [ref=e84]
+          - generic [ref=e85]:
+            - generic [ref=e88]:
+              - generic [ref=e91]:
+                - generic [ref=e92]: Quốc gia/Khu vực
+                - combobox "Quốc gia/Khu vực" [ref=e93]:
+                  - option "Chọn một quốc gia/khu vực" [disabled]
+                  - option "Việt Nam" [selected]
+                - img
+              - generic [ref=e94]:
+                - textbox "Tên" [ref=e95]: test
+                - generic [ref=e96]: Tên
+              - generic [ref=e97]:
+                - textbox "Họ" [ref=e98]: hung
+                - generic [ref=e99]: Họ
+              - generic [ref=e100]:
+                - textbox "Công ty (không bắt buộc)" [ref=e101]
+                - generic [ref=e102]: Công ty (không bắt buộc)
+              - generic [ref=e105]:
+                - generic [ref=e106]: Tỉnh/thành phố
+                - combobox [ref=e107]
+                - combobox "An Giang" [ref=e110] [cursor=pointer]:
+                  - textbox "An Giang" [ref=e111]
+                - img
+              - generic [ref=e114]:
+                - generic [ref=e115]: Phường/Xã
+                - combobox [ref=e116]
+                - combobox "×Phường Long Xuyên" [ref=e119] [cursor=pointer]:
+                  - textbox "Phường Long Xuyên" [ref=e120]:
+                    - generic [ref=e121]: ×
+                - img
+              - generic [ref=e122]:
+                - textbox "Địa chỉ" [ref=e123]: 54a nơ trang long
+                - generic [ref=e124]: Địa chỉ
+              - generic [ref=e125]:
+                - textbox "Mã bưu chính" [ref=e126]: "234234"
+                - generic [ref=e127]: Mã bưu chính
+              - generic [ref=e128]:
+                - textbox "Số điện thoại" [ref=e129]: "34234234324"
+                - generic [ref=e130]: Số điện thoại
+            - generic [ref=e132] [cursor=pointer]:
+              - checkbox "Sử dụng cùng địa chỉ cho thanh toán" [ref=e133]
+              - generic [ref=e134]: Sử dụng cùng địa chỉ cho thanh toán
+        - group "Địa chỉ thanh toán" [ref=e135]:
+          - heading "Địa chỉ thanh toán" [level=2] [ref=e138]
+          - generic [ref=e142]:
+            - generic [ref=e145]:
+              - generic [ref=e146]: Quốc gia/Khu vực
+              - combobox "Quốc gia/Khu vực" [ref=e147]:
+                - option "Chọn một quốc gia/khu vực" [disabled]
+                - option "Việt Nam" [selected]
+              - img
+            - generic [ref=e148]:
+              - textbox "Tên" [ref=e149]: test
+              - generic [ref=e150]: Tên
+            - generic [ref=e151]:
+              - textbox "Họ" [ref=e152]: hung
+              - generic [ref=e153]: Họ
+            - generic [ref=e154]:
+              - textbox "Công ty (không bắt buộc)" [ref=e155]
+              - generic [ref=e156]: Công ty (không bắt buộc)
+            - generic [ref=e159]:
+              - generic [ref=e160]: Tỉnh/thành phố
+              - combobox [ref=e161]
+              - combobox "Thành phố Hồ Chí Minh" [ref=e164] [cursor=pointer]:
+                - textbox "Thành phố Hồ Chí Minh" [ref=e165]
+              - img
+            - generic [ref=e168]:
+              - generic [ref=e169]: Phường/Xã
+              - combobox [ref=e170]
+              - combobox [ref=e173] [cursor=pointer]
+              - img
+            - generic [ref=e174]:
+              - textbox "Địa chỉ" [ref=e175]: 54a nơ trang long
+              - generic [ref=e176]: Địa chỉ
+            - generic [ref=e177]:
+              - textbox "Mã bưu chính" [ref=e178]: "234234"
+              - generic [ref=e179]: Mã bưu chính
+            - generic [ref=e180]:
+              - textbox "Số điện thoại" [ref=e181]: "34234234324"
+              - generic [ref=e182]: Số điện thoại
+        - group "Tùy chọn vận chuyển" [ref=e183]:
+          - heading "Tùy chọn vận chuyển" [level=2] [ref=e186]
+          - generic [ref=e193] [cursor=pointer]:
+            - radio "Free shipping Miễn phí" [checked] [ref=e194]
+            - generic [ref=e196]:
+              - generic [ref=e197]: Free shipping
+              - generic [ref=e198]: Miễn phí
+        - group "Tùy chọn thanh toán" [ref=e199]:
+          - heading "Tùy chọn thanh toán" [level=2] [ref=e202]
+          - generic [ref=e205]:
+            - generic [ref=e210] [cursor=pointer]: Chuyển khoản ngân hàng trực tiếp
+            - generic [ref=e212]: Thực hiện thanh toán trực tiếp vào tài khoản ngân hàng của chúng tôi. Vui lòng sử dụng ID Đơn hàng của bạn làm tham chiếu thanh toán. Đơn hàng của bạn sẽ không được vận chuyển cho đến khi tiền đã vào tài khoản của chúng tôi.
+        - generic [ref=e217] [cursor=pointer]:
+          - checkbox "Thêm ghi chú cho đơn hàng của bạn" [ref=e218]
+          - generic [ref=e219]: Thêm ghi chú cho đơn hàng của bạn
+        - generic [ref=e221]:
+          - text: Bằng cách tiến hành mua hàng, bạn đồng ý với Điều khoản dịch vụ và
+          - link "Chính sách bảo mật" [ref=e222] [cursor=pointer]:
+            - /url: http://localhost:1234/chinh-sach-bao-mat/
+          - text: của chúng tôi
+        - generic [ref=e224]:
+          - link "Quay lại giỏ hàng" [ref=e225] [cursor=pointer]:
+            - /url: http://localhost:1234/cart-3/
+            - img [ref=e226]
+            - text: Quay lại giỏ hàng
+          - button "Đặt hàng" [ref=e228] [cursor=pointer]:
+            - generic [ref=e230]: Đặt hàng
+      - generic [ref=e232]:
+        - heading "Tóm tắt đơn hàng" [ref=e234]
+        - generic [ref=e235]:
+          - generic [ref=e239]:
+            - generic [ref=e240]:
+              - generic [ref=e242]: "1"
+              - img "Cellar Mockup 06 Berry" [ref=e243]
+            - generic [ref=e244]:
+              - heading "Cellar Mockup 06 Berry" [level=3] [ref=e245]
+              - generic [ref=e246]: 250.000 ₫
+              - paragraph [ref=e249]: Seeded product 06 for shop layout testing with placeholder content and pricing.
+            - generic [ref=e251]: 250.000 ₫
+          - heading "Thêm mã giảm giá" [level=2] [ref=e253]:
+            - button "Thêm mã giảm giá" [ref=e254] [cursor=pointer]:
+              - img [ref=e255]
+              - text: Thêm mã giảm giá
+          - generic [ref=e257]:
+            - generic [ref=e259]:
+              - generic [ref=e260]: Tạm tính
+              - generic [ref=e261]: 250.000 ₫
+            - generic [ref=e264]:
+              - generic [ref=e265]: Free shipping
+              - strong [ref=e267]: Miễn phí
+          - generic [ref=e269]:
+            - generic [ref=e270]: Tổng
+            - generic [ref=e271]: 250.000 ₫
+  - contentinfo [ref=e272]:
+    - generic [ref=e273]:
+      - generic [ref=e277]:
+        - generic [ref=e278]:
+          - heading "Kết nối" [level=6] [ref=e280]
+          - heading "Thông tin công ty" [level=2] [ref=e282]
+          - generic [ref=e283]:
+            - text: CÔNG TY TNHH PM FRUIT FERMENT
+            - text: "Mã số thuế: 0319115012"
+          - generic [ref=e284]:
+            - text: 26A1 Tam Bình, Phường Hiệp Bình,
+            - text: Thành phố Hồ Chí Minh, Việt Nam
+            - text: "Điện thoại: (+84) 9619 777 45"
+          - list [ref=e286]:
+            - listitem [ref=e287]:
+              - generic [ref=e288] [cursor=pointer]:
+                - generic [ref=e289]: Facebook
+                - img [ref=e290]
+            - listitem [ref=e292]:
+              - generic [ref=e293] [cursor=pointer]:
+                - generic [ref=e294]: Twitter
+                - img [ref=e295]
+            - listitem [ref=e297]:
+              - generic [ref=e298] [cursor=pointer]:
+                - generic [ref=e299]: Youtube
+                - img [ref=e300]
+        - generic [ref=e302]:
+          - heading "Thông tin pháp lý" [level=6] [ref=e304]
+          - heading "Địa chỉ thuế" [level=2] [ref=e306]
+          - generic [ref=e307]:
+            - text: 26A1 Tam Bình, Phường Hiệp Bình,
+            - text: TP Hồ Chí Minh, Việt Nam
+            - text: "Tình trạng: Đang hoạt động"
+            - text: "Ngành nghề chính: Bán buôn đồ uống"
+          - generic [ref=e309]:
+            - link "Xem cửa hàng" [ref=e311] [cursor=pointer]:
+              - /url: http://localhost:1234/mua-hang/
+              - generic [ref=e313]: Xem cửa hàng
+            - paragraph [ref=e315]: PMFF
+      - generic [ref=e319]:
+        - paragraph [ref=e322]: © PM Fruit Ferment. Vui lòng sử dụng đồ uống có trách nhiệm. Chính sách bảo mật · Điều khoản sử dụng
+        - paragraph [ref=e325]:
+          - text: 26A1 Tam Bình, Phường Hiệp Bình, Thành phố Hồ Chí Minh, Việt Nam
+          - text: Điện thoại (+84) 9619 777 45 · MST 0319115012
+  - generic [ref=e326]: desktop
+  - link [ref=e327] [cursor=pointer]:
+    - /url: "#vinart-top"
+    - img [ref=e329]
+```

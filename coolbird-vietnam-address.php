@@ -136,6 +136,7 @@ if (
                 add_filter('woocommerce_my_account_my_address_formatted_address', array($this, 'coolviad_woocommerce_my_account_my_address_formatted_address'), 10, 3);
                 add_filter('woocommerce_default_address_fields', array($this, 'coolviad_custom_override_default_address_fields'), 99999);
                 add_filter('woocommerce_get_country_locale', array($this, 'coolviad_woocommerce_get_country_locale'), 99999);
+                add_filter('woocommerce_get_country_locale_base', array($this, 'coolviad_woocommerce_get_country_locale_base'), 99999);
 
                 //More action
                 add_filter('default_checkout_billing_country', array($this, 'change_default_checkout_country'), 9999);
@@ -192,7 +193,10 @@ if (
 
                 // Woo Blocks (block-based checkout) integration
                 add_action('woocommerce_blocks_loaded', array($this, 'coolviad_register_store_api_extension'));
+                add_action('woocommerce_store_api_checkout_update_customer_from_request', array($this, 'coolviad_sync_schema_new_store_api_customer_fields'), 10, 2);
+                add_action('woocommerce_store_api_checkout_update_order_from_request', array($this, 'coolviad_sync_schema_new_store_api_order_fields'), 10, 2);
                 add_action('woocommerce_store_api_checkout_update_order_from_request', array($this, 'coolviad_save_ward_from_blocks'), 10, 2);
+                add_filter('rest_request_before_callbacks', array($this, 'coolviad_normalize_store_api_checkout_request'), 10, 3);
 
                 // Force Blocks to render SELECT fields instead of TEXT for districts/wards
                 add_filter('woocommerce_blocks_checkout_fields', array($this, 'coolviad_modify_blocks_checkout_fields'), 10, 1);
@@ -468,6 +472,7 @@ if (
             function custom_override_checkout_fields($fields)
             {
                 global $tinh_thanhpho;
+                $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
 
                 $billing_country = wc_get_post_data_by_key('billing_country', WC()->customer->get_billing_country());
                 $shipping_country = wc_get_post_data_by_key('shipping_country', WC()->customer->get_shipping_country());
@@ -504,13 +509,13 @@ if (
                         'priority' => 30
                     );
                     $fields['billing']['billing_city'] = array(
-                        'label' => __('District', 'coolbird-vietnam-address'),
+                        'label' => ($schema === 'new') ? __('Ward/Commune', 'coolbird-vietnam-address') : __('District', 'coolbird-vietnam-address'),
                         'required' => true,
                         'type' => 'select',
                         'class' => array('form-row-last'),
-                        'placeholder' => _x('Select District', 'placeholder', 'coolbird-vietnam-address'),
+                        'placeholder' => ($schema === 'new') ? _x('Select Ward/Commune', 'placeholder', 'coolbird-vietnam-address') : _x('Select District', 'placeholder', 'coolbird-vietnam-address'),
                         'options' => array(
-                            '' => _x('Select District', 'placeholder', 'coolbird-vietnam-address')
+                            '' => ($schema === 'new') ? _x('Select Ward/Commune', 'placeholder', 'coolbird-vietnam-address') : _x('Select District', 'placeholder', 'coolbird-vietnam-address')
                         ),
                         'priority' => 40,
                         'input_class' => array('woocommerce-enhanced-select'),
@@ -538,7 +543,9 @@ if (
                     $fields['billing']['billing_country']['priority'] = 22;
                 }
                 if ($billing_is_vn) {
-                    if (!$this->get_options('active_village')) {
+                    if ($schema === 'new') {
+                        unset($fields['billing']['billing_address_2']);
+                    } elseif (!$this->get_options('active_village')) {
                         $ward_required = !$this->get_options('required_village');
                         $fields['billing']['billing_address_2'] = array(
                             'label' => __('Ward/Commune', 'coolbird-vietnam-address'),
@@ -592,13 +599,13 @@ if (
                         'priority' => 30
                     );
                     $fields['shipping']['shipping_city'] = array(
-                        'label' => __('District', 'coolbird-vietnam-address'),
+                        'label' => ($schema === 'new') ? __('Ward/Commune', 'coolbird-vietnam-address') : __('District', 'coolbird-vietnam-address'),
                         'required' => true,
                         'type' => 'select',
                         'class' => array('form-row-last'),
-                        'placeholder' => _x('Select District', 'placeholder', 'coolbird-vietnam-address'),
+                        'placeholder' => ($schema === 'new') ? _x('Select Ward/Commune', 'placeholder', 'coolbird-vietnam-address') : _x('Select District', 'placeholder', 'coolbird-vietnam-address'),
                         'options' => array(
-                            '' => _x('Select District', 'placeholder', 'coolbird-vietnam-address'),
+                            '' => ($schema === 'new') ? _x('Select Ward/Commune', 'placeholder', 'coolbird-vietnam-address') : _x('Select District', 'placeholder', 'coolbird-vietnam-address'),
                         ),
                         'priority' => 40,
                         'input_class' => array('woocommerce-enhanced-select'),
@@ -619,7 +626,9 @@ if (
                     $fields['shipping']['shipping_country']['priority'] = 22;
                 }
                 if ($shipping_is_vn) {
-                    if (!$this->get_options('active_village')) {
+                    if ($schema === 'new') {
+                        unset($fields['shipping']['shipping_address_2']);
+                    } elseif (!$this->get_options('active_village')) {
                         $ward_required = !$this->get_options('required_village');
                         $fields['shipping']['shipping_address_2'] = array(
                             'label' => __('Ward/Commune', 'coolbird-vietnam-address'),
@@ -746,12 +755,13 @@ if (
                         return '';
                     };
 
+                    $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
                     $saved['billing']['state']  = $get_value('billing_state', 'billing_state');
                     $saved['billing']['city']   = $get_value('billing_city', 'billing_city');
-                    $saved['billing']['ward']   = $get_value('billing_address_2', 'billing_address_2');
+                    $saved['billing']['ward']   = $schema === 'new' ? '' : $get_value('billing_address_2', 'billing_address_2');
                     $saved['shipping']['state'] = $get_value('shipping_state', 'shipping_state');
                     $saved['shipping']['city']  = $get_value('shipping_city', 'shipping_city');
-                    $saved['shipping']['ward']  = $get_value('shipping_address_2', 'shipping_address_2');
+                    $saved['shipping']['ward']  = $schema === 'new' ? '' : $get_value('shipping_address_2', 'shipping_address_2');
 
                     // Localize config for both jQuery and React scripts
                     $localize_data = array(
@@ -917,6 +927,11 @@ if (
                     );
                 }
 
+                if ($schema === 'new') {
+                    unset($fields['billing_address_2'], $fields['shipping_address_2']);
+                    return $fields;
+                }
+
                 if (isset($fields['billing_address_2'])) {
                     $fields['billing_address_2']['type'] = 'select';
                     $fields['billing_address_2']['options'] = array(
@@ -976,6 +991,156 @@ if (
                 }
             }
 
+            function coolviad_normalize_store_api_checkout_request($response, $handler, $request)
+            {
+                $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
+                if ($schema !== 'new' || !($request instanceof WP_REST_Request)) {
+                    return $response;
+                }
+
+                $route = $request->get_route();
+                if (strpos($route, '/wc/store/v1/checkout') !== 0) {
+                    return $response;
+                }
+
+                $normalize_address = function ($address, $address_type) {
+                    if (!is_array($address)) {
+                        return $address;
+                    }
+
+                    $city = isset($address['city']) ? wc_clean(wp_unslash($address['city'])) : '';
+                    if (!$city) {
+                        return $address;
+                    }
+
+                    $address['address_2'] = $city;
+                    $address[$address_type . '_address_2'] = $city;
+                    $address[$address_type . '_city'] = $city;
+                    return $address;
+                };
+
+                $billing_address = $normalize_address($request->get_param('billing_address'), 'billing');
+                $shipping_address = $normalize_address($request->get_param('shipping_address'), 'shipping');
+
+                if (is_array($billing_address)) {
+                    $request->set_param('billing_address', $billing_address);
+                }
+
+                if (is_array($shipping_address)) {
+                    $request->set_param('shipping_address', $shipping_address);
+                }
+
+                $extensions = $request->get_param('extensions');
+                if (!is_array($extensions)) {
+                    $extensions = array();
+                }
+
+                $additional_fields = $request->get_param('additional_fields');
+                if (!is_array($additional_fields)) {
+                    $additional_fields = array();
+                }
+
+                if (!isset($extensions['coolviad']) || !is_array($extensions['coolviad'])) {
+                    $extensions['coolviad'] = array();
+                }
+
+                if (!empty($billing_address['city'])) {
+                    $extensions['coolviad']['billing_ward_code'] = $billing_address['city'];
+                    $additional_fields['billing_address_2'] = $billing_address['city'];
+                    $request->set_param('billing_city', $billing_address['city']);
+                    $request->set_param('billing_address_2', $billing_address['city']);
+                }
+
+                if (!empty($shipping_address['city'])) {
+                    $extensions['coolviad']['shipping_ward_code'] = $shipping_address['city'];
+                    $additional_fields['shipping_address_2'] = $shipping_address['city'];
+                    $request->set_param('shipping_city', $shipping_address['city']);
+                    $request->set_param('shipping_address_2', $shipping_address['city']);
+                }
+
+                $request->set_param('extensions', $extensions);
+                $request->set_param('additional_fields', $additional_fields);
+
+                return $response;
+            }
+
+            private function get_schema_new_store_api_city_value($request, $address_type)
+            {
+                if (!($request instanceof WP_REST_Request)) {
+                    return '';
+                }
+
+                $address = $request->get_param($address_type . '_address');
+                if (!is_array($address)) {
+                    return '';
+                }
+
+                $city = isset($address['city']) ? wc_clean(wp_unslash($address['city'])) : '';
+                if ($city) {
+                    return $city;
+                }
+
+                $legacy_address_2 = isset($address['address_2']) ? wc_clean(wp_unslash($address['address_2'])) : '';
+                return $legacy_address_2;
+            }
+
+            function coolviad_sync_schema_new_store_api_customer_fields($customer, $request)
+            {
+                $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
+                if ($schema !== 'new' || !($customer instanceof WC_Customer)) {
+                    return;
+                }
+
+                foreach (array('billing', 'shipping') as $address_type) {
+                    $city = $this->get_schema_new_store_api_city_value($request, $address_type);
+                    if (!$city) {
+                        continue;
+                    }
+
+                    $city_setter = 'set_' . $address_type . '_city';
+                    if (is_callable(array($customer, $city_setter))) {
+                        $customer->{$city_setter}($city);
+                    }
+
+                    $setter = 'set_' . $address_type . '_address_2';
+                    if (is_callable(array($customer, $setter))) {
+                        $customer->{$setter}($city);
+                    }
+
+                    $customer->update_meta_data($address_type . '_city', $city);
+                    $customer->update_meta_data($address_type . '_address_2', $city);
+                }
+            }
+
+            function coolviad_sync_schema_new_store_api_order_fields($order, $request)
+            {
+                $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
+                if ($schema !== 'new' || !($order instanceof WC_Order)) {
+                    return;
+                }
+
+                foreach (array('billing', 'shipping') as $address_type) {
+                    $city = $this->get_schema_new_store_api_city_value($request, $address_type);
+                    if (!$city) {
+                        continue;
+                    }
+
+                    $city_setter = 'set_' . $address_type . '_city';
+                    if (is_callable(array($order, $city_setter))) {
+                        $order->{$city_setter}($city);
+                    }
+
+                    $setter = 'set_' . $address_type . '_address_2';
+                    if (is_callable(array($order, $setter))) {
+                        $order->{$setter}($city);
+                    }
+
+                    $order->update_meta_data($address_type . '_city', $city);
+                    $order->update_meta_data($address_type . '_address_2', $city);
+                }
+
+            }
+
             /**
              * Resolve district/ward IDs to names in Store API cart response
              * This ensures address cards in Blocks checkout show names instead of IDs
@@ -984,6 +1149,36 @@ if (
             {
                 if (empty($response) || !is_array($response)) {
                     return $response;
+                }
+
+                $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
+
+                if ($schema === 'new') {
+                    $normalize_address = function ($address) {
+                        if (!is_array($address)) {
+                            return $address;
+                        }
+
+                        if (array_key_exists('address_2', $address)) {
+                            $address['address_2'] = '';
+                        }
+
+                        return $address;
+                    };
+
+                    foreach (array('shipping_address', 'billing_address', 'shippingAddress', 'billingAddress') as $key) {
+                        if (isset($response[$key])) {
+                            $response[$key] = $normalize_address($response[$key]);
+                        }
+                    }
+
+                    if (isset($response['customer']) && is_array($response['customer'])) {
+                        foreach (array('shipping_address', 'billing_address', 'shippingAddress', 'billingAddress') as $key) {
+                            if (isset($response['customer'][$key])) {
+                                $response['customer'][$key] = $normalize_address($response['customer'][$key]);
+                            }
+                        }
+                    }
                 }
 
                 // Do NOT convert IDs to names in Store API responses.
@@ -1059,6 +1254,17 @@ if (
 
                 if ($schema === 'new') {
                     $formatted_address = preg_replace('/,\s*,+/', ', ', $formatted_address);
+                    $segments = array_values(array_filter(array_map('trim', explode(',', $formatted_address))));
+                    $deduped_segments = array();
+
+                    foreach ($segments as $segment) {
+                        $last_segment = empty($deduped_segments) ? null : end($deduped_segments);
+                        if ($last_segment !== $segment) {
+                            $deduped_segments[] = $segment;
+                        }
+                    }
+
+                    $formatted_address = implode(', ', $deduped_segments);
                 }
                 return $formatted_address;
             }
@@ -1084,6 +1290,9 @@ if (
             function coolviad_convert_ward_id_to_name($ward)
             {
                 $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
+                if (is_checkout() || (defined('REST_REQUEST') && REST_REQUEST)) {
+                    return $ward;
+                }
                 if ($schema === 'new') {
                     return '';
                 }
@@ -1674,7 +1883,7 @@ JS;
                 return strtoupper($country) === 'VN';
             }
 
-            function coolviad_woocommerce_get_country_locale($args)
+            private function get_vietnam_country_locale_fields()
             {
                 $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
                 $field_s = array(
@@ -1708,7 +1917,29 @@ JS;
                     'priority' => 44,
                     'hidden' => false,
                 );
+                return $field_s;
+            }
+
+            function coolviad_woocommerce_get_country_locale($args)
+            {
+                $field_s = $this->get_vietnam_country_locale_fields();
                 $args['VN'] = $field_s;
+                return $args;
+            }
+
+            function coolviad_woocommerce_get_country_locale_base($args)
+            {
+                $field_s = $this->get_vietnam_country_locale_fields();
+                foreach (array('state', 'city', 'address_2', 'address_1') as $field_key) {
+                    if (!isset($field_s[$field_key]) || !is_array($field_s[$field_key])) {
+                        continue;
+                    }
+
+                    $args[$field_key] = isset($args[$field_key]) && is_array($args[$field_key])
+                        ? wp_parse_args($field_s[$field_key], $args[$field_key])
+                        : $field_s[$field_key];
+                }
+
                 return $args;
             }
 
@@ -1768,7 +1999,9 @@ JS;
                         '' => ''
                     ),
                 );
-                if (!$this->get_options('active_village')) {
+                if ($schema === 'new') {
+                    unset($address_fields['address_2']);
+                } elseif (!$this->get_options('active_village')) {
                     $ward_required = !$this->get_options('required_village');
                     $address_fields['address_2'] = array(
                         'label' => __('Ward/Commune', 'coolbird-vietnam-address'),
@@ -1825,23 +2058,23 @@ JS;
 
                 $billing_fields = array(
                     'first_name' => array(
-                        'label' => __('First name', 'woocommerce'),
+                        'label' => __('First name', 'coolbird-vietnam-address'),
                         'show' => false,
                     ),
                     'last_name' => array(
-                        'label' => __('Last name', 'woocommerce'),
+                        'label' => __('Last name', 'coolbird-vietnam-address'),
                         'show' => false,
                     ),
                     'company' => array(
-                        'label' => __('Company', 'woocommerce'),
+                        'label' => __('Company', 'coolbird-vietnam-address'),
                         'show' => false,
                     ),
                     'country' => array(
-                        'label' => __('Country', 'woocommerce'),
+                        'label' => __('Country', 'coolbird-vietnam-address'),
                         'show' => false,
                         'class' => 'js_field-country select short',
                         'type' => 'select',
-                        'options' => array('' => __('Select a country&hellip;', 'woocommerce')) + WC()->countries->get_allowed_countries(),
+                        'options' => array('' => __('Select a country&hellip;', 'coolbird-vietnam-address')) + WC()->countries->get_allowed_countries(),
                     ),
                     'state' => array(
                         'label' => __('Province/City', 'coolbird-vietnam-address'),
@@ -1863,14 +2096,14 @@ JS;
                         'options' => array('' => __('Select Ward/Commune&hellip;', 'coolbird-vietnam-address')) + $this->get_list_village_select($district),
                     ),
                     'address_1' => array(
-                        'label' => __('Address line 1', 'woocommerce'),
+                        'label' => __('Address line 1', 'coolbird-vietnam-address'),
                         'show' => false,
                     ),
                     'email' => array(
-                        'label' => __('Email address', 'woocommerce'),
+                        'label' => __('Email address', 'coolbird-vietnam-address'),
                     ),
                     'phone' => array(
-                        'label' => __('Phone', 'woocommerce'),
+                        'label' => __('Phone', 'coolbird-vietnam-address'),
                     )
                 );
                 unset($billing_fields['address_2']);
@@ -1896,23 +2129,23 @@ JS;
 
                 $billing_fields = array(
                     'first_name' => array(
-                        'label' => __('First name', 'woocommerce'),
+                        'label' => __('First name', 'coolbird-vietnam-address'),
                         'show' => false,
                     ),
                     'last_name' => array(
-                        'label' => __('Last name', 'woocommerce'),
+                        'label' => __('Last name', 'coolbird-vietnam-address'),
                         'show' => false,
                     ),
                     'company' => array(
-                        'label' => __('Company', 'woocommerce'),
+                        'label' => __('Company', 'coolbird-vietnam-address'),
                         'show' => false,
                     ),
                     'country' => array(
-                        'label' => __('Country', 'woocommerce'),
+                        'label' => __('Country', 'coolbird-vietnam-address'),
                         'show' => false,
                         'type' => 'select',
                         'class' => 'js_field-country select short',
-                        'options' => array('' => __('Select a country&hellip;', 'woocommerce')) + WC()->countries->get_shipping_countries(),
+                        'options' => array('' => __('Select a country&hellip;', 'coolbird-vietnam-address')) + WC()->countries->get_shipping_countries(),
                     ),
                     'state' => array(
                         'label' => __('Province/City', 'coolbird-vietnam-address'),
@@ -1927,7 +2160,7 @@ JS;
                         'options' => array('' => __('Select District&hellip;', 'coolbird-vietnam-address')) + $this->get_list_district_select($city),
                     ),
                     'address_1' => array(
-                        'label' => __('Address line 1', 'woocommerce'),
+                        'label' => __('Address line 1', 'coolbird-vietnam-address'),
                         'show' => false,
                     ),
                 );
@@ -1947,7 +2180,7 @@ JS;
                     // On checkout page, render minimal select with placeholder for JavaScript to populate
                     if (is_checkout()) {
                         // Set minimal placeholder option - JavaScript will load districts/wards dynamically
-                        $args['options'] = array('' => ($args['placeholder']) ? $args['placeholder'] : __('Choose an option', 'woocommerce'));
+                        $args['options'] = array('' => ($args['placeholder']) ? $args['placeholder'] : __('Choose an option', 'coolbird-vietnam-address'));
                         $selected_value = ''; // No pre-selection on checkout
                     } else {
                         // On My Account edit-address page, populate full options from saved parent field
@@ -1967,7 +2200,7 @@ JS;
 
                             // Populate district options based on selected province
                             if ($state) {
-                                $city = array('' => ($args['placeholder']) ? $args['placeholder'] : __('Choose an option', 'woocommerce')) + $this->get_list_district_select($state);
+                                $city = array('' => ($args['placeholder']) ? $args['placeholder'] : __('Choose an option', 'coolbird-vietnam-address')) + $this->get_list_district_select($state);
                                 $args['options'] = $city;
                             }
                         } elseif ($is_ward) {
@@ -1985,7 +2218,7 @@ JS;
 
                             // Populate ward options based on selected district
                             if ($district) {
-                                $wards = array('' => ($args['placeholder']) ? $args['placeholder'] : __('Choose an option', 'woocommerce')) + $this->get_list_village_select($district);
+                                $wards = array('' => ($args['placeholder']) ? $args['placeholder'] : __('Choose an option', 'coolbird-vietnam-address')) + $this->get_list_village_select($district);
                                 $args['options'] = $wards;
                             }
                         }
@@ -2000,7 +2233,7 @@ JS;
 
                     if ($args['required']) {
                         $args['class'][] = 'validate-required';
-                        $required = ' <abbr class="required" title="' . esc_attr__('required', 'woocommerce') . '">*</abbr>';
+                        $required = ' <abbr class="required" title="' . esc_attr__('required', 'coolbird-vietnam-address') . '">*</abbr>';
                     } else {
                         $required = '';
                     }
@@ -2048,7 +2281,7 @@ JS;
                             if ('' === $option_key) {
                                 // If we have a blank option, select2 needs a placeholder.
                                 if (empty($args['placeholder'])) {
-                                    $args['placeholder'] = $option_text ? $option_text : __('Choose an option', 'woocommerce');
+                                    $args['placeholder'] = $option_text ? $option_text : __('Choose an option', 'coolbird-vietnam-address');
                                 }
                                 $custom_attributes[] = 'data-allow_clear="true"';
                             }

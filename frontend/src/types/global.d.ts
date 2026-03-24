@@ -18,6 +18,7 @@ declare global {
       get_address?: string;
       active_village?: string;
       required_village?: string;
+      address_schema?: "old" | "new";
       [key: string]: unknown;
     };
     coolviad_district_admin?: {
@@ -44,6 +45,17 @@ declare global {
       i18n: { delete_rates: string };
       delete_box_nonce: string;
     };
+    coolbirdCheckoutDebugSnapshot?: (
+      prefix?: "billing" | "shipping" | "calc_shipping",
+    ) => unknown;
+    wp?: {
+      data?: {
+        dispatch?: (store: string) => Record<string, unknown> | undefined;
+        select?: (store: string) => Record<string, unknown> | undefined;
+        subscribe?: (listener: () => void) => (() => void) | undefined;
+      };
+    };
+    coolbirdCheckoutPreserveLegacyAddress2Until?: number;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

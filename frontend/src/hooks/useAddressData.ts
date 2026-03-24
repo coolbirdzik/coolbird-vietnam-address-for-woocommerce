@@ -28,7 +28,6 @@ export const useProvinces = () => {
 
 // Hook to get districts
 export const useDistricts = (provinceCode: string | null) => {
-  console.log('[useDistricts] called with provinceCode:', provinceCode);
   return useQuery({
     queryKey: addressKeys.districts(provinceCode || ''),
     queryFn: () => getDistricts(provinceCode!),

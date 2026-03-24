@@ -14,16 +14,13 @@ export const getProvinces = async (): Promise<Province[]> => {
 
 // Get districts by province code
 export const getDistricts = async (provinceCode: string): Promise<District[]> => {
-  console.log('[API] getDistricts called with provinceCode:', provinceCode);
   try {
     const response = await apiClient.post<AjaxResponse<District[]>>('', {
       action: 'load_diagioihanhchinh',
       matp: provinceCode,
     });
-    console.log('[API] getDistricts response success:', response.data.success, 'data length:', response.data.data?.length, 'first item:', response.data.data?.[0]);
     return response.data.data || [];
   } catch (error) {
-    console.error('[API] getDistricts error:', error);
     return [];
   }
 };
