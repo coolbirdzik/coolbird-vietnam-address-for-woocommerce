@@ -32,7 +32,7 @@ const hasAddressUi = () =>
 
 const isNewAddressSchema = () =>
   (
-    window.coolbird_vietnam_address_array?.address_schema ||
+    window.coolviad_checkout_data?.address_schema ||
     window.coolviad_vn?.address_schema ||
     "new"
   ) === "new";

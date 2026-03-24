@@ -2,7 +2,7 @@
 if (! defined('ABSPATH')) {
     exit;
 }
-class CoolBirdZik_coolbird_vietnam_address_VND_PayPal_Standard
+class Coolviad_Vnd_Paypal_Standard
 {
 
     /**
@@ -18,7 +18,7 @@ class CoolBirdZik_coolbird_vietnam_address_VND_PayPal_Standard
     /**
      * @param int $exchange_rate_to_vnd
      */
-    public function __construct($exchange_rate_to_vnd = 22745, $paypal_currency)
+    public function __construct($exchange_rate_to_vnd = 22745, $paypal_currency = 'USD')
     {
 
         $this->exchange_rate_to_vnd = (int) $exchange_rate_to_vnd;

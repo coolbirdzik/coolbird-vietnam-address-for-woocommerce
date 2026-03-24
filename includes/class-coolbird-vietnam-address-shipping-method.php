@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-function coolbird_vietnam_address_shipping_method_init()
+function coolviad_shipping_method_init()
 {
     if (class_exists('Coolviad_Shipping_Method')) {
         return;
@@ -286,4 +286,4 @@ function coolbird_vietnam_address_shipping_method_init()
     }
 }
 
-add_action('woocommerce_shipping_init', 'coolbird_vietnam_address_shipping_method_init');
+add_action('woocommerce_shipping_init', 'coolviad_shipping_method_init');

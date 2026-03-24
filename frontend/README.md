@@ -89,7 +89,7 @@ The React apps mount to specific DOM elements:
 Data is passed from PHP via `wp_localize_script()`:
 
 ```javascript
-window.coolbird_vietnam_address_array = {
+window.coolviad_checkout_data = {
   ajaxurl: '...',
   nonce: '...',
   // ...

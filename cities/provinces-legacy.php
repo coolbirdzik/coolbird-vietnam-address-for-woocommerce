@@ -1,6 +1,6 @@
 <?php
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
-$tinh_thanhpho = array(
+$coolviad_provinces = array(
 	//""	 =>	"",
 	"01" => "Hà Nội",
 	"02" => "Hà Giang",

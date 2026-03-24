@@ -15,7 +15,7 @@ const queryClient = new QueryClient({
 });
 
 const AdminShippingApp: React.FC = () => {
-  const data = window.coolviad_district_admin;
+  const data = window.coolviad_shipping_admin_data;
 
   const provinces: Province[] = React.useMemo(
     () => (data?.provinces as unknown as Province[]) || [],
@@ -36,7 +36,7 @@ const AdminShippingApp: React.FC = () => {
 };
 
 const mount = () => {
-  const container = document.getElementById("coolbirdzik-admin-shipping-app");
+  const container = document.getElementById("coolviad-admin-shipping-app");
   if (!container) return;
   ReactDOM.createRoot(container).render(
     <React.StrictMode>

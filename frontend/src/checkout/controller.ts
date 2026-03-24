@@ -92,7 +92,7 @@ export class CheckoutAddressController {
   }
 
   private syncWindowSavedSelection() {
-    const localizedData = window.coolbird_vietnam_address_array;
+    const localizedData = window.coolviad_checkout_data;
     const saved = localizedData?.saved as
       | Record<string, { state?: string; city?: string; ward?: string }>
       | undefined;
@@ -187,7 +187,7 @@ export class CheckoutAddressController {
         cityValue: citySelect?.value || null,
         cityText:
           document.getElementById(
-            `select2-${this.prefix}-city__coolbird_vietnam_address_select-container`,
+            `select2-${this.prefix}-city__coolviad_proxy_select-container`,
           )?.textContent?.trim() || null,
         citySourceValue: citySource?.value || null,
         citySourceAttr: citySource?.getAttribute("value") || null,
@@ -196,7 +196,7 @@ export class CheckoutAddressController {
         wardSourceAttr: wardSource?.getAttribute("value") || null,
       },
       saved:
-        (window.coolbird_vietnam_address_array?.saved as Record<string, unknown> | undefined)?.[
+        (window.coolviad_checkout_data?.saved as Record<string, unknown> | undefined)?.[
           this.prefix
         ] || null,
     };

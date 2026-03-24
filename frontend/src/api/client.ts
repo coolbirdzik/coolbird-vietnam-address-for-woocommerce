@@ -2,8 +2,9 @@ import axios, { AxiosInstance } from "axios";
 
 // Create axios instance with WordPress AJAX config
 const createApiClient = (): AxiosInstance => {
-  const baseURL = (window.coolbird_vietnam_address_array?.ajaxurl ||
-    window.coolviad_district_admin?.ajaxurl ||
+  const baseURL = (window.coolviad_checkout_data?.ajaxurl ||
+    window.coolviad_shipping_admin_data?.ajaxurl ||
+    window.coolviad_admin_order_data?.ajaxurl ||
     "/wp-admin/admin-ajax.php") as string;
 
   const client = axios.create({

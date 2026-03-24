@@ -1,5 +1,5 @@
 <?php
-$tinh_thanhpho = array(
+$coolviad_provinces = array(
     //"" => "",
     "HANOI" => "Hà Nội",
     "HOCHIMINH" => "Hồ Chí Minh",

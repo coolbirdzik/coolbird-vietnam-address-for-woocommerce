@@ -1,4 +1,4 @@
-.coolbird_vietnam_address-modern-wrap {
+.coolviad-modern-wrap {
     --vn-primary: #0284c7;
     --vn-primary-hover: #0369a1;
     --vn-bg: #f8fafc;
@@ -13,25 +13,25 @@
     margin: 20px 20px 20px 0;
 }
 
-.coolbird_vietnam_address-header {
+.coolviad-header {
     margin-bottom: 24px;
 }
 
-.coolbird_vietnam_address-header h1 {
+.coolviad-header h1 {
     font-size: 28px;
     font-weight: 700;
     color: var(--vn-text);
     margin: 0 0 8px 0;
 }
 
-.coolbird_vietnam_address-header-desc {
+.coolviad-header-desc {
     color: var(--vn-text-muted);
     font-size: 14px;
     margin: 0;
 }
 
 /* Tabs Navigation */
-.coolbird_vietnam_address-tabs-nav {
+.coolviad-tabs-nav {
     display: flex;
     gap: 4px;
     background: var(--vn-card-bg);
@@ -42,7 +42,7 @@
     overflow-x: auto;
 }
 
-.coolbird_vietnam_address-tab {
+.coolviad-tab {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -59,26 +59,26 @@
     cursor: pointer;
 }
 
-.coolbird_vietnam_address-tab:hover {
+.coolviad-tab:hover {
     background: var(--vn-bg);
     color: var(--vn-text);
 }
 
-.coolbird_vietnam_address-tab.active {
+.coolviad-tab.active {
     background: var(--vn-primary);
     color: white;
 }
 
-.coolbird_vietnam_address-tab-icon {
+.coolviad-tab-icon {
     font-size: 16px;
 }
 
 /* Tab Content */
-.coolbird_vietnam_address-tab-content {
+.coolviad-tab-content {
     display: none;
 }
 
-.coolbird_vietnam_address-tab-content.active {
+.coolviad-tab-content.active {
     display: block;
     animation: fadeIn 0.3s ease;
 }
@@ -96,7 +96,7 @@
 }
 
 /* Cards */
-.coolbird_vietnam_address-card {
+.coolviad-card {
     background: var(--vn-card-bg);
     border-radius: var(--vn-radius);
     border: 1px solid var(--vn-border);
@@ -105,39 +105,39 @@
     overflow: hidden;
 }
 
-.coolbird_vietnam_address-card-header {
+.coolviad-card-header {
     padding: 20px 24px;
     border-bottom: 1px solid var(--vn-border);
     background: linear-gradient(to right, #f8fafc, #ffffff);
 }
 
-.coolbird_vietnam_address-card-header h2 {
+.coolviad-card-header h2 {
     font-size: 18px;
     font-weight: 600;
     color: var(--vn-text);
     margin: 0 0 4px 0;
 }
 
-.coolbird_vietnam_address-card-header p {
+.coolviad-card-header p {
     font-size: 13px;
     color: var(--vn-text-muted);
     margin: 0;
 }
 
-.coolbird_vietnam_address-card-body {
+.coolviad-card-body {
     padding: 24px;
 }
 
 /* Fields */
-.coolbird_vietnam_address-field {
+.coolviad-field {
     margin-bottom: 20px;
 }
 
-.coolbird_vietnam_address-field:last-child {
+.coolviad-field:last-child {
     margin-bottom: 0;
 }
 
-.coolbird_vietnam_address-field > label:not(.coolbird_vietnam_address-toggle):not(.coolbird_vietnam_address-radio) {
+.coolviad-field > label:not(.coolviad-toggle):not(.coolviad-radio) {
     display: block;
     font-weight: 500;
     color: var(--vn-text);
@@ -145,9 +145,9 @@
     font-size: 14px;
 }
 
-.coolbird_vietnam_address-field input[type="number"],
-.coolbird_vietnam_address-field input[type="text"],
-.coolbird_vietnam_address-field select {
+.coolviad-field input[type="number"],
+.coolviad-field input[type="text"],
+.coolviad-field select {
     width: 100%;
     max-width: 300px;
     padding: 10px 14px;
@@ -158,14 +158,14 @@
     background: white;
 }
 
-.coolbird_vietnam_address-field input:focus,
-.coolbird_vietnam_address-field select:focus {
+.coolviad-field input:focus,
+.coolviad-field select:focus {
     outline: none;
     border-color: var(--vn-primary);
     box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
 }
 
-.coolbird_vietnam_address-field small {
+.coolviad-field small {
     display: block;
     color: var(--vn-text-muted);
     font-size: 12px;
@@ -173,20 +173,20 @@
 }
 
 /* Field Row */
-.coolbird_vietnam_address-field-row {
+.coolviad-field-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
 
 @media (max-width: 600px) {
-    .coolbird_vietnam_address-field-row {
+    .coolviad-field-row {
         grid-template-columns: 1fr;
     }
 }
 
 /* Toggle Switch */
-.coolbird_vietnam_address-toggle {
+.coolviad-toggle {
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -197,15 +197,15 @@
     transition: background 0.2s;
 }
 
-.coolbird_vietnam_address-toggle:hover {
+.coolviad-toggle:hover {
     background: #f1f5f9;
 }
 
-.coolbird_vietnam_address-toggle input {
+.coolviad-toggle input {
     display: none;
 }
 
-.coolbird_vietnam_address-toggle-slider {
+.coolviad-toggle-slider {
     width: 44px;
     height: 24px;
     background: #cbd5e1;
@@ -215,7 +215,7 @@
     transition: background 0.2s;
 }
 
-.coolbird_vietnam_address-toggle-slider::before {
+.coolviad-toggle-slider::before {
     content: '';
     position: absolute;
     width: 18px;
@@ -228,46 +228,46 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.coolbird_vietnam_address-toggle input:checked + .coolbird_vietnam_address-toggle-slider {
+.coolviad-toggle input:checked + .coolviad-toggle-slider {
     background: var(--vn-primary);
 }
 
-.coolbird_vietnam_address-toggle input:checked + .coolbird_vietnam_address-toggle-slider::before {
+.coolviad-toggle input:checked + .coolviad-toggle-slider::before {
     transform: translateX(20px);
 }
 
-.coolbird_vietnam_address-toggle-label {
+.coolviad-toggle-label {
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-.coolbird_vietnam_address-toggle-label strong {
+.coolviad-toggle-label strong {
     font-size: 14px;
     font-weight: 500;
     color: var(--vn-text);
 }
 
-.coolbird_vietnam_address-toggle-label small {
+.coolviad-toggle-label small {
     font-size: 12px;
     color: var(--vn-text-muted);
     margin: 0;
 }
 
 /* Radio Group */
-.coolbird_vietnam_address-radio-group {
+.coolviad-radio-group {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
 }
 
 @media (max-width: 500px) {
-    .coolbird_vietnam_address-radio-group {
+    .coolviad-radio-group {
         grid-template-columns: 1fr;
     }
 }
 
-.coolbird_vietnam_address-radio {
+.coolviad-radio {
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -280,21 +280,21 @@
     position: relative;
 }
 
-.coolbird_vietnam_address-radio:hover {
+.coolviad-radio:hover {
     border-color: #94a3b8;
     background: #f1f5f9;
 }
 
-.coolbird_vietnam_address-radio:has(input:checked) {
+.coolviad-radio:has(input:checked) {
     border-color: var(--vn-primary);
     background: rgba(2, 132, 199, 0.05);
 }
 
-.coolbird_vietnam_address-radio input {
+.coolviad-radio input {
     display: none;
 }
 
-.coolbird_vietnam_address-radio::before {
+.coolviad-radio::before {
     content: '';
     position: absolute;
     top: 16px;
@@ -306,44 +306,44 @@
     transition: all 0.2s;
 }
 
-.coolbird_vietnam_address-radio:has(input:checked)::before {
+.coolviad-radio:has(input:checked)::before {
     border-color: var(--vn-primary);
     background: var(--vn-primary);
     box-shadow: inset 0 0 0 3px white;
 }
 
-.coolbird_vietnam_address-radio-content {
+.coolviad-radio-content {
     display: flex;
     flex-direction: column;
     gap: 4px;
     flex: 1;
 }
 
-.coolbird_vietnam_address-radio-content strong {
+.coolviad-radio-content strong {
     font-size: 14px;
     font-weight: 600;
     color: var(--vn-text);
 }
 
-.coolbird_vietnam_address-radio-content small {
+.coolviad-radio-content small {
     font-size: 12px;
     color: var(--vn-text-muted);
     line-height: 1.4;
 }
 
-.coolbird_vietnam_address-radio-content small::before {
+.coolviad-radio-content small::before {
     content: '→ ';
     color: var(--vn-primary);
 }
 
 /* Submit */
-.coolbird_vietnam_address-submit {
+.coolviad-submit {
     margin-top: 24px;
     padding-top: 24px;
     border-top: 1px solid var(--vn-border);
 }
 
-.coolbird_vietnam_address-btn-primary {
+.coolviad-btn-primary {
     background: var(--vn-primary) !important;
     border-color: var(--vn-primary) !important;
     color: white !important;
@@ -354,7 +354,7 @@
     box-shadow: 0 2px 4px rgba(2, 132, 199, 0.3) !important;
 }
 
-.coolbird_vietnam_address-btn-primary:hover {
+.coolviad-btn-primary:hover {
     background: var(--vn-primary-hover) !important;
     border-color: var(--vn-primary-hover) !important;
     transform: translateY(-1px);
@@ -363,18 +363,18 @@
 
 /* Responsive */
 @media (max-width: 782px) {
-    .coolbird_vietnam_address-tabs-nav {
+    .coolviad-tabs-nav {
         flex-wrap: nowrap;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
 
-    .coolbird_vietnam_address-tab {
+    .coolviad-tab {
         padding: 8px 12px;
         font-size: 13px;
     }
 
-    .coolbird_vietnam_address-card-body {
+    .coolviad-card-body {
         padding: 16px;
     }
 }

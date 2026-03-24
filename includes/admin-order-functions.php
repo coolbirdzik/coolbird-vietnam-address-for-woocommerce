@@ -11,9 +11,8 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-if (!class_exists('CoolBirdZik_Order_Filter')) {
-    class CoolBirdZik_Order_Filter
-    {
+class Coolviad_Order_Filter
+{
         private $post_type_allow = array('shop_order');
 
         public function __construct()
@@ -193,5 +192,4 @@ if (!class_exists('CoolBirdZik_Order_Filter')) {
         }
     }
 
-    new CoolBirdZik_Order_Filter();
-}
+new Coolviad_Order_Filter();

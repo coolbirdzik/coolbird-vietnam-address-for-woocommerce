@@ -7,7 +7,7 @@ declare global {
   interface Window {
     jQuery?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     $?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-    coolbird_vietnam_address_array?: {
+    coolviad_checkout_data?: {
       ajaxurl?: string;
       nonce?: string;
       provinces?: Province[];
@@ -21,11 +21,20 @@ declare global {
       address_schema?: "old" | "new";
       [key: string]: unknown;
     };
-    coolviad_district_admin?: {
+    coolviad_shipping_admin_data?: {
       ajaxurl?: string;
       nonce?: string;
       provinces?: Province[];
       regions?: Region[];
+      [key: string]: unknown;
+    };
+    coolviad_admin_order_data?: {
+      ajaxurl?: string;
+      provinces?: Province[];
+      billing_state?: string;
+      billing_city?: string;
+      shipping_state?: string;
+      shipping_city?: string;
       [key: string]: unknown;
     };
     coolviad_vn?: {

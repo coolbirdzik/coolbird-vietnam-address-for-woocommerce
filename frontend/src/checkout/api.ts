@@ -13,7 +13,7 @@ export const loadProvinceChildren = async (provinceCode: string) => {
   if (!provinceChildrenCache.has(provinceCode)) {
     const request = apiClient
       .post<AjaxResponse<District[]>>("", {
-        action: "load_diagioihanhchinh",
+        action: "coolviad_load_administrative_units",
         matp: provinceCode,
       })
       .then((response) => response.data.data || [])
@@ -33,7 +33,7 @@ export const loadDistrictChildren = async (districtCode: string) => {
   if (!districtChildrenCache.has(districtCode)) {
     const request = apiClient
       .post<AjaxResponse<Ward[]>>("", {
-        action: "load_diagioihanhchinh",
+        action: "coolviad_load_administrative_units",
         maqh: districtCode,
       })
       .then((response) => response.data.data || [])

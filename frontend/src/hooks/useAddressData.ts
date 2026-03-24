@@ -17,8 +17,8 @@ export const useProvinces = () => {
     queryFn: async (): Promise<Province[]> => {
       // Provinces are typically provided via wp_localize_script
       // We'll return them from window object if available
-      if (window.coolbird_vietnam_address_array && (window.coolbird_vietnam_address_array as any).provinces) {
-        return (window.coolbird_vietnam_address_array as any).provinces;
+      if (window.coolviad_checkout_data && (window.coolviad_checkout_data as any).provinces) {
+        return (window.coolviad_checkout_data as any).provinces;
       }
       return [];
     },

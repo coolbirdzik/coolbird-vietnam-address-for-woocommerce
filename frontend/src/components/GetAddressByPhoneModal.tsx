@@ -24,7 +24,7 @@ export const GetAddressByPhoneModal: React.FC<GetAddressByPhoneModalProps> = ({
 
     // Validate phone number
     if (!phone || !/^0+(\d{9,10})$/.test(phone)) {
-      setErrorMessage((window.coolbird_vietnam_address_array?.phone_error as string) || 'Invalid phone number');
+      setErrorMessage((window.coolviad_checkout_data?.phone_error as string) || 'Invalid phone number');
       return;
     }
 
@@ -73,7 +73,7 @@ export const GetAddressByPhoneModal: React.FC<GetAddressByPhoneModalProps> = ({
         onError: (error: any) => {
           setErrorMessage(
             error.message ||
-            window.coolbird_vietnam_address_array?.loadaddress_error ||
+            window.coolviad_checkout_data?.loadaddress_error ||
             'Unable to load address'
           );
         },
@@ -125,7 +125,7 @@ export const GetAddressByPhoneModal: React.FC<GetAddressByPhoneModalProps> = ({
 
               {isPending && (
                 <div className="get_address_content_mess">
-                  {(window.coolbird_vietnam_address_array?.loading_text as string) || 'Loading...'}
+                  {(window.coolviad_checkout_data?.loading_text as string) || 'Loading...'}
                 </div>
               )}
 
@@ -133,7 +133,7 @@ export const GetAddressByPhoneModal: React.FC<GetAddressByPhoneModalProps> = ({
                 <button
                   type="submit"
                   className={clsx('btn_get_address button', {
-                    coolbirdzik_loading: isPending,
+                    coolviad_loading: isPending,
                   })}
                   disabled={isPending}
                 >

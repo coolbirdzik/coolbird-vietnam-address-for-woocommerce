@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/coolviad/coolbird-vietnam-address
  * Version: 1.0.0
  * Description: Add province/city, district, commune/ward/town to checkout form and simplify checkout form
- * Author: CoolBirdZik
+ * Author: Coolviad
  * Author URI: https://github.com/coolviad
  * Text Domain: coolbird-vietnam-address
  * Domain Path: /languages
@@ -47,7 +47,6 @@ if (!defined('COOLVIAD_PLUGIN_FILE')) {
 
 if (
     in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))
-    && !function_exists('coolviad_checkout')
 ) {
 
     include COOLVIAD_PLUGIN_DIR . 'cities/provinces.php';
@@ -56,9 +55,8 @@ if (
     register_deactivation_hook(__FILE__, array('Coolviad_Address_Selectbox_Class', 'on_deactivation'));
     register_uninstall_hook(__FILE__, array('Coolviad_Address_Selectbox_Class', 'on_uninstall'));
 
-    if (!class_exists('Coolviad_Address_Selectbox_Class')) {
-        class Coolviad_Address_Selectbox_Class
-        {
+    class Coolviad_Address_Selectbox_Class
+    {
             protected static $instance;
 
             protected $_version = '2.1.6';
@@ -114,8 +112,8 @@ if (
                 add_action('wp_enqueue_scripts', array($this, 'coolviad_enqueue_UseAjaxInWp'));
                 add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_scripts'));
 
-                add_action('wp_ajax_load_diagioihanhchinh', array($this, 'load_diagioihanhchinh_func'));
-                add_action('wp_ajax_nopriv_load_diagioihanhchinh', array($this, 'load_diagioihanhchinh_func'));
+                add_action('wp_ajax_coolviad_load_administrative_units', array($this, 'coolviad_load_administrative_units'));
+                add_action('wp_ajax_nopriv_coolviad_load_administrative_units', array($this, 'coolviad_load_administrative_units'));
 
                 // AJAX handlers for getting district and ward names (for Blocks checkout address card)
                 add_action('wp_ajax_coolviad_get_district_name', array($this, 'coolviad_ajax_get_district_name'));
@@ -157,7 +155,6 @@ if (
                 // Include shipping method and admin classes
                 include_once(COOLVIAD_PLUGIN_DIR . 'includes/class-coolbird-vietnam-address-shipping-method.php');
                 include_once(COOLVIAD_PLUGIN_DIR . 'includes/class-coolbird-vietnam-address-region-manager.php');
-                include_once(COOLVIAD_PLUGIN_DIR . 'includes/class-coolbird-vietnam-address-shipping-admin.php');
                 include_once(COOLVIAD_PLUGIN_DIR . 'includes/class-coolbirdzik-shipping-admin.php');
 
                 // Run dbDelta on every load to apply schema upgrades for existing installs
@@ -168,7 +165,7 @@ if (
                 add_filter('script_loader_tag', array($this, 'coolviad_set_module_type'), 10, 2);
 
                 // Register shipping method
-                add_filter('woocommerce_shipping_methods', array($this, 'add_coolbird_vietnam_address_shipping_method'));
+                add_filter('woocommerce_shipping_methods', array($this, 'add_coolviad_shipping_method'));
 
                 //admin order address, form billing
                 add_filter('woocommerce_admin_billing_fields', array($this, 'coolviad_woocommerce_admin_billing_fields'), 99);
@@ -257,7 +254,7 @@ if (
             {
                 if (!current_user_can('activate_plugins'))
                     return false;
-                $plugin = isset($_REQUEST['plugin']) ? $_REQUEST['plugin'] : '';
+                $plugin = self::get_requested_plugin_basename();
                 check_admin_referer("activate-plugin_{$plugin}");
 
                 // Create shipping tables
@@ -406,8 +403,30 @@ if (
             {
                 if (!current_user_can('activate_plugins'))
                     return false;
-                $plugin = isset($_REQUEST['plugin']) ? $_REQUEST['plugin'] : '';
+                $plugin = self::get_requested_plugin_basename();
                 check_admin_referer("deactivate-plugin_{$plugin}");
+            }
+
+            /**
+             * Get the current plugin basename from the request.
+             *
+             * @return string
+             */
+            private static function get_requested_plugin_basename()
+            {
+                if (!isset($_REQUEST['plugin'])) {
+                    return plugin_basename(__FILE__);
+                }
+
+                $plugin = wp_unslash($_REQUEST['plugin']);
+
+                if (!is_string($plugin) || $plugin === '') {
+                    return plugin_basename(__FILE__);
+                }
+
+                $plugin = plugin_basename(sanitize_text_field($plugin));
+
+                return $plugin !== '' ? $plugin : plugin_basename(__FILE__);
             }
 
             public static function on_uninstall()
@@ -438,14 +457,45 @@ if (
 
             function sanitize_options($input)
             {
-                $sanitized = array();
-                foreach ($input as $key => $value) {
-                    if (in_array($key, array('khoiluong_quydoi', 'vnd_usd_rate'))) {
-                        $sanitized[$key] = floatval($value);
-                    } else {
-                        $sanitized[$key] = $value;
-                    }
+                $input = is_array($input) ? $input : array();
+                $sanitized = $this->_defaultOptions;
+                $checkbox_fields = array(
+                    'active_village',
+                    'required_village',
+                    'to_vnd',
+                    'active_vnd2usd',
+                    'remove_methob_title',
+                    'freeship_remove_other_methob',
+                    'enable_firstname',
+                    'enable_country',
+                    'enable_postcode',
+                    'active_filter_order',
+                    'alepay_support',
+                    'enable_getaddressfromphone',
+                    'enable_recaptcha',
+                );
+
+                foreach ($checkbox_fields as $field_key) {
+                    $sanitized[$field_key] = !empty($input[$field_key]) ? '1' : '';
                 }
+
+                $sanitized['address_schema'] = in_array($input['address_schema'] ?? 'new', array('old', 'new'), true)
+                    ? $input['address_schema']
+                    : 'new';
+                $sanitized['khoiluong_quydoi'] = max(0, (float) ($input['khoiluong_quydoi'] ?? $this->_defaultOptions['khoiluong_quydoi']));
+                $sanitized['vnd_usd_rate'] = max(0, (float) ($input['vnd_usd_rate'] ?? $this->_defaultOptions['vnd_usd_rate']));
+
+                $currency = strtoupper(sanitize_text_field($input['vnd2usd_currency'] ?? $this->_defaultOptions['vnd2usd_currency']));
+                $allowed_currencies = array_keys(get_woocommerce_currencies());
+                $sanitized['vnd2usd_currency'] = in_array($currency, $allowed_currencies, true)
+                    ? $currency
+                    : $this->_defaultOptions['vnd2usd_currency'];
+
+                $sanitized['tinhthanh_default'] = sanitize_text_field($input['tinhthanh_default'] ?? $this->_defaultOptions['tinhthanh_default']);
+                $sanitized['recaptcha_sitekey'] = sanitize_text_field($input['recaptcha_sitekey'] ?? '');
+                $sanitized['recaptcha_secretkey'] = sanitize_text_field($input['recaptcha_secretkey'] ?? '');
+                $sanitized['license_key'] = sanitize_text_field($input['license_key'] ?? '');
+
                 return $sanitized;
             }
 
@@ -465,13 +515,13 @@ if (
                 } else {
                     include COOLVIAD_PLUGIN_DIR . 'cities/provinces.php';
                 }
-                $states['VN'] = apply_filters('coolviad_states_vn', $tinh_thanhpho);
+                $states['VN'] = apply_filters('coolviad_states_vn', $coolviad_provinces);
                 return $states;
             }
 
             function custom_override_checkout_fields($fields)
             {
-                global $tinh_thanhpho;
+                global $coolviad_provinces;
                 $schema = $this->get_options('address_schema') ? $this->get_options('address_schema') : 'new';
 
                 $billing_country = wc_get_post_data_by_key('billing_country', WC()->customer->get_billing_country());
@@ -505,7 +555,7 @@ if (
                         'type' => 'select',
                         'class' => array('form-row-first', 'address-field', 'update_totals_on_change'),
                         'placeholder' => _x('Select Province/City', 'placeholder', 'coolbird-vietnam-address'),
-                        'options' => array('' => __('Select Province/City', 'coolbird-vietnam-address')) + apply_filters('coolviad_states_vn', $tinh_thanhpho),
+                        'options' => array('' => __('Select Province/City', 'coolbird-vietnam-address')) + apply_filters('coolviad_states_vn', $coolviad_provinces),
                         'priority' => 30
                     );
                     $fields['billing']['billing_city'] = array(
@@ -595,7 +645,7 @@ if (
                         'type' => 'select',
                         'class' => array('form-row-first', 'address-field', 'update_totals_on_change'),
                         'placeholder' => _x('Select Province/City', 'placeholder', 'coolbird-vietnam-address'),
-                        'options' => array('' => __('Select Province/City', 'coolbird-vietnam-address')) + apply_filters('coolviad_states_vn', $tinh_thanhpho),
+                        'options' => array('' => __('Select Province/City', 'coolbird-vietnam-address')) + apply_filters('coolviad_states_vn', $coolviad_provinces),
                         'priority' => 30
                     );
                     $fields['shipping']['shipping_city'] = array(
@@ -681,13 +731,13 @@ if (
                 return $results;
             }
 
-            function check_file_open_status($file_url = '')
+            function coolviad_check_remote_file_status($file_url = '')
             {
                 if (empty($file_url) || ! filter_var($file_url, FILTER_VALIDATE_URL)) {
                     return false;
                 }
 
-                $cache_key = '_check_get_address_file_status';
+                $cache_key = 'coolviad_get_address_file_status';
                 $status    = get_transient($cache_key);
 
                 if (false !== $status) {
@@ -724,7 +774,7 @@ if (
                     // No need to load from external CDN (https://unpkg.com)
 
                     $get_address = COOLVIAD_URL . 'get-address.php';
-                    if ($this->check_file_open_status($get_address) != 200) {
+                    if ($this->coolviad_check_remote_file_status($get_address) != 200) {
                         $get_address = admin_url('admin-ajax.php');
                     }
 
@@ -826,7 +876,7 @@ if (
                     }, 10, 2);
 
                     // Localize config for React AddressSelector
-                    wp_localize_script('coolviad_blocks_checkout', 'coolbird_vietnam_address_array', $localize_data);
+                    wp_localize_script('coolviad_blocks_checkout', 'coolviad_checkout_data', $localize_data);
 
                     // Also localize for jQuery legacy code (if any)
                     wp_localize_script('coolviad_blocks_checkout', 'coolviad_vn', array(
@@ -845,7 +895,7 @@ if (
                 }
             }
 
-            function load_diagioihanhchinh_func()
+            function coolviad_load_administrative_units()
             {
                 $matp = isset($_POST['matp']) ? wc_clean(wp_unslash($_POST['matp'])) : '';
                 // Keep as string (can be 3-digit old codes like '001' or 5-digit new codes like '26758')
@@ -1335,22 +1385,22 @@ if (
 
             function get_name_city($id = '')
             {
-                global $tinh_thanhpho;
-                $tinh_thanhpho = apply_filters('coolviad_states_vn', $tinh_thanhpho);
+                global $coolviad_provinces;
+                $coolviad_provinces = apply_filters('coolviad_states_vn', $coolviad_provinces);
                 if (is_numeric($id)) {
                     $id_tinh = sprintf("%02d", intval($id));
-                    if (!is_array($tinh_thanhpho) || empty($tinh_thanhpho)) {
+                    if (!is_array($coolviad_provinces) || empty($coolviad_provinces)) {
                         include COOLVIAD_PLUGIN_DIR . 'cities/provinces-legacy.php';
                     }
                 } else {
                     $id_tinh = wc_clean(wp_unslash($id));
                 }
-                $tinh_thanhpho_name = (isset($tinh_thanhpho[$id_tinh])) ? $tinh_thanhpho[$id_tinh] : '';
-                if (!$tinh_thanhpho_name) {
+                $province_name = (isset($coolviad_provinces[$id_tinh])) ? $coolviad_provinces[$id_tinh] : '';
+                if (!$province_name) {
                     include COOLVIAD_PLUGIN_DIR . 'cities/provinces-fallback.php';
-                    $tinh_thanhpho_name = (isset($tinh_thanhpho[$id_tinh])) ? $tinh_thanhpho[$id_tinh] : '';
+                    $province_name = (isset($coolviad_provinces[$id_tinh])) ? $coolviad_provinces[$id_tinh] : '';
                 }
-                return $tinh_thanhpho_name;
+                return $province_name;
             }
 
             function get_name_district($id = '')
@@ -1396,7 +1446,7 @@ if (
 
                 if (!$eArg) return '';
 
-                if ($this->check_woo_version()) {
+                if ($this->coolviad_has_woocommerce_version()) {
                     $orderID = $eThis->get_id();
                 } else {
                     $orderID = $eThis->id;
@@ -1433,7 +1483,7 @@ if (
 
                 if (!$eArg) return '';
 
-                if ($this->check_woo_version()) {
+                if ($this->coolviad_has_woocommerce_version()) {
                     $orderID = $eThis->get_id();
                 } else {
                     $orderID = $eThis->id;
@@ -1609,7 +1659,7 @@ if (
                     $is_options_page = true;
                 }
 
-                // The Shipping Rates page loads its own scripts via CoolBirdZik_Shipping_Admin
+                // The Shipping Rates page loads its own scripts via Coolviad_Shipping_Admin
                 if ($current_screen && $current_screen->id === 'woocommerce_page_coolviad-shipping-rates') {
                     return;
                 }
@@ -1639,8 +1689,8 @@ if (
 
                     $tab_script = <<<'JS'
 document.addEventListener('DOMContentLoaded', function() {
-    var tabs = document.querySelectorAll('.coolbird_vietnam_address-tab');
-    var tabContents = document.querySelectorAll('.coolbird_vietnam_address-tab-content');
+    var tabs = document.querySelectorAll('.coolviad-tab');
+    var tabContents = document.querySelectorAll('.coolviad-tab-content');
 
     tabs.forEach(function(tab) {
         tab.addEventListener('click', function(e) {
@@ -1660,14 +1710,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Store active tab in localStorage
-            localStorage.setItem('coolbird_vietnam_address_active_tab', targetId);
+            localStorage.setItem('coolviad_active_tab', targetId);
         });
     });
 
     // Restore active tab from localStorage
-    var savedTab = localStorage.getItem('coolbird_vietnam_address_active_tab');
+    var savedTab = localStorage.getItem('coolviad_active_tab');
     if (savedTab) {
-        var savedTabEl = document.querySelector('.coolbird_vietnam_address-tab[href="#' + savedTab + '"]');
+        var savedTabEl = document.querySelector('.coolviad-tab[href="#' + savedTab + '"]');
         if (savedTabEl) {
             tabs.forEach(function(t) { t.classList.remove('active'); });
             tabContents.forEach(function(c) { c.classList.remove('active'); });
@@ -1711,10 +1761,10 @@ JS;
                             wp_enqueue_style('coolviad_admin_order_react', COOLVIAD_URL . 'assets/dist/admin-order.css', array(), filemtime($react_css));
                         }
 
-                        global $tinh_thanhpho;
+                        global $coolviad_provinces;
                         $provinces = array();
-                        if (isset($tinh_thanhpho) && is_array($tinh_thanhpho)) {
-                            foreach ($tinh_thanhpho as $code => $name) {
+                        if (isset($coolviad_provinces) && is_array($coolviad_provinces)) {
+                            foreach ($coolviad_provinces as $code => $name) {
                                 $provinces[] = array('code' => $code, 'name' => $name);
                             }
                         }
@@ -1736,7 +1786,7 @@ JS;
                             }
                         }
 
-                        wp_localize_script('coolviad_admin_order_react', 'woocommerce_district_admin', array(
+                        wp_localize_script('coolviad_admin_order_react', 'coolviad_admin_order_data', array(
                             'ajaxurl' => admin_url('admin-ajax.php'),
                             'formatNoMatches' => __('No value', 'coolbird-vietnam-address'),
                             'provinces' => $provinces,
@@ -1764,7 +1814,7 @@ JS;
             }
 
 
-            function dwas_sort_desc_array($input = array(), $keysort = 'dk')
+            function coolviad_sort_desc_array($input = array(), $keysort = 'dk')
             {
                 $sort = array();
                 if ($input && is_array($input)) {
@@ -1776,7 +1826,7 @@ JS;
                 return $input;
             }
 
-            function dwas_sort_asc_array($input = array(), $keysort = 'dk')
+            function coolviad_sort_asc_array($input = array(), $keysort = 'dk')
             {
                 $sort = array();
                 if ($input && is_array($input)) {
@@ -1788,7 +1838,7 @@ JS;
                 return $input;
             }
 
-            function dwas_format_key_array($input = array())
+            function coolviad_format_key_array($input = array())
             {
                 $output = array();
                 if ($input && is_array($input)) {
@@ -1799,7 +1849,7 @@ JS;
                 return $output;
             }
 
-            function dwas_search_bigger_in_array($array, $key, $value)
+            function coolviad_search_bigger_in_array($array, $key, $value)
             {
                 $results = array();
 
@@ -1809,14 +1859,14 @@ JS;
                     }
 
                     foreach ($array as $subarray) {
-                        $results = array_merge($results, $this->dwas_search_bigger_in_array($subarray, $key, $value));
+                        $results = array_merge($results, $this->coolviad_search_bigger_in_array($subarray, $key, $value));
                     }
                 }
 
                 return $results;
             }
 
-            function dwas_search_bigger_in_array_weight($array, $key, $value)
+            function coolviad_search_bigger_in_array_weight($array, $key, $value)
             {
                 $results = array();
 
@@ -1826,7 +1876,7 @@ JS;
                     }
 
                     foreach ($array as $subarray) {
-                        $results = array_merge($results, $this->dwas_search_bigger_in_array_weight($subarray, $key, $value));
+                        $results = array_merge($results, $this->coolviad_search_bigger_in_array_weight($subarray, $key, $value));
                     }
                 }
 
@@ -1842,7 +1892,7 @@ JS;
                 return array_merge($action_links, $links);
             }
 
-            public function check_woo_version($version = '3.0.0')
+            public function coolviad_has_woocommerce_version($version = '3.0.0')
             {
                 if (defined('WOOCOMMERCE_VERSION') && version_compare(WOOCOMMERCE_VERSION, $version, '>=')) {
                     return true;
@@ -2041,9 +2091,10 @@ JS;
 
             function coolviad_woocommerce_admin_billing_fields($billing_fields)
             {
-                global $thepostid, $post;
+                global $post;
 
-                $order = ($post instanceof WP_Post) ? wc_get_order($post->ID) : wc_get_order($thepostid);
+                $legacy_order_post_id = isset($GLOBALS['thepostid']) ? absint($GLOBALS['thepostid']) : 0;
+                $order = ($post instanceof WP_Post) ? wc_get_order($post->ID) : wc_get_order($legacy_order_post_id);
 
                 $city = $district = '';
                 if ($order && !is_wp_error($order)) {
@@ -2112,9 +2163,10 @@ JS;
 
             function coolviad_woocommerce_admin_shipping_fields($shipping_fields)
             {
-                global $thepostid, $post;
+                global $post;
 
-                $order = (empty($thepostid) && $post instanceof WP_Post) ? wc_get_order($post->ID) : wc_get_order($thepostid);
+                $legacy_order_post_id = isset($GLOBALS['thepostid']) ? absint($GLOBALS['thepostid']) : 0;
+                $order = (empty($legacy_order_post_id) && $post instanceof WP_Post) ? wc_get_order($post->ID) : wc_get_order($legacy_order_post_id);
 
                 $city = $district = '';
                 if ($order && !is_wp_error($order)) {
@@ -2192,7 +2244,7 @@ JS;
 
                             // Get from posted data or user meta
                             if (isset($_POST[$state_key])) {
-                                $state = sanitize_text_field($_POST[$state_key]);
+                                $state = sanitize_text_field(wp_unslash($_POST[$state_key]));
                             } elseif (is_user_logged_in()) {
                                 $user_id = get_current_user_id();
                                 $state = get_user_meta($user_id, $state_key, true);
@@ -2210,7 +2262,7 @@ JS;
 
                             // Get from posted data or user meta
                             if (isset($_POST[$city_key])) {
-                                $district = sanitize_text_field($_POST[$city_key]);
+                                $district = sanitize_text_field(wp_unslash($_POST[$city_key]));
                             } elseif (is_user_logged_in()) {
                                 $user_id = get_current_user_id();
                                 $district = get_user_meta($user_id, $city_key, true);
@@ -2441,7 +2493,7 @@ JS;
             function save_shipping_phone_meta($order)
             {
                 if (isset($_POST['_shipping_phone'])) {
-                    $order->update_meta_data('_shipping_phone', sanitize_text_field($_POST['_shipping_phone']));
+                    $order->update_meta_data('_shipping_phone', sanitize_text_field(wp_unslash($_POST['_shipping_phone'])));
                 }
             }
 
@@ -2454,7 +2506,7 @@ JS;
                 $vite_handles = array(
                     'coolviad_checkout_react',
                     'coolviad_admin_order_react',
-                    'coolviad-admin-shipping', // handled by CoolBirdZik_Shipping_Admin too, harmless
+                    'coolviad-admin-shipping',
                 );
                 if (in_array($handle, $vite_handles, true)) {
                     return str_replace('<script ', '<script type="module" ', $tag);
@@ -2483,44 +2535,37 @@ JS;
              * @param array $methods Existing shipping methods
              * @return array Modified shipping methods
              */
-            public function add_coolbird_vietnam_address_shipping_method($methods)
+            public function add_coolviad_shipping_method($methods)
             {
                 $methods['coolbird_vietnam_address_shipping'] = 'Coolviad_Shipping_Method';
                 return $methods;
             }
-        }
     }
 
-    if (!function_exists('coolviad_up_to_pro')) {
-        function coolviad_up_to_pro()
-        {
-            // Removed pro version notice
-        }
+    function coolviad_up_to_pro()
+    {
+        // Removed pro version notice
     }
 
-    if (!function_exists('coolviad_vietnam_shipping')) {
-        function coolviad_vietnam_shipping()
-        {
-            return Coolviad_Address_Selectbox_Class::init();
-        }
-
-        coolviad_vietnam_shipping();
+    function coolviad_vietnam_shipping()
+    {
+        return Coolviad_Address_Selectbox_Class::init();
     }
+
+    coolviad_vietnam_shipping();
 
     include_once(COOLVIAD_PLUGIN_DIR . 'includes/admin-order-functions.php');
 
-    if (!function_exists('coolviad_round_up')) {
-        function coolviad_round_up($value, $step)
-        {
-            if (intval($value) == $value) return $value;
-            $value_int = intval($value);
-            $value_float = $value - $value_int;
-            if ($step == 0.5 && $value_float <= 0.5) {
-                $output = $value_int + 0.5;
-            } elseif ($step == 1 || ($step == 0.5 && $value_float > 0.5)) {
-                $output = $value_int + 1;
-            }
-            return $output;
+    function coolviad_round_up($value, $step)
+    {
+        if (intval($value) == $value) return $value;
+        $value_int = intval($value);
+        $value_float = $value - $value_int;
+        if ($step == 0.5 && $value_float <= 0.5) {
+            $output = $value_int + 0.5;
+        } elseif ($step == 1 || ($step == 0.5 && $value_float > 0.5)) {
+            $output = $value_int + 1;
         }
+        return $output;
     }
 }

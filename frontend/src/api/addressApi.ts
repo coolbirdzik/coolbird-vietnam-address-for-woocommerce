@@ -16,7 +16,7 @@ export const getProvinces = async (): Promise<Province[]> => {
 export const getDistricts = async (provinceCode: string): Promise<District[]> => {
   try {
     const response = await apiClient.post<AjaxResponse<District[]>>('', {
-      action: 'load_diagioihanhchinh',
+      action: 'coolviad_load_administrative_units',
       matp: provinceCode,
     });
     return response.data.data || [];
@@ -28,7 +28,7 @@ export const getDistricts = async (provinceCode: string): Promise<District[]> =>
 // Get wards by district code
 export const getWards = async (districtCode: string): Promise<Ward[]> => {
   const response = await apiClient.post<AjaxResponse<Ward[]>>('', {
-    action: 'load_diagioihanhchinh',
+    action: 'coolviad_load_administrative_units',
     maqh: districtCode,
   });
   return response.data.data || [];

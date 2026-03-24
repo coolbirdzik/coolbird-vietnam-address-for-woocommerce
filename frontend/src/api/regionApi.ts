@@ -7,7 +7,7 @@ import type {
 } from "@/types/shipping.types";
 
 const nonce = (): string =>
-  (window.coolviad_district_admin?.nonce as string) || "";
+  (window.coolviad_shipping_admin_data?.nonce as string) || "";
 
 // ---- Regions ----------------------------------------------------------------
 

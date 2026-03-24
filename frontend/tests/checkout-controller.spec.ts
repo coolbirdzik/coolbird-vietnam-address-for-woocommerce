@@ -14,7 +14,7 @@ const waitForAddressFields = async (page: Page, prefix: "billing" | "shipping") 
     (currentPrefix) =>
       !!document.getElementById(`${currentPrefix}-city`) ||
       !!document.getElementById(
-        `${currentPrefix}-city__coolbird_vietnam_address_select`,
+        `${currentPrefix}-city__coolviad_proxy_select`,
       ),
     prefix,
   );
@@ -120,7 +120,7 @@ test("province change reloads child options", async ({ page, baseURL }) => {
 
   await page.waitForFunction(() => {
     const select = document.getElementById(
-      "shipping-city__coolbird_vietnam_address_select",
+      "shipping-city__coolviad_proxy_select",
     );
     return (
       select instanceof HTMLSelectElement &&
@@ -132,7 +132,7 @@ test("province change reloads child options", async ({ page, baseURL }) => {
   const cityState = await page.evaluate(() => ({
     province: document.getElementById("shipping-state")?.value || null,
     optionCount: document.querySelectorAll(
-      "#shipping-city__coolbird_vietnam_address_select option",
+      "#shipping-city__coolviad_proxy_select option",
     ).length,
   }));
 
@@ -152,7 +152,7 @@ test("saved address hydrates when credentials are configured", async ({
 
   await page.waitForFunction(() => {
     const select = document.getElementById(
-      "shipping-city__coolbird_vietnam_address_select",
+      "shipping-city__coolviad_proxy_select",
     );
     return (
       select instanceof HTMLSelectElement &&
@@ -165,7 +165,7 @@ test("saved address hydrates when credentials are configured", async ({
     state: document.getElementById("shipping-state")?.value || null,
     cityInput: document.getElementById("shipping-city")?.value || null,
     cityProxy:
-      document.getElementById("shipping-city__coolbird_vietnam_address_select")
+      document.getElementById("shipping-city__coolviad_proxy_select")
         ?.value || null,
   }));
 
@@ -188,7 +188,7 @@ test("new child selection survives checkout refresh when credentials are configu
 
   await page.waitForFunction(() => {
     const select = document.getElementById(
-      "shipping-city__coolbird_vietnam_address_select",
+      "shipping-city__coolviad_proxy_select",
     );
     return (
       select instanceof HTMLSelectElement &&
@@ -198,7 +198,7 @@ test("new child selection survives checkout refresh when credentials are configu
 
   await setSelectValue(
     page,
-    "shipping-city__coolbird_vietnam_address_select",
+    "shipping-city__coolviad_proxy_select",
     "00004",
   );
 
@@ -214,7 +214,7 @@ test("new child selection survives checkout refresh when credentials are configu
     state: document.getElementById("shipping-state")?.value || null,
     cityInput: document.getElementById("shipping-city")?.value || null,
     cityProxy:
-      document.getElementById("shipping-city__coolbird_vietnam_address_select")
+      document.getElementById("shipping-city__coolviad_proxy_select")
         ?.value || null,
   }));
 
@@ -237,12 +237,12 @@ test("select2 event ordering keeps the latest province after multiple changes", 
   await page.waitForFunction(
     () =>
       document
-        .querySelectorAll("#shipping-city__coolbird_vietnam_address_select option")
+        .querySelectorAll("#shipping-city__coolviad_proxy_select option")
         .length > 10,
   );
   await triggerSelect2Selection(
     page,
-    "shipping-city__coolbird_vietnam_address_select",
+    "shipping-city__coolviad_proxy_select",
     "Phường Ba Đình",
   );
   await page.waitForTimeout(2000);
@@ -251,7 +251,7 @@ test("select2 event ordering keeps the latest province after multiple changes", 
   await page.waitForFunction(() => {
     const state = document.getElementById("shipping-state");
     const select = document.getElementById(
-      "shipping-city__coolbird_vietnam_address_select",
+      "shipping-city__coolviad_proxy_select",
     );
     return (
       state instanceof HTMLSelectElement &&
@@ -263,7 +263,7 @@ test("select2 event ordering keeps the latest province after multiple changes", 
 
   await triggerSelect2Selection(
     page,
-    "shipping-city__coolbird_vietnam_address_select",
+    "shipping-city__coolviad_proxy_select",
     "Phường Long Xuyên",
   );
   await page.waitForTimeout(4000);
@@ -275,7 +275,7 @@ test("select2 event ordering keeps the latest province after multiple changes", 
       null,
     cityInput: document.getElementById("shipping-city")?.value || null,
     cityProxy:
-      document.getElementById("shipping-city__coolbird_vietnam_address_select")
+      document.getElementById("shipping-city__coolviad_proxy_select")
         ?.value || null,
   }));
 
@@ -297,7 +297,7 @@ test("new schema address card does not duplicate ward segments", async ({
   await triggerSelect2Selection(page, "shipping-state", "An Giang");
   await page.waitForFunction(() => {
     const select = document.getElementById(
-      "shipping-city__coolbird_vietnam_address_select",
+      "shipping-city__coolviad_proxy_select",
     );
     return (
       select instanceof HTMLSelectElement &&
@@ -306,7 +306,7 @@ test("new schema address card does not duplicate ward segments", async ({
   });
   await triggerSelect2Selection(
     page,
-    "shipping-city__coolbird_vietnam_address_select",
+    "shipping-city__coolviad_proxy_select",
     "Phường Long Xuyên",
   );
   await page.waitForTimeout(4000);

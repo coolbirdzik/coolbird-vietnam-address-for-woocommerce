@@ -13,10 +13,10 @@ const BLOCKS_SELECT_CLASSES = {
   expand: "wc-blocks-components-select__expand",
 };
 
-const CHECKOUT_LAYOUT_STYLE_ID = "coolbird_vietnam_address-blocks-layout";
-const BLOCKS_PROXY_SELECT_SUFFIX = "__coolbird_vietnam_address_select";
-const BLOCKS_PROXY_SOURCE_ATTR = "data-coolbird_vietnam_address-source-id";
-const BLOCKS_PROXY_SYNC_BOUND_ATTR = "data-coolbird_vietnam_address-sync-bound";
+const CHECKOUT_LAYOUT_STYLE_ID = "coolviad-blocks-layout";
+const BLOCKS_PROXY_SELECT_SUFFIX = "__coolviad_proxy_select";
+const BLOCKS_PROXY_SOURCE_ATTR = "data-coolviad-source-id";
+const BLOCKS_PROXY_SYNC_BOUND_ATTR = "data-coolviad-sync-bound";
 
 type SavedAddressData = {
   state: string;
@@ -55,12 +55,12 @@ const getSelect2EventValue = (event: unknown) => {
 };
 
 export const getAddressSchema = (): AddressSchema =>
-  (window.coolbird_vietnam_address_array?.address_schema as AddressSchema) ||
+  (window.coolviad_checkout_data?.address_schema as AddressSchema) ||
   window.coolviad_vn?.address_schema ||
   "new";
 
 export const getSavedAddressData = (prefix: CheckoutPrefix): SavedAddressData =>
-  ((window.coolbird_vietnam_address_array?.saved as Record<
+  ((window.coolviad_checkout_data?.saved as Record<
     string,
     Partial<SavedAddressData>
   > | undefined)?.[prefix] || {
@@ -82,26 +82,26 @@ export const getCityPlaceholder = (schema: AddressSchema) =>
   schema === "new"
     ? String(
         window.coolviad_vn?.i18n?.select_ward ||
-          window.coolbird_vietnam_address_array?.select_ward ||
+          window.coolviad_checkout_data?.select_ward ||
           "Select ward/commune/town",
       )
     : String(
         window.coolviad_vn?.i18n?.select_district ||
-          window.coolbird_vietnam_address_array?.select_district ||
+          window.coolviad_checkout_data?.select_district ||
           "Select district",
       );
 
 export const getWardPlaceholder = () =>
   String(
     window.coolviad_vn?.i18n?.select_ward ||
-      window.coolbird_vietnam_address_array?.select_ward ||
+      window.coolviad_checkout_data?.select_ward ||
       "Select ward/commune/town",
   );
 
 export const getLoadingPlaceholder = () =>
   String(
     window.coolviad_vn?.i18n?.loading ||
-      window.coolbird_vietnam_address_array?.loading_text ||
+      window.coolviad_checkout_data?.loading_text ||
       "Loading...",
   );
 
@@ -335,7 +335,7 @@ const resolveSelectOptionValue = (
 ) => {
   const rawCandidate = (
     candidateValue ||
-    select.dataset.coolbird_vietnam_addressInitialValue ||
+    select.dataset.coolviadInitialValue ||
     ""
   ).trim();
 
@@ -378,7 +378,7 @@ const refreshSelectUi = (select: HTMLSelectElement) => {
     language: {
       noResults: () =>
         String(
-          window.coolbird_vietnam_address_array?.formatNoMatches || "No value",
+          window.coolviad_checkout_data?.formatNoMatches || "No value",
         ),
     },
   });
@@ -419,11 +419,11 @@ export const setSelectValue = (
 };
 
 const bindProxySelectSync = (select: HTMLSelectElement) => {
-  if (select.dataset.coolbird_vietnam_addressSyncBound === "yes") {
+  if (select.dataset.coolviadSyncBound === "yes") {
     return;
   }
 
-  select.dataset.coolbird_vietnam_addressSyncBound = "yes";
+  select.dataset.coolviadSyncBound = "yes";
   select.setAttribute(BLOCKS_PROXY_SYNC_BOUND_ATTR, "yes");
 
   const syncFromSelect = (nextValue?: string) => {
@@ -499,7 +499,7 @@ const convertBlocksInputToSelect = (
   if (existingProxy) {
     bindProxySelectSync(existingProxy);
     if (initialValue && !existingProxy.value) {
-      existingProxy.dataset.coolbird_vietnam_addressInitialValue = initialValue;
+      existingProxy.dataset.coolviadInitialValue = initialValue;
     }
     return existingProxy;
   }
@@ -518,7 +518,7 @@ const convertBlocksInputToSelect = (
   select.size = 1;
 
   if (initialValue) {
-    select.dataset.coolbird_vietnam_addressInitialValue = initialValue;
+    select.dataset.coolviadInitialValue = initialValue;
     const pendingLabel = getPreloadedAddressName(initialValue) || initialValue;
     const option = document.createElement("option");
     option.value = initialValue;
@@ -672,7 +672,7 @@ const getPlainSelectFromInput = (id: string) => {
     cloneInputAttributesToSelect(el, select);
     select.className = (el.className || "").trim();
     if (el.value) {
-      select.dataset.coolbird_vietnam_addressInitialValue = el.value;
+      select.dataset.coolviadInitialValue = el.value;
     }
     el.parentNode?.replaceChild(select, el);
     return select;
@@ -756,7 +756,7 @@ export const readChildFieldValue = (
   const select = findSelect(prefix, field);
   const sourceInput = getSourceInputForProxy(select);
   const sourceValue = sourceInput?.value || sourceInput?.getAttribute("value") || "";
-  const datasetValue = select?.dataset.coolbird_vietnam_addressInitialValue || "";
+  const datasetValue = select?.dataset.coolviadInitialValue || "";
   const selectValue = select?.value || "";
   const fallbackValue =
     field === "city"
@@ -830,7 +830,7 @@ export const populateSelect = (
 
   const resolvedValue = hasSelectedOption || preserveMissingValue ? nextValue : "";
   setSelectValue(select, resolvedValue, false);
-  delete select.dataset.coolbird_vietnam_addressInitialValue;
+  delete select.dataset.coolviadInitialValue;
 };
 
 export const mapProvinceItemsToOptions = (

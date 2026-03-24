@@ -1,7 +1,7 @@
 <?php
 
 /**
- * CoolBirdZik Shipping Admin
+ * Coolviad Shipping Admin
  *
  * Admin UI and AJAX handler for shipping rate + region management.
  */
@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class CoolBirdZik_Shipping_Admin
+class Coolviad_Shipping_Admin
 {
     /** @var string */
     private $rates_table;
@@ -94,7 +94,7 @@ class CoolBirdZik_Shipping_Admin
             );
         }
 
-        wp_localize_script('coolviad-admin-shipping', 'coolviad_district_admin', array(
+        wp_localize_script('coolviad-admin-shipping', 'coolviad_shipping_admin_data', array(
             'ajaxurl'   => admin_url('admin-ajax.php'),
             'nonce'     => wp_create_nonce('coolviad_shipping_admin'),
             'provinces' => $this->get_provinces_for_js(),
@@ -132,8 +132,8 @@ class CoolBirdZik_Shipping_Admin
         }
         include $file;
         $out = array();
-        if (isset($tinh_thanhpho) && is_array($tinh_thanhpho)) {
-            foreach ($tinh_thanhpho as $code => $name) {
+        if (isset($coolviad_provinces) && is_array($coolviad_provinces)) {
+            foreach ($coolviad_provinces as $code => $name) {
                 $out[] = array('code' => $code, 'name' => $name);
             }
         }
@@ -146,6 +146,196 @@ class CoolBirdZik_Shipping_Admin
             return Coolviad_Region_Manager::get_regions();
         }
         return array();
+    }
+
+    private function get_post_string(string $key): string
+    {
+        if (!isset($_POST[$key])) {
+            return '';
+        }
+
+        return sanitize_text_field(wp_unslash($_POST[$key]));
+    }
+
+    private function get_post_int(string $key): int
+    {
+        if (!isset($_POST[$key])) {
+            return 0;
+        }
+
+        return absint(wp_unslash($_POST[$key]));
+    }
+
+    private function get_post_json_array(string $key): ?array
+    {
+        if (!isset($_POST[$key])) {
+            return null;
+        }
+
+        $json = wp_unslash($_POST[$key]);
+
+        if (!is_string($json) || trim($json) === '') {
+            return null;
+        }
+
+        $decoded = json_decode($json, true);
+
+        return is_array($decoded) ? $decoded : null;
+    }
+
+    private function decode_json_array_string($value): ?array
+    {
+        if (!is_string($value)) {
+            return array();
+        }
+
+        $value = trim($value);
+
+        if ($value === '') {
+            return array();
+        }
+
+        $decoded = json_decode($value, true);
+
+        return is_array($decoded) ? $decoded : null;
+    }
+
+    private function sanitize_location_type(string $location_type): string
+    {
+        $location_type = sanitize_text_field($location_type);
+        $allowed_types = array('province', 'district', 'ward', 'region');
+
+        return in_array($location_type, $allowed_types, true) ? $location_type : '';
+    }
+
+    private function sanitize_weight_calc_type($weight_calc_type): string
+    {
+        return in_array($weight_calc_type, array('replace', 'per_kg'), true)
+            ? $weight_calc_type
+            : 'replace';
+    }
+
+    private function sanitize_weight_tiers($weight_tiers): array
+    {
+        if (!is_array($weight_tiers)) {
+            return array();
+        }
+
+        $sanitized = array();
+
+        foreach ($weight_tiers as $tier) {
+            if (!is_array($tier)) {
+                continue;
+            }
+
+            $sanitized[] = array(
+                'min' => max(0, (float) ($tier['min'] ?? 0)),
+                'max' => max(0, (float) ($tier['max'] ?? 0)),
+                'price' => max(0, (float) ($tier['price'] ?? 0)),
+            );
+        }
+
+        return $sanitized;
+    }
+
+    private function sanitize_order_total_rules($order_total_rules): array
+    {
+        if (!is_array($order_total_rules)) {
+            return array();
+        }
+
+        $sanitized = array();
+
+        foreach ($order_total_rules as $rule) {
+            if (!is_array($rule)) {
+                continue;
+            }
+
+            $sanitized[] = array(
+                'min_total' => max(0, (float) ($rule['min_total'] ?? 0)),
+                'max_total' => max(0, (float) ($rule['max_total'] ?? 0)),
+                'shipping_fee' => max(0, (float) ($rule['shipping_fee'] ?? 0)),
+            );
+        }
+
+        return $sanitized;
+    }
+
+    private function encode_json_array(array $value): string
+    {
+        $encoded = wp_json_encode($value);
+
+        return false === $encoded ? '[]' : $encoded;
+    }
+
+    private function sanitize_rate_payload(array $rate_data)
+    {
+        $location_type = $this->sanitize_location_type($rate_data['location_type'] ?? '');
+        $location_code = sanitize_text_field($rate_data['location_code'] ?? '');
+
+        if ($location_type === '' || $location_code === '') {
+            return new WP_Error('invalid_location', 'Invalid location data');
+        }
+
+        return array(
+            'id' => absint($rate_data['id'] ?? 0),
+            'location_type' => $location_type,
+            'location_code' => $location_code,
+            'base_rate' => max(0, (float) ($rate_data['base_rate'] ?? 0)),
+            'weight_tiers' => $this->sanitize_weight_tiers($rate_data['weight_tiers'] ?? array()),
+            'order_total_rules' => $this->sanitize_order_total_rules($rate_data['order_total_rules'] ?? array()),
+            'weight_calc_type' => $this->sanitize_weight_calc_type($rate_data['weight_calc_type'] ?? ''),
+            'priority' => intval($rate_data['priority'] ?? 0),
+        );
+    }
+
+    private function sanitize_rate_template_payload(array $rate_data): array
+    {
+        return array(
+            'base_rate' => max(0, (float) ($rate_data['base_rate'] ?? 0)),
+            'weight_tiers' => $this->sanitize_weight_tiers($rate_data['weight_tiers'] ?? array()),
+            'order_total_rules' => $this->sanitize_order_total_rules($rate_data['order_total_rules'] ?? array()),
+            'weight_calc_type' => $this->sanitize_weight_calc_type($rate_data['weight_calc_type'] ?? ''),
+            'priority' => intval($rate_data['priority'] ?? 0),
+        );
+    }
+
+    private function sanitize_region_payload(array $region_data): array
+    {
+        $province_codes = array();
+
+        if (is_array($region_data['province_codes'] ?? null)) {
+            foreach ($region_data['province_codes'] as $province_code) {
+                $province_code = sanitize_text_field($province_code);
+
+                if ($province_code !== '') {
+                    $province_codes[] = $province_code;
+                }
+            }
+        }
+
+        return array(
+            'id' => absint($region_data['id'] ?? 0),
+            'region_name' => sanitize_text_field($region_data['region_name'] ?? ''),
+            'region_code' => sanitize_key($region_data['region_code'] ?? ''),
+            'province_codes' => array_values(array_unique($province_codes)),
+        );
+    }
+
+    private function get_uploaded_csv_tmp_name(string $key)
+    {
+        if (!isset($_FILES[$key]) || !is_array($_FILES[$key])) {
+            return new WP_Error('missing_file', 'No file uploaded');
+        }
+
+        $file = $_FILES[$key];
+        $tmp_name = isset($file['tmp_name']) && is_string($file['tmp_name']) ? $file['tmp_name'] : '';
+
+        if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK || $tmp_name === '' || !is_uploaded_file($tmp_name)) {
+            return new WP_Error('invalid_file', 'Invalid upload');
+        }
+
+        return $tmp_name;
     }
 
     private function get_location_name(string $type, string $code): string
@@ -181,8 +371,8 @@ class CoolBirdZik_Shipping_Admin
 
         global $wpdb;
 
-        $location_type = isset($_POST['location_type']) ? sanitize_text_field($_POST['location_type']) : '';
-        $location_code = isset($_POST['location_code']) ? sanitize_text_field($_POST['location_code']) : '';
+        $location_type = $this->sanitize_location_type($this->get_post_string('location_type'));
+        $location_code = $this->get_post_string('location_code');
 
         if (!$location_type || !$location_code) {
             wp_send_json_error(array('message' => 'Missing parameters'));
@@ -217,27 +407,30 @@ class CoolBirdZik_Shipping_Admin
 
         global $wpdb;
 
-        $rate_json = isset($_POST['rate']) ? wp_unslash($_POST['rate']) : '';
-        $rate_data = json_decode($rate_json, true);
+        $rate_data = $this->get_post_json_array('rate');
 
-        if (!$rate_data) {
+        if (!is_array($rate_data)) {
             wp_send_json_error(array('message' => 'Invalid rate data'));
         }
 
+        $rate_data = $this->sanitize_rate_payload($rate_data);
+
+        if (is_wp_error($rate_data)) {
+            wp_send_json_error(array('message' => $rate_data->get_error_message()));
+        }
+
         $data = array(
-            'location_type'    => sanitize_text_field($rate_data['location_type']),
-            'location_code'    => sanitize_text_field($rate_data['location_code']),
-            'base_rate'        => floatval($rate_data['base_rate']),
-            'weight_tiers'     => json_encode($rate_data['weight_tiers'] ?? array()),
-            'order_total_rules' => json_encode($rate_data['order_total_rules'] ?? array()),
-            'weight_calc_type' => in_array($rate_data['weight_calc_type'] ?? '', array('replace', 'per_kg'))
-                ? $rate_data['weight_calc_type']
-                : 'replace',
-            'priority'         => intval($rate_data['priority'] ?? 0),
+            'location_type'    => $rate_data['location_type'],
+            'location_code'    => $rate_data['location_code'],
+            'base_rate'        => $rate_data['base_rate'],
+            'weight_tiers'     => $this->encode_json_array($rate_data['weight_tiers']),
+            'order_total_rules' => $this->encode_json_array($rate_data['order_total_rules']),
+            'weight_calc_type' => $rate_data['weight_calc_type'],
+            'priority'         => $rate_data['priority'],
             'updated_at'       => current_time('mysql'),
         );
 
-        $id = isset($rate_data['id']) ? intval($rate_data['id']) : 0;
+        $id = $rate_data['id'];
         if ($id) {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Admin AJAX: intentionally direct UPDATE on plugin-owned table; no caching needed.
             $wpdb->update($this->rates_table, $data, array('id' => $id));
@@ -268,7 +461,7 @@ class CoolBirdZik_Shipping_Admin
         }
 
         global $wpdb;
-        $id = intval($_POST['id'] ?? 0);
+        $id = $this->get_post_int('id');
         if (!$id) {
             wp_send_json_error(array('message' => 'Invalid ID'));
         }
@@ -290,7 +483,12 @@ class CoolBirdZik_Shipping_Admin
         }
 
         global $wpdb;
-        $handle = fopen($_FILES['file']['tmp_name'], 'r');
+        $tmp_name = $this->get_uploaded_csv_tmp_name('file');
+        if (is_wp_error($tmp_name)) {
+            wp_send_json_error(array('message' => $tmp_name->get_error_message()));
+        }
+
+        $handle = fopen($tmp_name, 'r');
         if (!$handle) {
             wp_send_json_error(array('message' => 'Cannot read file'));
         }
@@ -304,7 +502,7 @@ class CoolBirdZik_Shipping_Admin
 
         while (($row = fgetcsv($handle)) !== false) {
             $row_number++;
-            $location_type = sanitize_text_field($row[0] ?? '');
+            $location_type = $this->sanitize_location_type($row[0] ?? '');
             $location_code = sanitize_text_field($row[1] ?? '');
 
             if (!$location_type || !$location_code) {
@@ -313,15 +511,40 @@ class CoolBirdZik_Shipping_Admin
                 continue;
             }
 
+            $weight_tiers = $this->decode_json_array_string($row[3] ?? '[]');
+            $order_total_rules = $this->decode_json_array_string($row[4] ?? '[]');
+
+            if ($weight_tiers === null || $order_total_rules === null) {
+                $failed++;
+                $errors[] = array('row' => $row_number, 'message' => 'Invalid JSON payload in CSV');
+                continue;
+            }
+
+            $data = $this->sanitize_rate_payload(array(
+                'location_type' => $location_type,
+                'location_code' => $location_code,
+                'base_rate' => $row[2] ?? 0,
+                'weight_tiers' => $weight_tiers,
+                'order_total_rules' => $order_total_rules,
+                'weight_calc_type' => $row[5] ?? '',
+                'priority' => $row[6] ?? 0,
+            ));
+
+            if (is_wp_error($data)) {
+                $failed++;
+                $errors[] = array('row' => $row_number, 'message' => $data->get_error_message());
+                continue;
+            }
+
             $data = array(
-                'location_type'    => $location_type,
-                'location_code'    => $location_code,
-                'base_rate'        => floatval($row[2] ?? 0),
-                'weight_tiers'     => $row[3] ?? '[]',
-                'order_total_rules' => $row[4] ?? '[]',
-                'weight_calc_type' => in_array($row[5] ?? '', array('replace', 'per_kg')) ? $row[5] : 'replace',
-                'priority'         => intval($row[6] ?? 0),
-                'updated_at'       => current_time('mysql'),
+                'location_type' => $data['location_type'],
+                'location_code' => $data['location_code'],
+                'base_rate' => $data['base_rate'],
+                'weight_tiers' => $this->encode_json_array($data['weight_tiers']),
+                'order_total_rules' => $this->encode_json_array($data['order_total_rules']),
+                'weight_calc_type' => $data['weight_calc_type'],
+                'priority' => $data['priority'],
+                'updated_at' => current_time('mysql'),
             );
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Admin AJAX bulk import: intentionally direct INSERT on plugin-owned table; no caching needed.
@@ -413,13 +636,13 @@ class CoolBirdZik_Shipping_Admin
             wp_send_json_error(array('message' => 'Region manager not available'));
         }
 
-        $region_json = isset($_POST['region']) ? wp_unslash($_POST['region']) : '';
-        $region_data = json_decode($region_json, true);
+        $region_data = $this->get_post_json_array('region');
 
-        if (!$region_data) {
+        if (!is_array($region_data)) {
             wp_send_json_error(array('message' => 'Invalid region data'));
         }
 
+        $region_data = $this->sanitize_region_payload($region_data);
         $result = Coolviad_Region_Manager::save_region($region_data);
         if (is_wp_error($result)) {
             wp_send_json_error(array('message' => $result->get_error_message()));
@@ -439,7 +662,7 @@ class CoolBirdZik_Shipping_Admin
             wp_send_json_error(array('message' => 'Region manager not available'));
         }
 
-        $id     = intval($_POST['id'] ?? 0);
+        $id     = $this->get_post_int('id');
         $result = Coolviad_Region_Manager::delete_region($id);
         if (is_wp_error($result)) {
             wp_send_json_error(array('message' => $result->get_error_message()));
@@ -471,13 +694,14 @@ class CoolBirdZik_Shipping_Admin
             wp_send_json_error(array('message' => 'Region manager not available'));
         }
 
-        $region_code = isset($_POST['region_code']) ? sanitize_key($_POST['region_code']) : '';
-        $rate_json   = isset($_POST['rate'])         ? wp_unslash($_POST['rate'])         : '';
-        $rate_tpl    = json_decode($rate_json, true);
+        $region_code = sanitize_key($this->get_post_string('region_code'));
+        $rate_tpl    = $this->get_post_json_array('rate');
 
-        if (!$region_code || !$rate_tpl) {
+        if (!$region_code || !is_array($rate_tpl)) {
             wp_send_json_error(array('message' => 'Missing region_code or rate'));
         }
+
+        $rate_tpl = $this->sanitize_rate_template_payload($rate_tpl);
 
         $region = Coolviad_Region_Manager::get_region($region_code);
         if (!$region) {
@@ -492,13 +716,11 @@ class CoolBirdZik_Shipping_Admin
             $data = array(
                 'location_type'    => 'province',
                 'location_code'    => sanitize_text_field($province_code),
-                'base_rate'        => floatval($rate_tpl['base_rate'] ?? 0),
-                'weight_tiers'     => json_encode($rate_tpl['weight_tiers'] ?? array()),
-                'order_total_rules' => json_encode($rate_tpl['order_total_rules'] ?? array()),
-                'weight_calc_type' => in_array($rate_tpl['weight_calc_type'] ?? '', array('replace', 'per_kg'))
-                    ? $rate_tpl['weight_calc_type']
-                    : 'replace',
-                'priority'         => intval($rate_tpl['priority'] ?? 0),
+                'base_rate'        => $rate_tpl['base_rate'],
+                'weight_tiers'     => $this->encode_json_array($rate_tpl['weight_tiers']),
+                'order_total_rules' => $this->encode_json_array($rate_tpl['order_total_rules']),
+                'weight_calc_type' => $rate_tpl['weight_calc_type'],
+                'priority'         => $rate_tpl['priority'],
                 'updated_at'       => current_time('mysql'),
             );
 
@@ -529,4 +751,4 @@ class CoolBirdZik_Shipping_Admin
     }
 }
 
-new CoolBirdZik_Shipping_Admin();
+new Coolviad_Shipping_Admin();
