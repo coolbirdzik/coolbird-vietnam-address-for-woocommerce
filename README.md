@@ -9,11 +9,19 @@
 [![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-777BB4)](https://www.php.net)
 [![License](https://img.shields.io/badge/License-GPLv3-green.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
+<div align="center" style="margin-top:12px;margin-bottom:12px;">
+  <a href="https://vi.wordpress.org/plugins/coolbird-vietnam-address/" title="Coolbird Vietnam Address trên vi.wordpress.org">
+    <img src="https://img.shields.io/badge/WordPress.org-Plugin-0073aa?logo=wordpress&logoColor=white&style=for-the-badge" alt="WordPress.org Plugin" style="width:260px;height:auto;">
+  </a>
+</div>
+
 Woocommerce plugin optimized for the Vietnamese market with Province/City, District, and Ward/Commune selection system.
 
 <div align="center">
-  <img src="screenshot1.png" alt="Checkout" width="600">
-  <img src="screenshot2.png" alt="Settings" width="600">
+  <div style="max-width:900px;margin:0 auto;text-align:center;">
+    <img src="screenshot1.png" alt="Checkout" style="width:100%;height:auto;margin-bottom:16px;">
+    <img src="screenshot2.png" alt="Settings" style="width:100%;height:auto;">
+  </div>
 </div>
 
 ---
