@@ -1,14 +1,15 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the Coolbird Vietnam Address for WooCommerce package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-02 10:01+0700\n"
+"Project-Id-Version: Coolbird Vietnam Address for WooCommerce 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/coolbirdzik/coolbird-vietnam-"
+"address-for-woocommerce\n"
+"POT-Creation-Date: 2026-03-24 14:17+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,483 +18,489 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: coolbird-vietnam-address-for-woocommerce.php:367 coolbird-vietnam-address-for-woocommerce.php:368
-msgid "Vietnam Address Woo"
+#: coolbird-vietnam-address.php:442 coolbird-vietnam-address.php:443
+msgid "Coolbird Vietnam Address"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:412 coolbird-vietnam-address-for-woocommerce.php:1168
+#: coolbird-vietnam-address.php:535 coolbird-vietnam-address.php:2026
 msgid "Full name"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:413 coolbird-vietnam-address-for-woocommerce.php:1169
+#: coolbird-vietnam-address.php:536 coolbird-vietnam-address.php:2027
 msgctxt "placeholder"
 msgid "Type Full name"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:422
+#: coolbird-vietnam-address.php:545
 msgid "Type your phone"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:426
+#: coolbird-vietnam-address.php:549
 msgid "Type your email"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:429 coolbird-vietnam-address-for-woocommerce.php:506
-#: coolbird-vietnam-address-for-woocommerce.php:1116 coolbird-vietnam-address-for-woocommerce.php:1245
-#: coolbird-vietnam-address-for-woocommerce.php:1316
+#: coolbird-vietnam-address.php:553 coolbird-vietnam-address.php:643
+#: coolbird-vietnam-address.php:1941 coolbird-vietnam-address.php:2131
+#: coolbird-vietnam-address.php:2203
 msgid "Province/City"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:433 coolbird-vietnam-address-for-woocommerce.php:510
+#: coolbird-vietnam-address.php:557 coolbird-vietnam-address.php:647
 msgctxt "placeholder"
 msgid "Select Province/City"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:434 coolbird-vietnam-address-for-woocommerce.php:511
+#: coolbird-vietnam-address.php:558 coolbird-vietnam-address.php:648
 msgid "Select Province/City"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:438 coolbird-vietnam-address-for-woocommerce.php:515
-#: coolbird-vietnam-address-for-woocommerce.php:1122 coolbird-vietnam-address-for-woocommerce.php:1179
-#: coolbird-vietnam-address-for-woocommerce.php:1250 coolbird-vietnam-address-for-woocommerce.php:1321
-msgid "District"
-msgstr ""
-
-#: coolbird-vietnam-address-for-woocommerce.php:442 coolbird-vietnam-address-for-woocommerce.php:519
-#: coolbird-vietnam-address-for-woocommerce.php:1184
-msgctxt "placeholder"
-msgid "Select District"
-msgstr ""
-
-#: coolbird-vietnam-address-for-woocommerce.php:448 coolbird-vietnam-address-for-woocommerce.php:525
-msgctxt "placeholder"
-msgid "Ex: No. 20, 90 Alley"
-msgstr ""
-
-#: coolbird-vietnam-address-for-woocommerce.php:470 coolbird-vietnam-address-for-woocommerce.php:539
-#: coolbird-vietnam-address-for-woocommerce.php:1136 coolbird-vietnam-address-for-woocommerce.php:1192
-#: coolbird-vietnam-address-for-woocommerce.php:1257
+#: coolbird-vietnam-address.php:562 coolbird-vietnam-address.php:601
+#: coolbird-vietnam-address.php:652 coolbird-vietnam-address.php:684
+#: coolbird-vietnam-address.php:888 coolbird-vietnam-address.php:1949
+#: coolbird-vietnam-address.php:1959 coolbird-vietnam-address.php:2042
+#: coolbird-vietnam-address.php:2057 coolbird-vietnam-address.php:2143
 msgid "Ward/Commune"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:474 coolbird-vietnam-address-for-woocommerce.php:543
-#: coolbird-vietnam-address-for-woocommerce.php:1197
+#: coolbird-vietnam-address.php:562 coolbird-vietnam-address.php:652
+#: coolbird-vietnam-address.php:887 coolbird-vietnam-address.php:1949
+#: coolbird-vietnam-address.php:2042 coolbird-vietnam-address.php:2136
+#: coolbird-vietnam-address.php:2208
+msgid "District"
+msgstr ""
+
+#: coolbird-vietnam-address.php:566 coolbird-vietnam-address.php:568
+#: coolbird-vietnam-address.php:605 coolbird-vietnam-address.php:606
+#: coolbird-vietnam-address.php:656 coolbird-vietnam-address.php:658
+#: coolbird-vietnam-address.php:688 coolbird-vietnam-address.php:689
+#: coolbird-vietnam-address.php:826 coolbird-vietnam-address.php:890
+#: coolbird-vietnam-address.php:962 coolbird-vietnam-address.php:988
+#: coolbird-vietnam-address.php:995 coolbird-vietnam-address.php:1800
+#: coolbird-vietnam-address.php:2047 coolbird-vietnam-address.php:2062
 msgctxt "placeholder"
 msgid "Select Ward/Commune"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:486
+#: coolbird-vietnam-address.php:566 coolbird-vietnam-address.php:568
+#: coolbird-vietnam-address.php:656 coolbird-vietnam-address.php:658
+#: coolbird-vietnam-address.php:825 coolbird-vietnam-address.php:889
+#: coolbird-vietnam-address.php:963 coolbird-vietnam-address.php:1799
+#: coolbird-vietnam-address.php:2047
+msgctxt "placeholder"
+msgid "Select District"
+msgstr ""
+
+#: coolbird-vietnam-address.php:576 coolbird-vietnam-address.php:666
+msgctxt "placeholder"
+msgid "Ex: No. 20, 90 Alley"
+msgstr ""
+
+#: coolbird-vietnam-address.php:622
 msgid "Recipient full name"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:487
+#: coolbird-vietnam-address.php:623
 msgctxt "placeholder"
 msgid "Recipient full name"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:495
+#: coolbird-vietnam-address.php:631
 msgid "Recipient phone"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:496
+#: coolbird-vietnam-address.php:632
 msgctxt "placeholder"
 msgid "Recipient phone"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:637 coolbird-vietnam-address-for-woocommerce.php:979
-#: coolbird-vietnam-address-for-woocommerce.php:991 coolbird-vietnam-address-for-woocommerce.php:1006
+#: coolbird-vietnam-address.php:821 coolbird-vietnam-address.php:1791
 msgid "No value"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:638
+#: coolbird-vietnam-address.php:822
 msgid "Phone number is incorrect"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:639
+#: coolbird-vietnam-address.php:823 coolbird-vietnam-address.php:891
+#: coolbird-vietnam-address.php:1798
 msgid "Loading..."
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:640
+#: coolbird-vietnam-address.php:824
 msgid "Phone number does not exist"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:923
+#: coolbird-vietnam-address.php:827
+msgid "Please complete verification."
+msgstr ""
+
+#: coolbird-vietnam-address.php:830
+msgid "No ward / N/A"
+msgstr ""
+
+#: coolbird-vietnam-address.php:892
+msgid "Failed to load data"
+msgstr ""
+
+#: coolbird-vietnam-address.php:1622
 msgid "Phone number of the recipient"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:933
+#: coolbird-vietnam-address.php:1632
 msgid "Shipping Phone:"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:999
-msgid "Delete the selected boxes?"
-msgstr ""
-
-#: coolbird-vietnam-address-for-woocommerce.php:1093
+#: coolbird-vietnam-address.php:1889
 msgid "Settings"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:1226 coolbird-vietnam-address-for-woocommerce.php:1297
+#: coolbird-vietnam-address.php:2112 coolbird-vietnam-address.php:2184
 msgid "First name"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:1230 coolbird-vietnam-address-for-woocommerce.php:1301
+#: coolbird-vietnam-address.php:2116 coolbird-vietnam-address.php:2188
 msgid "Last name"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:1234 coolbird-vietnam-address-for-woocommerce.php:1305
+#: coolbird-vietnam-address.php:2120 coolbird-vietnam-address.php:2192
 msgid "Company"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:1238 coolbird-vietnam-address-for-woocommerce.php:1309
+#: coolbird-vietnam-address.php:2124 coolbird-vietnam-address.php:2196
 msgid "Country"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:1242 coolbird-vietnam-address-for-woocommerce.php:1313
+#: coolbird-vietnam-address.php:2128 coolbird-vietnam-address.php:2200
 msgid "Select a country&hellip;"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:1254 coolbird-vietnam-address-for-woocommerce.php:1325
+#: coolbird-vietnam-address.php:2140 coolbird-vietnam-address.php:2212
 msgid "Select District&hellip;"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:1261
+#: coolbird-vietnam-address.php:2147
 msgid "Select Ward/Commune&hellip;"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:1264 coolbird-vietnam-address-for-woocommerce.php:1328
+#: coolbird-vietnam-address.php:2150 coolbird-vietnam-address.php:2215
 msgid "Address line 1"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:1268
+#: coolbird-vietnam-address.php:2154
 msgid "Email address"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:1271
+#: coolbird-vietnam-address.php:2157
 msgid "Phone"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:1349 coolbird-vietnam-address-for-woocommerce.php:1403
+#: coolbird-vietnam-address.php:2235 coolbird-vietnam-address.php:2255
+#: coolbird-vietnam-address.php:2273 coolbird-vietnam-address.php:2336
 msgid "Choose an option"
 msgstr ""
 
-#: coolbird-vietnam-address-for-woocommerce.php:1355
+#: coolbird-vietnam-address.php:2288
 msgid "required"
 msgstr ""
 
-#: includes/class-coolbirdzik-shipping-admin.php:49
-#: includes/class-vncheckout-shipping-admin.php:39
-msgid "Vietnam Shipping Rates"
+#: includes/admin-order-functions.php:88
+msgid "From Date"
 msgstr ""
 
-#: includes/class-coolbirdzik-shipping-admin.php:50
-#: includes/class-vncheckout-shipping-admin.php:40
-msgid "Shipping Rates"
+#: includes/admin-order-functions.php:94
+msgid "To Date"
 msgstr ""
 
-#: includes/class-coolbirdzik-shipping-admin.php:69
-msgid ""
-"Vietnam Shipping Rates: frontend assets not found. Run `npm run build` "
-"inside the frontend/ directory."
+#: includes/admin-order-functions.php:105
+msgid "All Provinces"
 msgstr ""
 
-#: includes/class-vncheckout-region-manager.php:125
+#: includes/class-coolbird-vietnam-address-region-manager.php:128
 msgid "Region name and code are required."
 msgstr ""
 
-#: includes/class-vncheckout-region-manager.php:145
+#: includes/class-coolbird-vietnam-address-region-manager.php:149
 msgid "Predefined regions cannot be modified."
 msgstr ""
 
-#: includes/class-vncheckout-region-manager.php:154
+#: includes/class-coolbird-vietnam-address-region-manager.php:160
 msgid "A region with that code already exists."
 msgstr ""
 
-#: includes/class-vncheckout-region-manager.php:179
+#: includes/class-coolbird-vietnam-address-region-manager.php:187
 msgid "Region not found."
 msgstr ""
 
-#: includes/class-vncheckout-region-manager.php:183
+#: includes/class-coolbird-vietnam-address-region-manager.php:191
 msgid "Predefined regions cannot be deleted."
 msgstr ""
 
-#: includes/class-vncheckout-shipping-method.php:31
+#: includes/class-coolbird-vietnam-address-shipping-method.php:31
 msgid "Vietnam Shipping Calculator"
 msgstr ""
 
-#: includes/class-vncheckout-shipping-method.php:33
+#: includes/class-coolbird-vietnam-address-shipping-method.php:33
 msgid ""
 "Shipping fees based on Vietnam province/district/ward, order total, and "
 "weight."
 msgstr ""
 
-#: includes/class-vncheckout-shipping-method.php:61
+#: includes/class-coolbird-vietnam-address-shipping-method.php:61
 msgid "Enable/Disable"
 msgstr ""
 
-#: includes/class-vncheckout-shipping-method.php:63
+#: includes/class-coolbird-vietnam-address-shipping-method.php:63
 msgid "Enable this shipping method"
 msgstr ""
 
-#: includes/class-vncheckout-shipping-method.php:67
+#: includes/class-coolbird-vietnam-address-shipping-method.php:67
 msgid "Method Title"
 msgstr ""
 
-#: includes/class-vncheckout-shipping-method.php:69
+#: includes/class-coolbird-vietnam-address-shipping-method.php:69
 msgid "Title displayed during checkout."
 msgstr ""
 
-#: includes/class-vncheckout-shipping-method.php:70
+#: includes/class-coolbird-vietnam-address-shipping-method.php:70
 msgid "Vietnam Shipping"
 msgstr ""
 
-#: includes/class-vncheckout-shipping-method.php:74
+#: includes/class-coolbird-vietnam-address-shipping-method.php:74
 msgid "Default Shipping Rate"
 msgstr ""
 
-#: includes/class-vncheckout-shipping-method.php:76
+#: includes/class-coolbird-vietnam-address-shipping-method.php:76
 msgid "Fallback rate (VND) when no location rule matches."
 msgstr ""
 
-#: includes/class-vncheckout-shipping-method.php:81
+#: includes/class-coolbird-vietnam-address-shipping-method.php:81
 msgid "Manage Rates"
 msgstr ""
 
-#. translators: %s: URL to the rate manager page
-#: includes/class-vncheckout-shipping-method.php:85
+#: includes/class-coolbird-vietnam-address-shipping-method.php:85
 #, php-format
 msgid ""
 "Configure shipping rates by region, province, district, and ward on the <a "
-"href=\"%s\" style=\"font-weight:600\">Shipping Rates</a> page (WooCommerce → "
+"href=\"%s\" style=\"font-weight:600\">Shipping Rates</a> page (Woo → "
 "Shipping Rates)."
 msgstr ""
 
-#: includes/class-vncheckout-vnd-paypal-standard.php:82
+#: includes/class-coolbird-vietnam-address-vnd-paypal-standard.php:89
 #, php-format
 msgid ""
 "The prices will be converted to %1$s in the PayPal pages with the exchange "
 "rate %2$s."
 msgstr ""
 
-#: includes/options-page.php:4
+#: includes/class-coolbirdzik-shipping-admin.php:50
+msgid "Vietnam Shipping Rates"
+msgstr ""
+
+#: includes/class-coolbirdzik-shipping-admin.php:51
+msgid "Shipping Rates"
+msgstr ""
+
+#: includes/class-coolbirdzik-shipping-admin.php:70
+msgid ""
+"Vietnam Shipping Rates: frontend assets not found. Run `npm run build` "
+"inside the frontend/ directory."
+msgstr ""
+
+#: includes/options-page.php:8
+msgid "Coolbird Vietnam Address for WooCommerce"
+msgstr ""
+
+#: includes/options-page.php:11
 msgid ""
 "Fine-tune how Vietnamese addresses, currency conversion and advanced "
 "checkout helpers behave in your store."
 msgstr ""
 
-#: includes/options-page.php:17
-msgid "Currency & conversion"
-msgstr ""
-
-#: includes/options-page.php:19
-msgid ""
-"Control currency formatting, volumetric weight and VNĐ ↔ foreign currency "
-"conversion."
-msgstr ""
-
-#: includes/options-page.php:24
-msgid "Convert ₫ to VNĐ"
-msgstr ""
-
 #: includes/options-page.php:26
-msgid "Allow conversion to VNĐ"
+msgid "Address"
 msgstr ""
 
 #: includes/options-page.php:30
-msgid "Remove shipping title"
+msgid "Currency & Shipping"
 msgstr ""
 
-#: includes/options-page.php:32
-msgid "Completely remove shipping method title"
+#: includes/options-page.php:34
+msgid "Checkout Fields"
 msgstr ""
 
-#: includes/options-page.php:36
-msgid "Hide methods when free shipping available"
+#: includes/options-page.php:38 includes/options-page.php:333
+msgid "Order Management"
 msgstr ""
 
-#: includes/options-page.php:38
-msgid "Hide all other shipping methods when free shipping is available"
+#: includes/options-page.php:96
+msgid "Settings saved!"
 msgstr ""
 
-#: includes/options-page.php:42 includes/options-page.php:99
-msgid "Conversion rate"
+#: includes/options-page.php:107
+msgid "Vietnam Address Layout"
 msgstr ""
 
-#: includes/options-page.php:45
-msgid "Conversion quotient. Default by Viettel Post is 6000"
-msgstr ""
-
-#: includes/options-page.php:49
-msgid "Enable VNĐ to USD conversion"
-msgstr ""
-
-#: includes/options-page.php:51
-msgid "Enable VNĐ to USD conversion to use PayPal"
-msgstr ""
-
-#: includes/options-page.php:55
-msgid "VNĐ converted to currency"
-msgstr ""
-
-#: includes/options-page.php:102
-msgid "Exchange rate from VNĐ"
-msgstr ""
-
-#: includes/options-page.php:108
-msgid "Alepay & billing fields"
-msgstr ""
-
-#: includes/options-page.php:110
-msgid ""
-"Configure additional billing fields required by Alepay and other gateways."
-msgstr ""
-
-#: includes/options-page.php:116
-msgid "Alepay"
-msgstr ""
-
-#: includes/options-page.php:118
-msgid "Show First Name field"
-msgstr ""
-
-#: includes/options-page.php:119 includes/options-page.php:126
-msgid "Required for Alepay payment."
-msgstr ""
-
-#: includes/options-page.php:125
-msgid "Show Country field"
-msgstr ""
-
-#: includes/options-page.php:132
-msgid "Show Postcode field"
-msgstr ""
-
-#: includes/options-page.php:133
-msgid "Required for Alepay Tokenization payment."
-msgstr ""
-
-#: includes/options-page.php:139
-msgid "Vietnam address layout"
-msgstr ""
-
-#: includes/options-page.php:141
+#: includes/options-page.php:109
 msgid ""
 "Choose how provinces, districts and wards are shown on checkout and account "
 "pages."
 msgstr ""
 
-#: includes/options-page.php:147
-msgid "Vietnam Address Format"
-msgstr ""
-
-#: includes/options-page.php:152
-msgid "Old format: Province/City → District → Ward/Commune"
-msgstr ""
-
-#: includes/options-page.php:157
-msgid "New format: Province/City → Ward/Commune (District hidden)"
-msgstr ""
-
-#: includes/options-page.php:163 includes/options-page.php:165
-msgid "Hide Ward/Commune field"
-msgstr ""
-
-#: includes/options-page.php:166
-msgid "Hide Ward/Commune/Town field in checkout form. Default is shown."
-msgstr ""
-
-#: includes/options-page.php:170 includes/options-page.php:172
-msgid "Ward/Commune is NOT required"
-msgstr ""
-
-#: includes/options-page.php:173
-msgid "When Ward/Commune field is shown, it is optional."
-msgstr ""
-
-#: includes/options-page.php:179
-msgid "Order management"
-msgstr ""
-
-#: includes/options-page.php:181
-msgid "Extra filters for quickly finding orders by province and date."
-msgstr ""
-
-#: includes/options-page.php:187
-msgid "Filter"
-msgstr ""
-
-#: includes/options-page.php:189
-msgid "Enable filter"
-msgstr ""
-
-#: includes/options-page.php:190
-msgid "Enable filter by province and date in order list page"
-msgstr ""
-
-#: includes/options-page.php
-msgid "Address"
-msgstr ""
-
-#: includes/options-page.php
-msgid "Currency & Shipping"
-msgstr ""
-
-#: includes/options-page.php
-msgid "Checkout Fields"
-msgstr ""
-
-#: includes/options-page.php
-msgid "Order Management"
-msgstr ""
-
-#: includes/options-page.php
-msgid "Vietnam Address Layout"
-msgstr ""
-
-#: includes/options-page.php
+#: includes/options-page.php:115
 msgid "Address Format"
 msgstr ""
 
-#: includes/options-page.php
+#: includes/options-page.php:121
 msgid "Old Format"
 msgstr ""
 
-#: includes/options-page.php
+#: includes/options-page.php:122
+msgid "Province/City → District → Ward/Commune"
+msgstr ""
+
+#: includes/options-page.php:129
 msgid "New Format"
 msgstr ""
 
-#: includes/options-page.php
+#: includes/options-page.php:130
+msgid "Province/City → Ward/Commune (District hidden)"
+msgstr ""
+
+#: includes/options-page.php:143
 msgid "Hide Ward/Commune Field"
 msgstr ""
 
-#: includes/options-page.php
+#: includes/options-page.php:144
+msgid "Hide Ward/Commune/Town field in checkout form. Default is shown."
+msgstr ""
+
+#: includes/options-page.php:156
+msgid "Ward/Commune is NOT Required"
+msgstr ""
+
+#: includes/options-page.php:157
+msgid "When Ward/Commune field is shown, it is optional."
+msgstr ""
+
+#: includes/options-page.php:169
 msgid "Currency & Conversion"
 msgstr ""
 
-#: includes/options-page.php
+#: includes/options-page.php:171
+msgid ""
+"Control currency formatting, volumetric weight and VNĐ ↔ foreign currency "
+"conversion."
+msgstr ""
+
+#: includes/options-page.php:181
+msgid "Convert ₫ to VNĐ"
+msgstr ""
+
+#: includes/options-page.php:182
+msgid "Allow conversion to VNĐ"
+msgstr ""
+
+#: includes/options-page.php:189
 msgid "Conversion Quotient"
 msgstr ""
 
-#: includes/options-page.php
+#: includes/options-page.php:193
+msgid "Default by Viettel Post is 6000"
+msgstr ""
+
+#: includes/options-page.php:200
 msgid "PayPal Conversion"
 msgstr ""
 
-#: includes/options-page.php
+#: includes/options-page.php:201
+msgid "Enable VNĐ to foreign currency conversion to use PayPal."
+msgstr ""
+
+#: includes/options-page.php:211
+msgid "Enable VNĐ to USD Conversion"
+msgstr ""
+
+#: includes/options-page.php:212
+msgid "Enable VNĐ to USD conversion to use PayPal"
+msgstr ""
+
+#: includes/options-page.php:220
 msgid "Target Currency"
 msgstr ""
 
-#: includes/options-page.php
+#: includes/options-page.php:233
+msgid "Exchange Rate"
+msgstr ""
+
+#: includes/options-page.php:237
+msgid "Exchange rate from VNĐ"
+msgstr ""
+
+#: includes/options-page.php:245
 msgid "Shipping Options"
 msgstr ""
 
-#: includes/options-page.php
+#: includes/options-page.php:246
+msgid "Configure shipping method display options."
+msgstr ""
+
+#: includes/options-page.php:257
+msgid "Remove Shipping Title"
+msgstr ""
+
+#: includes/options-page.php:258
+msgid "Completely remove shipping method title"
+msgstr ""
+
+#: includes/options-page.php:271
+msgid "Hide Methods When Free Shipping Available"
+msgstr ""
+
+#: includes/options-page.php:272
+msgid "Hide all other shipping methods when free shipping is available"
+msgstr ""
+
+#: includes/options-page.php:284
 msgid "Alepay & Billing Fields"
 msgstr ""
 
-#: includes/options-page.php
+#: includes/options-page.php:286
+msgid ""
+"Configure additional billing fields required by Alepay and other gateways."
+msgstr ""
+
+#: includes/options-page.php:296
+msgid "Show First Name Field"
+msgstr ""
+
+#: includes/options-page.php:297 includes/options-page.php:309
+msgid "Required for Alepay payment."
+msgstr ""
+
+#: includes/options-page.php:308
+msgid "Show Country Field"
+msgstr ""
+
+#: includes/options-page.php:320
+msgid "Show Postcode Field"
+msgstr ""
+
+#: includes/options-page.php:321
+msgid "Required for Alepay Tokenization payment."
+msgstr ""
+
+#: includes/options-page.php:334
+msgid "Extra filters for quickly finding orders by province and date."
+msgstr ""
+
+#: includes/options-page.php:344
 msgid "Enable Order Filter"
 msgstr ""
 
-#: includes/options-page.php
+#: includes/options-page.php:345
+msgid "Enable filter by province and date in order list page"
+msgstr ""
+
+#: includes/options-page.php:357
 msgid "Save Changes"
 msgstr ""
