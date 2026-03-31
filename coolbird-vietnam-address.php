@@ -2,9 +2,9 @@
 /*
  * Plugin Name: Coolbird Vietnam Address for WooCommerce
  * Plugin URI: https://github.com/coolbirdzik/coolbird-vietnam-address-for-woocommerce/coolbird-vietnam-address
- * Version: 1.0.0
+ * Version: 1.0.1
  * Description: Add province/city, district, commune/ward/town to checkout form and simplify checkout form
- * Author: Coolviad
+ * Author: CoolBirdZik
  * Author URI: https://github.com/coolbirdzik/coolbird-vietnam-address-for-woocommerce
  * Text Domain: coolbird-vietnam-address
  * Domain Path: /languages
